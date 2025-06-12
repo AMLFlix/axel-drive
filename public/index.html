@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axel Drive</title>
-    <!-- Google Fonts & Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Plyr Video Player -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
         :root {
@@ -48,7 +45,8 @@
         
         .header-actions { display: flex; align-items: center; margin-left: auto; gap: 8px; }
         .icon-btn { background: none; border: none; color: var(--text-secondary); padding: 8px; border-radius: 50%; cursor: pointer; transition: background-color 0.2s; display: flex; align-items: center; justify-content: center; }
-        .icon-btn.active, .icon-btn:hover { background-color: var(--hover-bg-color); }
+        .icon-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .icon-btn.active, .icon-btn:not(:disabled):hover { background-color: var(--hover-bg-color); }
         
         .profile-menu { position: relative; }
         .profile-btn { width: 32px; height: 32px; background-color: #673AB7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; color: white; cursor: pointer; }
@@ -65,7 +63,7 @@
         
         .content-area { flex-grow: 1; padding: 0 24px; display: flex; flex-direction: column; overflow-y: auto; }
         .content-header { padding: 16px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .breadcrumb { display: flex; align-items: center; font-size: 22px; margin: 0; }
+        .breadcrumb { display: flex; align-items: center; font-size: 22px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .breadcrumb-item { color: var(--text-secondary); cursor: pointer; }
         .breadcrumb-item:not(:last-child)::after { content: '>'; margin: 0 10px; color: var(--text-secondary); }
         .breadcrumb-item.active { color: var(--text-primary); font-weight: 500; }
@@ -141,20 +139,97 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script>
         const WORKER_BASE_URL = "https://axel-drive.comtv.workers.dev";
-        const appDiv=document.getElementById("app"),progressBar=document.getElementById("progressBar"),profileMenu=document.querySelector(".profile-menu"),profileBtn=document.getElementById("profileBtn"),profileDropdown=document.getElementById("profileDropdown"),logoutBtn=document.getElementById("logoutBtn"),mainSearchInput=document.getElementById("mainSearchInput");
-        let adminToken=localStorage.getItem("admin_token"),currentAccountId=null,viewMode="grid",allAccounts=[],currentPath=[{id:"root",name:"My Drive"}];
-        const CONSTS={folder_mime_type:"application/vnd.google-apps.folder"};
+        const appDiv = document.getElementById('app');
+        const progressBar = document.getElementById('progressBar');
+        const profileMenu = document.querySelector('.profile-menu');
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const mainSearchInput = document.getElementById('mainSearchInput');
+        
+        let adminToken = localStorage.getItem('admin_token');
+        let currentAccountId = null;
+        let viewMode = 'grid'; 
+        let allAccounts = []; 
+        let currentPath = [{ id: 'root', name: 'My Drive' }];
+
+        const CONSTS = { folder_mime_type: "application/vnd.google-apps.folder" };
 
         function showLoading(){progressBar.style.display="block"}
         function hideLoading(){progressBar.style.display="none"}
-        function formatBytes(e,t=2){if(!e)return"-";const o=1024,n=["Bytes","KB","MB","GB","TB"],a=Math.floor(Math.log(e)/Math.log(o));return`${parseFloat((e/Math.pow(o,a)).toFixed(t))} ${n[a]}`}
-        function formatDate(e){return e?new Date(e).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"-"}
-        async function apiRequest(e,t="GET",o=null,n=!0){showLoading();const a={"Content-Type":"application/json"};if(n){if(!adminToken)return showMessage("Authentication required."),showLoginPage(),hideLoading(),Promise.reject(new Error("Auth required"));a.Authorization=`Bearer ${adminToken}`}try{const l=await fetch(`${WORKER_BASE_URL}${e}`,{method:t,headers:a,body:o?JSON.stringify(o):null}),s=await l.json();if(!l.ok)throw new Error(s.error||"API request failed");return s}catch(r){throw console.error("API Error:",r),showMessage(r.message,"error"),r}finally{hideLoading()}}
-        function showMessage(e){const t=document.createElement("div");t.className="message",t.textContent=e,document.body.appendChild(t),setTimeout(()=>t.remove(),5e3)}
-        function handleLogout(){localStorage.removeItem("admin_token"),adminToken=null,showMessage("You have been logged out."),showLoginPage()}
-        function getFileIcon(e){return e===CONSTS.folder_mime_type?{icon:"folder",colorClass:"icon-folder"}:e.startsWith("video/")?{icon:"movie",colorClass:"icon-movie"}:e.startsWith("audio/")?{icon:"music_note",colorClass:"icon-music_note"}:e.startsWith("image/")?{icon:"image",colorClass:"icon-image"}:e.includes("pdf")?{icon:"picture_as_pdf",colorClass:"icon-picture_as_pdf"}:e.includes("zip")||e.includes("rar")?{icon:"archive",colorClass:"icon-archive"}:{icon:"article",colorClass:"icon-article"}}
+        function formatBytes(bytes, d = 2) {
+            if (!bytes) return '-';
+            const k = 1024, sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes/Math.pow(k, i)).toFixed(d))} ${sizes[i]}`;
+        }
+        function formatDate(iso) { return iso ? new Date(iso).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '-'; }
         
-        function showLoginPage(){profileMenu.style.display="none",document.querySelector(".main-container").style.display="none",document.querySelector(".app-header .search-bar").style.display="none";const e=document.createElement("div");e.id="login-container",e.innerHTML='<div class="card"><h2>Admin Login</h2><div class="form-group"><label for="username">Username:</label><input type="text" id="username" value="admin"></div><div class="form-group"><label for="password">Password:</label><input type="password" id="password"></div><button id="loginBtn" class="btn btn-primary" style="width: 100%;">Login</button></div>',document.body.appendChild(e),document.getElementById("loginBtn").onclick=async()=>{const t=document.getElementById("username").value,o=document.getElementById("password").value;try{const n=await apiRequest("/api/auth/login","POST",{username:t,password:o},!1);adminToken=n.token,localStorage.setItem("admin_token",adminToken),e.remove(),initializeAppUI()}catch(a){}}}
+        async function apiRequest(endpoint, method = 'GET', body = null, auth = true) {
+            showLoading();
+            const headers = { 'Content-Type': 'application/json' };
+            if (auth) {
+                if (!adminToken) {
+                    showMessage('Authentication required.');
+                    showLoginPage(); hideLoading(); throw new Error('Auth required');
+                }
+                headers['Authorization'] = `Bearer ${adminToken}`;
+            }
+            try {
+                const res = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({error: 'API request failed'}));
+                    throw new Error(data.error || 'API request failed');
+                }
+                return await res.json();
+            } catch (err) { console.error('API Error:', err); showMessage(err.message, 'error'); throw err; }
+            finally { hideLoading(); }
+        }
+
+        function showMessage(msg) {
+            const el = document.createElement('div');
+            el.className = 'message'; el.textContent = msg;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 5000);
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('admin_token'); adminToken = null; allAccounts = [];
+            showMessage('You have been logged out.'); showLoginPage();
+        }
+        
+        function getFileIcon(mimeType) {
+            if (mimeType === CONSTS.folder_mime_type) return { icon: 'folder', colorClass: 'icon-folder' };
+            if (mimeType.startsWith('video/')) return { icon: 'movie', colorClass: 'icon-movie' };
+            if (mimeType.startsWith('audio/')) return { icon: 'music_note', colorClass: 'icon-music_note' };
+            if (mimeType.startsWith('image/')) return { icon: 'image', colorClass: 'icon-image' };
+            if (mimeType.includes('pdf')) return { icon: 'picture_as_pdf', colorClass: 'icon-picture_as_pdf' };
+            if (mimeType.includes('zip') || mimeType.includes('rar')) return { icon: 'archive', colorClass: 'icon-archive' };
+            return { icon: 'article', colorClass: 'icon-article' };
+        }
+        
+        function showLoginPage() {
+            profileMenu.style.display="none";
+            document.querySelector(".main-container").style.display="none";
+            document.querySelector(".app-header .search-bar").style.display="none";
+            const container = document.createElement('div');
+            container.id = 'login-container';
+            container.innerHTML = `<div class="card">
+                <h2>Admin Login</h2>
+                <div class="form-group"><label for="username">Username:</label><input type="text" id="username" value="admin"></div>
+                <div class="form-group"><label for="password">Password:</label><input type="password" id="password"></div>
+                <button id="loginBtn" class="btn btn-primary" style="width: 100%;">Login</button>
+            </div>`;
+            document.body.appendChild(container);
+            document.getElementById('loginBtn').onclick = async () => {
+                const u = document.getElementById('username').value, p = document.getElementById('password').value;
+                try {
+                    const data = await apiRequest('/api/auth/login', 'POST', { username: u, password: p }, false);
+                    adminToken = data.token; localStorage.setItem('admin_token', adminToken);
+                    container.remove(); initializeAppUI();
+                } catch (error) { /* Handled */ }
+            };
+        }
         
         async function showGoogleAccountsPage(page = 1, searchTerm = '') {
             setActiveNav('accountsLink');
@@ -165,23 +240,23 @@
                     <h1 class="breadcrumb">Accounts</h1>
                     <div class="search-bar" style="max-width: 300px;"><span class="material-icons">search</span><input type="search" id="accountSearchInput" placeholder="Search accounts..." value="${searchTerm}"></div>
                 </div>
-                <button id="addAccountBtn" class="btn btn-primary" style="margin-top:16px;"><span class="material-icons" style="margin-right:8px;">add</span>Add New Account</button>
+                <button id="addAccountBtn" class="btn btn-primary" style="display:inline-flex; align-items:center; margin-top:16px;"><span class="material-icons" style="margin-right:8px;">add</span>Add New Account</button>
                 <div id="accountsList" style="margin-top:16px;"></div>
                 <div id="accountsPagination" class="pagination-controls"></div>`;
             document.getElementById('addAccountBtn').onclick = () => showAddEditAccountPage();
             const searchInput = document.getElementById('accountSearchInput');
-            searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') showGoogleAccountsPage(1, e.target.value) });
+            searchInput.addEventListener('input', e => showGoogleAccountsPage(1, e.target.value));
 
             try {
                 if (!allAccounts.length) { allAccounts = await apiRequest('/api/settings/list'); }
                 
-                const filteredAccounts = allAccounts.filter(acc => acc.name.toLowerCase().includes(searchTerm.toLowerCase()));
+                const filteredAccounts = allAccounts.filter(acc => acc.name.toLowerCase().includes(searchTerm.toLowerCase()) || acc.id.toLowerCase().includes(searchTerm.toLowerCase()));
                 const pageSize = 10;
                 const pageCount = Math.ceil(filteredAccounts.length / pageSize);
                 const paginatedAccounts = filteredAccounts.slice((page - 1) * pageSize, page * pageSize);
 
                 const listDiv = document.getElementById('accountsList');
-                if (!paginatedAccounts.length) { listDiv.innerHTML = '<p>No accounts found.</p>'; document.getElementById('accountsPagination').innerHTML = ''; return; }
+                if (!paginatedAccounts.length) { listDiv.innerHTML = '<p style="padding: 20px; text-align:center; color: var(--text-secondary);">No accounts found.</p>'; document.getElementById('accountsPagination').innerHTML = ''; return; }
                 
                 listDiv.innerHTML = `<table class="file-table">
                     <thead><tr><th>Name</th><th>Account ID</th><th class="actions-cell">Actions</th></tr></thead>
@@ -209,23 +284,50 @@
             } catch (error) { if (error.message.includes('Auth')) showLoginPage(); }
         }
 
-        async function showDriveBrowserPage(accountId, folderId=null, pageToken=null) {
-            setActiveNav('myDriveLink'); currentAccountId = accountId;
+        async function showAddEditAccountPage(accountId = null) {
+            const account = accountId ? await apiRequest(`/api/settings/get/${accountId}`) : {};
+            appDiv.innerHTML = `<div class="content-header"><h1 class="breadcrumb">${accountId ? 'Edit' : 'Add'} Account</h1></div>
+                <div class="card" style="margin-top:16px;max-width:600px;">
+                    <div class="form-group"><label>Account ID (Unique Identifier):</label><input type="text" id="accountId" value="${account.id || ''}" ${accountId ? 'readonly' : ''}></div>
+                    <div class="form-group"><label>Account Name:</label><input type="text" id="accountName" value="${account.name || ''}"></div>
+                    <div class="form-group"><label>Client ID:</label><input type="text" id="clientId" value="${account.client_id || ''}"></div>
+                    <div class="form-group"><label>Client Secret:</label><input type="text" id="clientSecret" value="${account.client_secret || ''}"></div>
+                    <div class="form-group"><label>Refresh Token:</label><input type="text" id="refreshToken" value="${account.refresh_token || ''}"></div>
+                    <div style="display:flex;gap:10px;justify-content:flex-end;">
+                        <button id="cancelBtn" class="btn" style="background:var(--hover-bg-color); color:var(--text-primary);">Cancel</button>
+                        <button id="saveAccountBtn" class="btn btn-primary">Save</button>
+                    </div>
+                </div>`;
+            document.getElementById('saveAccountBtn').onclick = async () => {
+                const payload = {
+                    id: document.getElementById('accountId').value, name: document.getElementById('accountName').value,
+                    client_id: document.getElementById('clientId').value, client_secret: document.getElementById('clientSecret').value,
+                    refresh_token: document.getElementById('refreshToken').value,
+                };
+                if (!payload.id || !payload.name) return showMessage('Account ID and Name are required.');
+                await apiRequest(accountId ? `/api/settings/update/${payload.id}` : '/api/settings/add', accountId ? 'PUT' : 'POST', payload);
+                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); allAccounts = []; showGoogleAccountsPage();
+            };
+            document.getElementById('cancelBtn').onclick = () => showGoogleAccountsPage();
+        }
+
+        async function showDriveBrowserPage(accountId, folderId = null, pageToken = null) {
+            setActiveNav('myDriveLink');
+            currentAccountId = accountId;
             const isSearch = !!mainSearchInput.value;
 
             if (!pageToken) {
                 if (folderId && !isSearch) {
-                    const folder = await apiRequest(`/api/drive/file/${accountId}/${folderId}`);
-                    // Manage breadcrumb path
                     const existingIndex = currentPath.findIndex(p => p.id === folderId);
                     if (existingIndex > -1) {
-                        currentPath = currentPath.slice(0, existingIndex + 1);
+                        currentPath.splice(existingIndex + 1);
                     } else {
-                        currentPath.push({ id: folderId, name: folder.name });
+                        try {
+                           const folder = await apiRequest(`/api/drive/file/${accountId}/${folderId}`);
+                           currentPath.push({ id: folderId, name: folder.name });
+                        } catch(e) { /* Folder might not be found, stay in current path */ }
                     }
-                } else if (isSearch) {
-                    currentPath = [{ id: 'root', name: `Search: "${mainSearchInput.value}"` }];
-                } else {
+                } else if (!isSearch) {
                     currentPath = [{ id: 'root', name: 'My Drive' }];
                 }
 
@@ -238,56 +340,66 @@
                     </div>
                     <div id="driveContent"></div>
                     <div id="pagination" class="pagination-controls"></div>`;
-                document.getElementById('view-list-btn').onclick = () => { viewMode = 'list'; renderItems(); };
-                document.getElementById('view-grid-btn').onclick = () => { viewMode = 'grid'; renderItems(); };
+                
+                document.getElementById('view-list-btn').onclick = () => { viewMode = 'list'; renderItems([], true); };
+                document.getElementById('view-grid-btn').onclick = () => { viewMode = 'grid'; renderItems([], true); };
                 document.querySelectorAll('.breadcrumb-item').forEach(item => {
-                    item.onclick = (e) => showDriveBrowserPage(accountId, e.target.dataset.id);
+                    item.onclick = (e) => {
+                        currentPath.splice(Array.from(e.target.parentElement.children).indexOf(e.target) + 1);
+                        showDriveBrowserPage(accountId, e.target.dataset.id);
+                    }
                 });
             }
 
             try {
                 const params = new URLSearchParams({ pageSize: 50 });
-                const currentFolder = currentPath[currentPath.length-1].id;
+                const currentFolder = isSearch ? 'root' : currentPath[currentPath.length-1].id;
                 const apiUrl = isSearch ? `/api/drive/search/${accountId}` : `/api/drive/list/${accountId}/${currentFolder}`;
                 if (isSearch) params.append('q', mainSearchInput.value);
                 if (pageToken) params.append('pageToken', pageToken);
                 
                 const data = await apiRequest(`${apiUrl}?${params.toString()}`);
-                const driveContent = document.getElementById('driveContent');
-                if (!pageToken) driveContent.innerHTML = '';
                 
-                renderItems(data.files || [], driveContent, !pageToken);
+                renderItems(data.files || [], !pageToken);
                 
                 const paginationDiv = document.getElementById('pagination');
                 paginationDiv.innerHTML = data.nextPageToken ? `<button id="loadMoreBtn" class="btn btn-primary">Load More</button>` : '';
                 if(data.nextPageToken) {
-                    document.getElementById('loadMoreBtn').onclick = () => showDriveBrowserPage(accountId, currentFolder, data.nextPageToken);
+                    document.getElementById('loadMoreBtn').onclick = () => {
+                         document.getElementById('loadMoreBtn').remove();
+                         showDriveBrowserPage(accountId, currentFolder, data.nextPageToken);
+                    }
                 }
             } catch (error) { if (error.message.includes('Auth')) showLoginPage(); }
         }
 
-        function renderItems(files, container, isFirstRender) {
+        function renderItems(files = [], isFirstRender = false) {
             document.querySelector('#view-list-btn').classList.toggle('active', viewMode === 'list');
             document.querySelector('#view-grid-btn').classList.toggle('active', viewMode === 'grid');
+            const container = document.getElementById('driveContent');
+
+            if (isFirstRender) container.innerHTML = '';
             
-            if (isFirstRender && !files.length) {
+            if (isFirstRender && !files.length && !container.innerHTML) {
                 container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-secondary);">Folder is empty or no results found.</div>`; return;
             }
             
+            const html = viewMode === 'list' ? renderListView(files) : renderGridView(files);
+            
             if (viewMode === 'list') {
-                if(isFirstRender) container.innerHTML = `<table class="file-table"><thead><tr><th>Name</th><th>Last modified</th><th>File size</th><th class="actions-cell"></th></tr></thead><tbody></tbody></table>`;
-                container.querySelector('tbody').insertAdjacentHTML('beforeend', renderListView(files));
+                if(!container.querySelector('.file-table')) container.innerHTML = `<table class="file-table"><thead><tr><th>Name</th><th>Last modified</th><th>File size</th><th class="actions-cell"></th></tr></thead><tbody></tbody></table>`;
+                container.querySelector('tbody').insertAdjacentHTML('beforeend', html);
             } else {
-                 if(isFirstRender) container.innerHTML = `<div class="grid-container"></div>`;
-                 container.querySelector('.grid-container').insertAdjacentHTML('beforeend', renderGridView(files));
+                 if(!container.querySelector('.grid-container')) container.innerHTML = `<div class="grid-container"></div>`;
+                 container.querySelector('.grid-container').insertAdjacentHTML('beforeend', html);
             }
             attachActionListeners();
         }
 
         function renderListView(files){return files.map(item=>{const iconInfo=getFileIcon(item.mimeType);return`<tr><td class="file-name-cell"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span>${item.name}</td><td>${formatDate(item.modifiedTime)}</td><td>${formatBytes(item.size)}</td><td class="actions-cell">${getActionButtons(item)}</td></tr>`}).join('')}
         function renderGridView(files){return files.map(item=>{const iconInfo=getFileIcon(item.mimeType);return`<div class="file-card" data-folder-id="${item.id}" data-mime-type="${item.mimeType}"><div class="card-thumbnail"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span></div><div class="card-filename"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span><span>${item.name}</span></div><div class="card-actions">${getActionButtons(item)}</div></div>`}).join('')}
-        function getActionButtons(e){const t=e.mimeType===CONSTS.folder_mime_type,o=e.mimeType.startsWith("video/"),n=`data-id="${e.id}" data-name="${e.name}" data-mime-type="${e.mimeType}"`;return`\n                ${t?`<button class="icon-btn browse-folder-btn" ${n} title="Open"><span class="material-icons">folder_open</span></button>`:`<button class="icon-btn copy-link-btn" ${n} title="Copy link"><span class="material-icons">link</span></button>`}\n                ${o?`<button class="icon-btn play-btn" ${n} title="Play"><span class="material-icons">play_circle</span></button>`:""}\n             `}
-        function renderBreadcrumbs() { return currentPath.map((p, i) => `<span class="breadcrumb-item ${i === currentPath.length-1 ? 'active' : ''}" data-id="${p.id}">${p.name}</span>`).join(''); }
+        function getActionButtons(e){const t=e.mimeType===CONSTS.folder_mime_type,o=e.mimeType.startsWith("video/"),n=`data-id="${e.id}" data-name="${e.name}" data-mime-type="${e.mimeType}"`;return`${t?`<button class="icon-btn browse-folder-btn" ${n} title="Open"><span class="material-icons">folder_open</span></button>`:`<button class="icon-btn copy-link-btn" ${n} title="Copy link"><span class="material-icons">link</span></button>`}${o?`<button class="icon-btn play-btn" ${n} title="Play"><span class="material-icons">play_circle</span></button>`:""}`}
+        function renderBreadcrumbs() { return currentPath.map((p, i) => `<span class="breadcrumb-item ${i === currentPath.length - 1 ? 'active' : ''}" data-id="${p.id}">${p.name}</span>`).join('') || 'My Drive'; }
 
         function renderPagination(containerId, currentPage, pageCount, callback) {
             const container = document.getElementById(containerId);
@@ -305,9 +417,7 @@
             const url = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${id}/${encodeURIComponent(name)}`;
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal-content video-modal">
-                <video controls crossorigin playsinline></video>
-            </div>`;
+            modal.innerHTML = `<div class="modal-content video-modal"><video controls crossorigin playsinline></video></div>`;
             document.body.appendChild(modal);
             const video = modal.querySelector('video');
             video.src = url;
@@ -320,7 +430,7 @@
         function setActiveNav(e){document.querySelectorAll(".sidebar-nav a").forEach(t=>t.classList.remove("active")),document.getElementById(e).classList.add("active")}
         function initializeAppUI(){document.querySelector(".main-container").style.display="flex",document.querySelector(".app-header .search-bar").style.display="flex",profileMenu.style.display="block",showGoogleAccountsPage()}
         
-        document.addEventListener("DOMContentLoaded",()=>{adminToken?initializeAppUI():showLoginPage(),profileBtn.onclick=()=>profileDropdown.classList.toggle("show"),document.addEventListener("click",e=>{profileMenu.contains(e.target)||profileDropdown.classList.remove("show")}),logoutBtn.onclick=handleLogout,mainSearchInput.addEventListener("keypress",e=>{if("Enter"===e.key&&currentAccountId){const t=currentPath[currentPath.length-1].id;showDriveBrowserPage(currentAccountId,t,!1)}}),document.getElementById("accountsLink").onclick=e=>{e.preventDefault(),showGoogleAccountsPage()},document.getElementById("myDriveLink").onclick=e=>{e.preventDefault(),currentAccountId?(mainSearchInput.value="",showDriveBrowserPage(currentAccountId,"root")):(showMessage("Please select an account first."),showGoogleAccountsPage())}});
+        document.addEventListener("DOMContentLoaded",()=>{adminToken?initializeAppUI():showLoginPage(),profileBtn.onclick=()=>profileDropdown.classList.toggle("show"),document.addEventListener("click",e=>{profileMenu.contains(e.target)||profileDropdown.classList.remove("show")}),logoutBtn.onclick=handleLogout,mainSearchInput.addEventListener("keypress",e=>{if("Enter"===e.key&&currentAccountId)showDriveBrowserPage(currentAccountId,null,!1)}),document.getElementById("accountsLink").onclick=e=>{e.preventDefault(),showGoogleAccountsPage()},document.getElementById("myDriveLink").onclick=e=>{e.preventDefault(),currentAccountId?(mainSearchInput.value="",showDriveBrowserPage(currentAccountId,"root")):(showMessage("Please select an account first."),showGoogleAccountsPage())}});
     </script>
 </body>
 </html>
