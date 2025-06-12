@@ -126,14 +126,22 @@
         .form-group input:focus { outline: 2px solid var(--button-bg); border-color: transparent; }
         .btn { 
             padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 4px; cursor: pointer; border: none;
-            transition: background-color 0.2s, box-shadow 0.2s;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s ease; /* Added transform */
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             display: flex; /* Ensure icon and text are aligned */
             align-items: center;
             gap: 8px;
             justify-content: center;
         }
-        .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .btn:hover { 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        .btn:active {
+            transform: translateY(0); /* Press effect */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
         .btn-primary { background-color: #4285F4; color: white; } /* Google Blue */
         .btn-primary:hover { background-color: #357ae8; }
         .btn-success { background-color: #34A853; color: white; } /* Google Green */
@@ -144,6 +152,12 @@
         .btn-warning:hover { background-color: #e3a800; }
         .btn-secondary { background-color: #5f6368; color: white; } /* Google Grey */
         .btn-secondary:hover { background-color: #505458; }
+        /* Added more specific colorful styles for general buttons if desired */
+        .btn-info { background-color: #03A9F4; color: white; } /* Light Blue */
+        .btn-info:hover { background-color: #039BE5; }
+        .btn-purple { background-color: #9C27B0; color: white; } /* Purple */
+        .btn-purple:hover { background-color: #8E24AA; }
+
 
         /* --- Colorful Icons --- */
         .icon-folder { color: #528ff5 !important; }
@@ -408,7 +422,7 @@
             <div class="profile-menu" style="display: none;">
                 <button class="profile-btn" id="profileBtn">A</button>
                 <div class="dropdown-menu" id="profileDropdown">
-                    <button id="logoutBtn"><span class="material-icons">logout</span><span>Logout</span></button>
+                    <button id="logoutBtn" class="btn btn-danger"><span class="material-icons">logout</span><span>Logout</span></button>
                 </div>
             </div>
         </div>
@@ -469,10 +483,17 @@
             }
             try {
                 const res = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'API request failed');
-                return data;
-            } catch (err) { console.error('API Error:', err); showMessage(err.message, 'error'); throw err; }
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || `API request failed with status: ${res.status}`);
+                }
+                return await res.json();
+            } catch (err) { 
+                console.error('API Error:', err); 
+                showMessage(err.message, 'error'); 
+                hideLoading(); // Ensure loading indicator is hidden on error
+                throw err; 
+            }
             finally { hideLoading(); }
         }
 
@@ -522,7 +543,7 @@
                     container.remove(); 
                     initializeAppUI();
                     history.pushState({ page: 'accounts' }, 'Accounts', '#accounts'); // Initial state after login
-                } catch (error) { /* Handled */ }
+                } catch (error) { /* Handled by apiRequest's catch */ }
             };
         }
 
