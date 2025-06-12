@@ -1,5 +1,4 @@
 /* --- Google Fonts & Basic Setup --- */
-/* update */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
 :root {
@@ -11,9 +10,11 @@
     --border-color: #dadce0;
     --selection-bg: #e8f0fe;
     --selection-border: #4285f4;
-    --macos-folder-blue: #4195e8;
+    --macos-folder-blue: #4195e8; /* For Mac OS folder icon */
     --white: #fff;
     --font-family: 'Inter', sans-serif;
+    --danger-color: #d9534f;
+    --success-color: #5cb85c;
 }
 
 body {
@@ -22,6 +23,7 @@ body {
     color: var(--text-color-primary);
     margin: 0;
     overflow: hidden; /* Prevent body scroll */
+    height: 100vh; /* Ensure body takes full viewport height */
 }
 
 /* --- Login Page --- */
@@ -39,11 +41,37 @@ body {
     width: 100%;
     max-width: 360px;
 }
-.login-card h2 { text-align: center; }
+.login-card h2 { text-align: center; margin-top: 0; margin-bottom: 30px; color: var(--text-color-primary); }
+.login-card h2 i { margin-right: 10px; color: var(--selection-border); }
 .login-card .form-group { margin-bottom: 20px; }
-.login-card label { font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block; }
-.login-card input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
-.login-card .btn { width: 100%; padding: 12px; background: var(--selection-border); color: var(--white); border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+.login-card label { font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block; color: var(--text-color-secondary); }
+.login-card input { 
+    width: 100%; 
+    padding: 12px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 6px; 
+    box-sizing: border-box; 
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+.login-card input:focus {
+    outline: none;
+    border-color: var(--selection-border);
+}
+.login-card .btn { 
+    width: 100%; 
+    padding: 12px; 
+    background: var(--selection-border); 
+    color: var(--white); 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+.login-card .btn:hover { background-color: #357ae8; }
+
 
 /* --- Main App Layout --- */
 .main-app {
@@ -57,27 +85,30 @@ body {
     padding: 8px 16px;
     background-color: var(--bg-color);
     border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevents header from shrinking */
+    gap: 20px; /* Space between search and actions */
 }
 .search-bar-container {
     flex-grow: 1;
     display: flex;
     align-items: center;
-    background-color: var(--sidebar-bg);
+    background-color: var(--sidebar-bg); /* Lighter background for search */
     border-radius: 24px;
     padding: 0 16px;
+    height: 48px; /* Consistent height */
 }
-.search-bar-container i { color: var(--text-color-secondary); }
+.search-bar-container i { color: var(--text-color-secondary); font-size: 18px; }
 .search-bar-container input {
     width: 100%;
-    height: 40px;
+    height: 100%;
     border: none;
     background: transparent;
     outline: none;
     font-size: 16px;
     padding-left: 12px;
+    color: var(--text-color-primary);
 }
-.header-actions { margin-left: 20px; }
+.header-actions { margin-left: auto; } /* Push actions to the right */
 
 .app-body {
     display: flex;
@@ -87,7 +118,7 @@ body {
 
 /* --- Sidebar --- */
 .sidebar {
-    width: 250px;
+    width: 280px; /* Slightly wider sidebar */
     background-color: var(--sidebar-bg);
     padding: 12px;
     display: flex;
@@ -100,28 +131,36 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 8px;
+    margin-bottom: 10px; /* Space below header */
 }
-.sidebar-header h3 { margin: 0; font-size: 18px; }
+.sidebar-header h3 { margin: 0; font-size: 18px; color: var(--text-color-primary); }
 .accounts-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling for many accounts */
 }
 .accounts-list li {
     display: flex;
     align-items: center;
     padding: 10px 12px;
-    border-radius: 20px;
+    border-radius: 20px; /* Pill shape for active item */
     cursor: pointer;
     margin-bottom: 4px;
     font-size: 14px;
     font-weight: 500;
+    color: var(--text-color-secondary);
+    transition: background-color 0.2s, color 0.2s;
 }
 .accounts-list li:hover { background-color: #ddd; }
-.accounts-list li.active { background-color: var(--selection-bg); color: var(--selection-border); }
-.accounts-list li .fa-google-drive { margin-right: 12px; color: var(--text-color-secondary); }
-.accounts-list li.active .fa-google-drive { color: var(--selection-border); }
+.accounts-list li.active { background-color: var(--selection-bg); color: var(--selection-border); font-weight: 700; }
+.accounts-list li .fab.fa-google-drive { 
+    margin-right: 12px; 
+    color: var(--text-color-secondary); 
+    font-size: 18px; 
+    transition: color 0.2s;
+}
+.accounts-list li.active .fab.fa-google-drive { color: var(--selection-border); }
 
 /* --- Main Content Area --- */
 .main-content {
@@ -129,23 +168,42 @@ body {
     background-color: var(--main-content-bg);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; /* Manage overflow for inner content */
 }
 .context-action-bar {
     padding: 8px 16px;
     border-bottom: 1px solid var(--border-color);
-    display: none; /* Hidden by default */
+    display: flex; /* Changed from 'none' to 'flex' for visibility control by JS */
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    justify-content: flex-end; /* Align buttons to the right */
+    background-color: var(--main-content-bg); /* Ensure background is white */
 }
-.breadcrumb-bar { padding: 12px 16px; border-bottom: 1px solid var(--border-color); flex-shrink: 0; font-size: 14px; }
+
+.breadcrumb-bar { 
+    padding: 12px 16px; 
+    border-bottom: 1px solid var(--border-color); 
+    flex-shrink: 0; 
+    font-size: 14px; 
+    color: var(--text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--main-content-bg);
+}
+.breadcrumb-bar span { cursor: pointer; }
+.breadcrumb-bar span:hover { text-decoration: underline; }
+.breadcrumb-bar span.current { font-weight: 500; color: var(--text-color-primary); cursor: default; text-decoration: none; }
+.breadcrumb-bar i { font-size: 12px; color: var(--text-color-secondary); }
+
+
 .drive-grid-view {
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid */
     gap: 20px;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling for grid content */
     flex-grow: 1;
 }
 
@@ -158,7 +216,11 @@ body {
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
-    border: 2px solid transparent;
+    border: 2px solid transparent; /* For selection border */
+    transition: background-color 0.2s, border-color 0.2s;
+}
+.grid-item:hover {
+    background-color: #f5f5f5;
 }
 .grid-item.selected {
     background-color: var(--selection-bg);
@@ -171,12 +233,13 @@ body {
     justify-content: center;
     align-items: center;
     margin-bottom: 8px;
-    font-size: 50px;
+    font-size: 50px; /* Default icon size */
 }
 .grid-item-name {
     font-size: 13px;
     word-break: break-all;
     line-height: 1.3;
+    color: var(--text-color-primary);
 }
 
 /* --- macOS Style Folder Icon (CSS only) --- */
@@ -195,15 +258,17 @@ body {
     left: 15px;
     width: 40px;
     height: 8px;
-    background-color: #6fb0f1;
+    background-color: #6fb0f1; /* Lighter blue tab */
     border-radius: 2px 4px 0 0;
 }
 
-/* Other file icons */
-.grid-item-icon .fa-file-video { color: #e56161; }
-.grid-item-icon .fa-file-audio { color: #8e6ee3; }
-.grid-item-icon .fa-file-image { color: #f08a5d; }
-.grid-item-icon .fa-file-alt { color: #5f6368; }
+/* Other file icons (color based on Google Drive conventions) */
+.grid-item-icon .fa-file-video { color: #e56161; } /* Red for video */
+.grid-item-icon .fa-file-audio { color: #8e6ee3; } /* Purple for audio */
+.grid-item-icon .fa-file-image { color: #f08a5d; } /* Orange for image */
+.grid-item-icon .fa-file-alt { color: #5f6368; } /* Grey for generic file */
+.grid-item-icon .fa-file-pdf { color: #db4437; } /* Red for PDF */
+.grid-item-icon .fa-file-archive { color: #607d8b; } /* Blue-grey for archives */
 
 
 /* --- Icon Buttons --- */
@@ -219,15 +284,77 @@ body {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.2s, color 0.2s;
 }
-.icon-btn:hover { background-color: #e0e0e0; }
+.icon-btn:hover { background-color: #e0e0e0; color: var(--text-color-primary); }
+.icon-btn:active { background-color: #ccc; }
 
-/* --- Add/Edit Account View --- */
+
+/* --- Add/Edit Account View (Card style form) --- */
 #add-edit-account-view {
     padding: 30px;
+    overflow-y: auto; /* Allow scrolling for long forms */
+    flex-grow: 1;
 }
-/* ... (Add other styles for form if needed) ... */
+#add-edit-account-view .login-card {
+    max-width: 600px; /* Wider card for forms */
+    margin: 20px auto;
+    padding: 30px;
+}
+#add-edit-account-view h2 { 
+    text-align: center; 
+    margin-bottom: 25px;
+    color: var(--text-color-primary);
+}
+#add-edit-account-view h2 i { margin-right: 8px; color: var(--selection-border); }
 
+#add-edit-account-view .form-group { margin-bottom: 15px; }
+#add-edit-account-view label { 
+    font-size: 14px; 
+    font-weight: 500; 
+    margin-bottom: 6px; 
+    display: block; 
+    color: var(--text-color-secondary);
+}
+#add-edit-account-view input { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+#add-edit-account-view input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+#add-edit-account-view input:focus {
+    outline: none;
+    border-color: var(--selection-border);
+}
+
+#add-edit-account-view .btn {
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+#add-edit-account-view .btn.btn-primary {
+    background-color: var(--selection-border);
+    color: var(--white);
+    border: none;
+}
+#add-edit-account-view .btn.btn-primary:hover { background-color: #357ae8; }
+
+#add-edit-account-view .btn.btn-secondary {
+    background-color: #6c757d;
+    color: var(--white);
+    border: none;
+}
+#add-edit-account-view .btn.btn-secondary:hover { background-color: #5a6268; }
 
 /* --- Loading Spinner --- */
 .loading-overlay {
@@ -244,3 +371,125 @@ body {
     animation: spin 1s linear infinite;
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- Modals (for Play and Confirm) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+.modal-content {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+.modal-content p {
+    margin-bottom: 25px;
+    font-size: 16px;
+    color: var(--text-color-primary);
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+.modal-actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.modal-actions .btn.btn-secondary { background-color: #6c757d; color: var(--white); }
+.modal-actions .btn.btn-secondary:hover { background-color: #5a6268; }
+.modal-actions .btn.btn-danger { background-color: var(--danger-color); color: var(--white); }
+.modal-actions .btn.btn-danger:hover { background-color: #c9302c; }
+
+.video-modal .modal-content {
+    max-width: 900px;
+    text-align: left;
+}
+.media-player {
+    width: 100%;
+    max-height: 70vh; /* Max height for video player */
+    background-color: #000;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .app-header {
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+    .search-bar-container {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+    }
+    .app-body {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0;
+    }
+    .sidebar-header {
+        padding: 10px 12px;
+    }
+    .accounts-list {
+        max-height: 150px; /* Limit sidebar height on mobile */
+        overflow-y: auto;
+        padding-bottom: 10px;
+    }
+    .drive-grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    .grid-item-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 40px;
+    }
+    .icon-macos-folder {
+        width: 60px;
+        height: 45px;
+    }
+    .icon-macos-folder::before {
+        left: 10px;
+        width: 30px;
+        height: 6px;
+    }
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .modal-actions .btn {
+        width: 100%;
+    }
+}
