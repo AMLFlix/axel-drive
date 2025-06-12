@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axel Drive</title>
-    <!-- Google Fonts: Roboto and Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Font Awesome for more icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -22,11 +20,21 @@
             --border-color: #3c4043;
             --active-item-bg: #c2e7ff;
             --active-item-text: #001d35;
-            --button-bg: #8ab4f8;
-            --button-text: #202124;
             --font-family: 'Roboto', sans-serif;
             --border-radius: 16px;
             --item-border-radius: 4px;
+
+            /* MODIFICATION: Colorful Button Palette */
+            --btn-primary-bg: #4285F4; /* Google Blue */
+            --btn-primary-hover: #357ae8;
+            --btn-success-bg: #34A853; /* Google Green */
+            --btn-success-hover: #2c8f43;
+            --btn-danger-bg: #EA4335; /* Google Red */
+            --btn-danger-hover: #d13a2d;
+            --btn-warning-bg: #FBBC04; /* Google Yellow */
+            --btn-warning-hover: #e3a800;
+            --btn-secondary-bg: #5f6368; /* Google Grey */
+            --btn-secondary-hover: #505458;
         }
 
         body {
@@ -46,7 +54,7 @@
         }
         #progressBar::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--button-bg);
+            background-color: var(--btn-primary-bg); /* Use colorful variable */
             animation: indeterminate-progress 1.5s infinite ease-in-out;
         }
         @keyframes indeterminate-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
@@ -58,7 +66,7 @@
             display: flex; align-items: center; border-bottom: 1px solid var(--border-color); flex-shrink: 0;
         }
         .header-logo { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 500; margin-right: 20px; }
-        .header-logo i { color: var(--button-bg); }
+        .header-logo i { color: var(--btn-primary-bg); }
         .search-bar {
             flex-grow: 1; display: flex; align-items: center; background-color: #313335;
             padding: 0 8px; border-radius: 24px; max-width: 720px;
@@ -71,11 +79,11 @@
         .header-actions { display: flex; align-items: center; margin-left: auto; gap: 8px; }
         .icon-btn {
             background: none; border: none; color: var(--text-secondary); padding: 8px;
-            border-radius: 50%; cursor: pointer; transition: background-color 0.2s;
+            border-radius: 50%; cursor: pointer; transition: background-color 0.2s, color 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
         .icon-btn.active { background-color: var(--hover-bg-color); color: var(--text-primary); }
-        .icon-btn:hover { background-color: var(--hover-bg-color); }
+        .icon-btn:hover { background-color: var(--hover-bg-color); color: var(--text-primary); }
         .profile-btn {
             width: 32px; height: 32px; background-color: #673AB7; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-weight: 500; color: white; cursor: pointer;
@@ -83,7 +91,7 @@
         .profile-menu { position: relative; }
         .dropdown-menu {
             display: none; position: absolute; right: 0; top: 45px; background-color: var(--dialog-surface-color);
-            border-radius: var(--item-border-radius); box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 100; width: 200px;
+            border-radius: var(--item-border-radius); box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 100; width: 220px; padding: 8px 0;
         }
         .dropdown-menu.show { display: block; }
         #logoutBtn {
@@ -91,6 +99,15 @@
             text-align: left; border: none; background: none; color: var(--text-primary); cursor: pointer;
         }
         #logoutBtn:hover { background-color: var(--hover-bg-color); }
+        /* MODIFICATION: Style for developer credit */
+        .developer-credit {
+            padding: 10px 16px;
+            font-size: 12px;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 8px;
+        }
 
         .sidebar {
             width: 256px; background-color: var(--sidebar-surface-color); padding: 16px 12px;
@@ -104,8 +121,9 @@
         .new-btn:hover { filter: brightness(0.95); }
         .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
         .sidebar-nav li a {
-            display: flex; align-items: center; gap: 16px; padding: 8px 16px;
+            display: flex; align-items: center; gap: 16px; padding: 10px 16px; /* Increased padding */
             border-radius: var(--border-radius); text-decoration: none; color: var(--text-primary); font-size: 14px;
+            transition: background-color 0.2s, color 0.2s;
         }
         .sidebar-nav li a:hover { background-color: var(--hover-bg-color); }
         .sidebar-nav li a.active { background-color: var(--active-item-bg); color: var(--active-item-text); font-weight: 500; }
@@ -128,35 +146,37 @@
             width: 100%; padding: 12px; background-color: #313335; border: 1px solid var(--border-color);
             border-radius: 4px; color: var(--text-primary); font-size: 16px; box-sizing: border-box;
         }
-        .form-group input:focus { outline: 2px solid var(--button-bg); border-color: transparent; }
+        .form-group input:focus { outline: 2px solid var(--btn-primary-bg); border-color: transparent; }
+        
+        /* MODIFICATION: Centralized and colorful button styling */
         .btn { 
-            padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 4px; cursor: pointer; border: none;
-            transition: background-color 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 6px; /* slightly rounder */
+            cursor: pointer; border: none; transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; justify-content: center;
         }
         .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-        .btn-primary { background-color: #4285F4; color: white; } /* Google Blue */
-        .btn-primary:hover { background-color: #357ae8; }
-        .btn-success { background-color: #34A853; color: white; } /* Google Green */
-        .btn-success:hover { background-color: #2c8f43; }
-        .btn-danger { background-color: #EA4335; color: white; } /* Google Red */
-        .btn-danger:hover { background-color: #d13a2d; }
-        .btn-warning { background-color: #FBBC04; color: #202124; } /* Google Yellow */
-        .btn-warning:hover { background-color: #e3a800; }
-        .btn-secondary { background-color: #5f6368; color: white; } /* Google Grey */
-        .btn-secondary:hover { background-color: #505458; }
+        .btn .material-icons { font-size: 18px; } /* Icon size inside buttons */
+        .btn-primary { background-color: var(--btn-primary-bg); color: white; }
+        .btn-primary:hover { background-color: var(--btn-primary-hover); }
+        .btn-success { background-color: var(--btn-success-bg); color: white; }
+        .btn-success:hover { background-color: var(--btn-success-hover); }
+        .btn-danger { background-color: var(--btn-danger-bg); color: white; }
+        .btn-danger:hover { background-color: var(--btn-danger-hover); }
+        .btn-warning { background-color: var(--btn-warning-bg); color: #202124; }
+        .btn-warning:hover { background-color: var(--btn-warning-hover); }
+        .btn-secondary { background-color: var(--btn-secondary-bg); color: white; }
+        .btn-secondary:hover { background-color: var(--btn-secondary-hover); }
 
-        /* --- Colorful Icons --- */
-        .icon-folder { color: #528ff5 !important; }
-        .icon-movie { color: #e53935 !important; }
-        .icon-music_note { color: #ff4081 !important; }
-        .icon-image { color: #43a047 !important; }
-        .icon-picture_as_pdf { color: #f44336 !important; }
-        .icon-archive { color: #795548 !important; }
-        .icon-article { color: #90a4ae !important; }
-        .icon-account_circle { color: #9e9e9e !important; }
+        /* MODIFICATION: Brighter, more distinct "iOS-style" icon colors */
+        .icon-folder { color: #0A84FF !important; } /* iOS Blue */
+        .icon-movie { color: #FF453A !important; } /* iOS Red */
+        .icon-music_note { color: #FF2D55 !important; } /* iOS Pink */
+        .icon-image { color: #30D158 !important; } /* iOS Green */
+        .icon-picture_as_pdf { color: #BF5AF2 !important; } /* iOS Purple */
+        .icon-archive { color: #FF9F0A !important; } /* iOS Orange */
+        .icon-article { color: #6C6C70 !important; } /* iOS Grey */
+        .icon-account_circle { color: #FFD60A !important; } /* iOS Yellow */
 
-        /* --- List View (Table) --- */
         .file-table { width: 100%; border-collapse: collapse; color: var(--text-primary); }
         .file-table th, .file-table td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
         .file-table th { color: var(--text-secondary); font-weight: 500; }
@@ -166,19 +186,18 @@
         .actions-cell .icon-btn { opacity: 0; transition: opacity 0.2s; }
         .file-table tr:hover .actions-cell .icon-btn { opacity: 1; }
 
-        /* --- Grid View --- */
         .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
-            padding-top: 16px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px; padding-top: 16px;
         }
         .file-card {
-            background-color: var(--sidebar-surface-color); border-radius: 8px;
-            border: 1px solid transparent; transition: border-color 0.2s, background-color 0.2s;
+            background-color: var(--sidebar-surface-color); border-radius: 12px; /* Smoother radius */
+            border: 1px solid transparent; transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
             cursor: pointer; overflow: hidden; position: relative;
         }
-        .file-card:hover { background-color: var(--hover-bg-color); border-color: var(--border-color); }
+        .file-card:hover { 
+            background-color: var(--hover-bg-color); border-color: var(--border-color); transform: translateY(-3px); 
+        }
         .card-thumbnail {
             height: 120px; display: flex; align-items: center; justify-content: center;
             background-color: #313335; position: relative;
@@ -190,15 +209,15 @@
         }
         .card-filename .material-icons { font-size: 20px; flex-shrink: 0; }
         .card-actions {
-            position: absolute; top: 4px; right: 4px; background-color: #282a2d99;
-            border-radius: 16px; display: flex; opacity: 0; transition: opacity 0.2s;
+            position: absolute; top: 8px; right: 8px; background-color: #282a2d99;
+            border-radius: 16px; display: flex; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(4px);
         }
         .file-card:hover .card-actions { opacity: 1; }
         .card-actions .icon-btn { padding: 6px; }
 
         .message {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            padding: 12px 24px; border-radius: 4px; background-color: #323639;
+            padding: 12px 24px; border-radius: 6px; background-color: #323639;
             color: var(--text-primary); z-index: 3000; opacity: 0;
             animation: fadeInOut 5s ease-in-out; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
@@ -207,146 +226,57 @@
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center;
-            align-items: center; z-index: 2000;
+            align-items: center; z-index: 2000; backdrop-filter: blur(5px);
         }
-        .modal-content { background-color: var(--dialog-surface-color); padding: 24px; border-radius: 8px; max-width: 500px; width: 100%; }
+        .modal-content { background-color: var(--dialog-surface-color); padding: 24px; border-radius: 12px; max-width: 500px; width: 100%; }
         .modal-content.video-modal { max-width: 90vw; max-height: 90vh; }
         .modal-actions { margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px; }
         video.media-player { width: 100%; border-radius: 8px; }
 
-        /* --- Account List Styling --- */
         .account-card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            padding-top: 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px; padding-top: 20px;
         }
-
         .account-card {
-            background-color: var(--sidebar-surface-color);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            position: relative;
+            background-color: var(--sidebar-surface-color); border-radius: var(--border-radius); padding: 20px;
+            display: flex; flex-direction: column; gap: 15px; border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; position: relative;
         }
-        .account-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        }
-
+        .account-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); }
         .account-card-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 1.2em;
-            font-weight: 500;
-            color: var(--text-primary);
+            display: flex; align-items: center; gap: 15px; font-size: 1.2em;
+            font-weight: 500; color: var(--text-primary);
         }
-        .account-card-header .material-icons {
-            font-size: 36px;
-            color: #FFC107; /* A vibrant yellow for account icon */
-        }
+        .account-card-header .material-icons { font-size: 36px; } /* Uses colorful class now */
+        .account-info { display: flex; flex-direction: column; gap: 5px; font-size: 0.9em; color: var(--text-secondary); }
+        .account-info strong { color: var(--text-primary); }
+        .account-card-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: auto; }
+        .account-card-actions .btn { padding: 8px 16px; font-size: 0.9em; border-radius: 6px; }
 
-        .account-info {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-        }
-        .account-info strong {
-            color: var(--text-primary);
-        }
-
-        .account-card-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: auto; /* Pushes buttons to the bottom */
-        }
-        .account-card-actions .btn {
-            padding: 8px 16px;
-            font-size: 0.9em;
-            border-radius: 6px;
-        }
-
-        /* Back Button Styling */
         #backButton {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 16px;
-            cursor: pointer;
-            padding: 10px 0;
-            margin-bottom: 10px;
-            transition: color 0.2s;
+            display: flex; align-items: center; gap: 8px; background: none; border: none;
+            color: var(--text-primary); font-size: 16px; cursor: pointer;
+            padding: 10px 0; margin-bottom: 10px; transition: color 0.2s;
         }
-        #backButton:hover {
-            color: var(--button-bg);
-        }
-        #backButton .material-icons {
-            font-size: 24px;
-        }
+        #backButton:hover { color: var(--btn-primary-bg); }
+        #backButton .material-icons { font-size: 24px; }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .app-header {
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 10px;
-            }
-            .header-logo {
-                margin-right: 0;
-                width: 100%;
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-            .search-bar {
-                order: 3; /* Move search bar to the next line */
-                max-width: 100%;
-                margin-top: 10px;
-            }
-            .header-actions {
-                margin-left: 0;
-                width: 100%;
-                justify-content: center;
-            }
+            .app-header { flex-wrap: wrap; justify-content: center; padding: 10px; }
+            .header-logo { margin-right: 0; width: 100%; justify-content: center; margin-bottom: 10px; }
+            .search-bar { order: 3; max-width: 100%; margin-top: 10px; }
+            .header-actions { margin-left: 0; width: 100%; justify-content: center; }
             .sidebar {
-                width: 100%;
-                padding: 10px;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                display: none; /* Hidden by default on mobile, can be toggled */
+                width: 100%; padding: 10px; border-right: none;
+                border-bottom: 1px solid var(--border-color); display: none;
             }
-            .main-container {
-                flex-direction: column;
-            }
-            .content-area {
-                padding: 0 10px;
-            }
-            .new-btn {
-                width: 100%;
-                text-align: center;
-                justify-content: center;
-            }
-            .card {
-                margin: 20px auto;
-                padding: 15px;
-            }
-            .account-card-container {
-                grid-template-columns: 1fr; /* Single column for accounts on small screens */
-            }
-            .modal-content {
-                margin: 10px;
-            }
+            .main-container { flex-direction: column; }
+            .content-area { padding: 0 10px; }
+            .new-btn { width: 100%; text-align: center; justify-content: center; }
+            .card { margin: 20px auto; padding: 15px; }
+            .account-card-container { grid-template-columns: 1fr; }
+            .modal-content { margin: 10px; }
         }
     </style>
 </head>
@@ -354,7 +284,7 @@
     <div id="progressBar"></div>
 
     <header class="app-header">
-        <div class="header-logo"><i class="fa-brands fa-google-drive"></i><span>Drive</span></div>
+        <div class="header-logo"><i class="fa-brands fa-google-drive"></i><span>Axel Drive</span></div>
         <div class="search-bar"><span class="material-icons">search</span><input type="search" id="searchDriveInput" placeholder="Search in Drive"></div>
         <div class="header-actions">
             <button class="icon-btn"><span class="material-icons">help_outline</span></button>
@@ -363,6 +293,7 @@
                 <button class="profile-btn" id="profileBtn">A</button>
                 <div class="dropdown-menu" id="profileDropdown">
                     <button id="logoutBtn"><span class="material-icons">logout</span><span>Logout</span></button>
+                    <div class="developer-credit">Developed By Aung Myo Linn</div>
                 </div>
             </div>
         </div>
@@ -397,7 +328,7 @@
         let currentAccountId = null;
         let currentFiles = [];
         let viewMode = 'grid'; // 'list' or 'grid'
-        let currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // For back button functionality
+        let currentFolderStack = [{ id: 'root', name: 'My Drive' }];
 
         const CONSTS = { folder_mime_type: "application/vnd.google-apps.folder" };
 
@@ -479,14 +410,14 @@
 
         async function showGoogleAccountsPage() {
             setActiveNav('accountsLink'); 
-            currentAccountId = null; // Unset account when on this page
+            currentAccountId = null;
             appDiv.innerHTML = `<div class="content-header">
                 <h1>Google Drive Accounts</h1>
             </div>
             <button id="addAccountBtn" class="btn btn-success" style="margin-top:16px;">
                 <span class="material-icons">add</span> Add New Account
             </button>
-            <div id="accountsList" class="account-card-container"></div>`; // Use the new container class
+            <div id="accountsList" class="account-card-container"></div>`;
             document.getElementById('addAccountBtn').onclick = () => showAddEditAccountPage();
             try {
                 const accounts = await apiRequest('/api/settings/list');
@@ -498,7 +429,7 @@
                 listDiv.innerHTML = accounts.map(acc => `
                     <div class="account-card">
                         <div class="account-card-header">
-                            <span class="material-icons">account_circle</span>
+                            <span class="material-icons icon-account_circle">account_circle</span>
                             <span>${acc.name}</span>
                         </div>
                         <div class="account-info">
@@ -517,7 +448,7 @@
                         </div>
                     </div>`).join('');
                 listDiv.querySelectorAll('.view-btn').forEach(b => b.onclick = (e) => {
-                    currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack
+                    currentFolderStack = [{ id: 'root', name: 'My Drive' }];
                     showDriveBrowserPage(e.currentTarget.dataset.id);
                 });
                 listDiv.querySelectorAll('.edit-btn').forEach(b => b.onclick = (e) => showAddEditAccountPage(e.currentTarget.dataset.id));
@@ -558,43 +489,39 @@
                 showMessage(`Account ${accountId ? 'updated' : 'added'}.`); showGoogleAccountsPage();
             };
             document.getElementById('cancelBtn').onclick = () => showGoogleAccountsPage();
-            document.getElementById('backButton').onclick = () => showGoogleAccountsPage(); // Back button functionality
+            document.getElementById('backButton').onclick = () => showGoogleAccountsPage();
         }
-
+        
+        // MODIFICATION: Logic for back button and folder stack is now more robust.
         async function showDriveBrowserPage(accountId, folderId = 'root', pageToken = null) {
             setActiveNav('myDriveLink'); 
             currentAccountId = accountId;
 
-            // Update folder stack for back button if not a search
-            if (!searchInput.value) {
-                const currentFolder = currentFolderStack[currentFolderStack.length - 1];
-                if (currentFolder.id !== folderId && folderId !== 'root') {
-                    // Fetch folder name to add to stack
+            // Handle folder stack for back button
+            const isSearch = !!searchInput.value;
+            if (!isSearch) {
+                const currentFolderInStack = currentFolderStack[currentFolderStack.length - 1];
+                // Navigating into a new subfolder
+                if (currentFolderInStack.id !== folderId) {
                     try {
                         const folderMeta = await apiRequest(`/api/drive/get/${accountId}/${folderId}`);
                         currentFolderStack.push({ id: folderId, name: folderMeta.name });
                     } catch (error) {
                         console.error('Failed to get folder metadata:', error);
-                        // Fallback to ID if name fetch fails
-                        currentFolderStack.push({ id: folderId, name: `Folder (${folderId.substring(0, 5)}...)` });
+                        currentFolderStack.push({ id: folderId, name: `Folder` });
                     }
-                } else if (folderId === 'root' && currentFolder.id !== 'root') {
-                    currentFolderStack = [{ id: 'root', name: 'My Drive' }];
                 }
             } else {
-                currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset stack for search results
+                // Reset stack for new search results
+                currentFolderStack = [{ id: 'root', name: `Search: "${searchInput.value}"` }];
             }
 
-
             if (!pageToken) {
-                currentFiles = [];
-                const isSearch = !!searchInput.value;
-                const headerTitle = isSearch 
-                    ? `Results for "${searchInput.value}"` 
-                    : (currentFolderStack.length > 1 ? currentFolderStack[currentFolderStack.length - 1].name : 'My Drive');
+                currentFiles = []; // Clear files only on initial page load (not for "Load More")
+                const headerTitle = currentFolderStack[currentFolderStack.length - 1].name;
 
                 appDiv.innerHTML = `<div class="content-header">
-                        ${currentFolderStack.length > 1 ? `<button id="backButton"><span class="material-icons">arrow_back</span> Back</button>` : ''}
+                        ${currentFolderStack.length > 1 ? `<button id="backButton"><span class="material-icons">arrow_back</span> Back</button>` : '<div></div>'}
                         <h1>${headerTitle}</h1>
                         <div id="view-toggles">
                             <button class="icon-btn" id="view-grid-btn" title="Grid view"><span class="material-icons">view_module</span></button>
@@ -606,10 +533,17 @@
                 
                 document.getElementById('view-list-btn').onclick = () => { viewMode = 'list'; renderItems(currentFiles); };
                 document.getElementById('view-grid-btn').onclick = () => { viewMode = 'grid'; renderItems(currentFiles); };
+
+                // MODIFICATION: Back button logic is refined to handle step-by-step exit
                 if (currentFolderStack.length > 1) {
                     document.getElementById('backButton').onclick = () => {
-                        currentFolderStack.pop(); // Remove current folder from stack
+                        currentFolderStack.pop(); // Remove current folder
                         const prevFolder = currentFolderStack[currentFolderStack.length - 1];
+                        // Reset search input if we go back from search results
+                        searchInput.value = '';
+                        // We need to re-render the previous state without adding to the stack again
+                        // A simple way is to pop again and let showDriveBrowserPage handle the push
+                        currentFolderStack.pop();
                         showDriveBrowserPage(accountId, prevFolder.id);
                     };
                 }
@@ -626,11 +560,19 @@
                 currentFiles.push(...(data.files || []));
                 renderItems(currentFiles);
                 
+                // MODIFICATION: Pagination with "Load More" button for performance.
                 const paginationDiv = document.getElementById('pagination');
-                paginationDiv.innerHTML = data.nextPageToken ? `<button id="loadMoreBtn" class="btn btn-primary">Load More</button>` : '';
-                if(data.nextPageToken) {
-                    document.getElementById('loadMoreBtn').onclick = () => showDriveBrowserPage(accountId, folderId, data.nextPageToken);
+                if (data.nextPageToken) {
+                    paginationDiv.innerHTML = `<button id="loadMoreBtn" class="btn btn-secondary">Load More</button>`;
+                    document.getElementById('loadMoreBtn').onclick = () => {
+                        // Pass current folder ID and next page token
+                        const currentFolder = currentFolderStack[currentFolderStack.length-1];
+                        showDriveBrowserPage(accountId, currentFolder.id, data.nextPageToken);
+                    };
+                } else {
+                    paginationDiv.innerHTML = '';
                 }
+
             } catch (error) { if (error.message.includes('Auth')) showLoginPage(); }
         }
 
@@ -650,7 +592,7 @@
                 <thead><tr><th>Name</th><th>Last modified</th><th>File size</th><th class="actions-cell"></th></tr></thead>
                 <tbody>${files.map(item => {
                     const iconInfo = getFileIcon(item.mimeType);
-                    return `<tr>
+                    return `<tr data-id="${item.id}" data-mime-type="${item.mimeType}" ${item.mimeType === CONSTS.folder_mime_type ? 'style="cursor:pointer;"' : ''}>
                         <td class="file-name-cell"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span>${item.name}</td>
                         <td>${formatDate(item.modifiedTime)}</td>
                         <td>${formatBytes(item.size)}</td>
@@ -662,7 +604,7 @@
         function renderGridView(files) {
             return `<div class="grid-container">${files.map(item => {
                 const iconInfo = getFileIcon(item.mimeType);
-                return `<div class="file-card" data-folder-id="${item.id}" data-mime-type="${item.mimeType}">
+                return `<div class="file-card" data-id="${item.id}" data-mime-type="${item.mimeType}">
                     <div class="card-thumbnail"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span></div>
                     <div class="card-filename"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span><span>${item.name}</span></div>
                     <div class="card-actions">${getActionButtons(item)}</div>
@@ -686,16 +628,19 @@
         }
         
         function attachActionListeners() {
-            document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.id));
-            document.querySelectorAll('.file-card').forEach(card => {
-                if (card.dataset.mimeType === CONSTS.folder_mime_type) {
-                    card.ondblclick = e => showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.folderId);
-                }
+            // For both grid and list, clicking a folder opens it
+            document.querySelectorAll('[data-mime-type="application/vnd.google-apps.folder"]').forEach(folder => {
+                folder.ondblclick = (e) => showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.id);
             });
+            document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => {
+                e.stopPropagation(); // Prevent card's dblclick from firing
+                showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.id)
+            });
+
             document.querySelectorAll('.copy-link-btn').forEach(b => b.onclick = e => {
+                e.stopPropagation();
                 const { id, name } = e.currentTarget.dataset;
                 const link = `${WORKER_BASE_URL}/api/drive/download/${currentAccountId}/${id}/${encodeURIComponent(name)}`;
-                // Use document.execCommand for better compatibility in iframes
                 const tempInput = document.createElement('textarea');
                 tempInput.value = link;
                 document.body.appendChild(tempInput);
@@ -708,30 +653,39 @@
                 }
                 document.body.removeChild(tempInput);
             });
-            document.querySelectorAll('.play-btn').forEach(b => b.onclick = e => playMediaInModal(currentAccountId, e.currentTarget.dataset));
+            document.querySelectorAll('.play-btn').forEach(b => {
+                b.onclick = e => {
+                    e.stopPropagation();
+                    playMediaInModal(currentAccountId, e.currentTarget.dataset);
+                }
+            });
         }
         
         // --- MODALS & OTHER ACTIONS ---
-        function playMediaInModal(accountId, {id, mimeType, name}) {
+        function playMediaInModal(accountId, {id, name}) {
             const url = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${id}/${encodeURIComponent(name)}`;
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
+            // MODIFICATION: Enhanced video player for all extensions (removed type attribute)
             modal.innerHTML = `<div class="modal-content video-modal">
-                <h3>${name}</h3><video controls autoplay class="media-player"><source src="${url}" type="${mimeType}"></video>
-                <div class="modal-actions"><button class="btn btn-secondary">Close</button></div>
+                <h3>${name}</h3><video controls autoplay class="media-player"><source src="${url}"></video>
+                <div class="modal-actions"><button class="btn btn-secondary close-modal-btn">Close</button></div>
             </div>`;
             document.body.appendChild(modal);
-            modal.querySelector('button').onclick = () => modal.remove();
+            modal.querySelector('.close-modal-btn').onclick = () => modal.remove();
             modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
         }
 
         function showConfirmModal(message, onConfirm) {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal-content"><p>${message}</p><div class="modal-actions">
-                <button id="cancel" class="btn btn-secondary">Cancel</button>
-                <button id="confirm" class="btn btn-danger">Confirm</button>
-            </div></div>`;
+            modal.innerHTML = `<div class="modal-content">
+                <p style="font-size: 1.1em;">${message}</p>
+                <div class="modal-actions">
+                    <button id="cancel" class="btn btn-secondary">Cancel</button>
+                    <button id="confirm" class="btn btn-danger">Confirm</button>
+                </div>
+            </div>`;
             document.body.appendChild(modal);
             modal.querySelector('#cancel').onclick = () => modal.remove();
             modal.querySelector('#confirm').onclick = () => { onConfirm(); modal.remove(); };
@@ -754,18 +708,28 @@
             if (adminToken) initializeAppUI(); else showLoginPage();
             profileBtn.onclick = () => profileDropdown.classList.toggle('show');
             document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target)) profileDropdown.classList.remove('show'); });
-            logoutBtn.onclick = handleLogout;
+
+            // MODIFICATION: Added logout confirmation dialog
+            logoutBtn.onclick = () => {
+                showConfirmModal('Are you sure you want to logout?', handleLogout);
+            };
+
             searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && currentAccountId) showDriveBrowserPage(currentAccountId); });
-            document.getElementById('accountsLink').onclick = (e) => { e.preventDefault(); showGoogleAccountsPage(); };
+            
+            document.getElementById('accountsLink').onclick = (e) => { 
+                e.preventDefault(); 
+                currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset stack
+                searchInput.value = '';
+                showGoogleAccountsPage(); 
+            };
             document.getElementById('myDriveLink').onclick = (e) => {
                 e.preventDefault();
-                // Check if an account is selected before navigating to My Drive
                 if (currentAccountId) { 
                     searchInput.value = ''; 
-                    currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack for My Drive
-                    showDriveBrowserPage(currentAccountId); 
+                    currentFolderStack = [{ id: 'root', name: 'My Drive' }];
+                    showDriveBrowserPage(currentAccountId, 'root'); 
                 }
-                else { showMessage('Please select an account first.'); showGoogleAccountsPage(); }
+                else { showMessage('Please select an account first from the "Accounts" page.'); showGoogleAccountsPage(); }
             };
         });
     </script>
