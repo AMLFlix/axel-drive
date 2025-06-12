@@ -3,6 +3,13 @@ const WORKER_BASE_URL = "https://axel-drive.comtv.workers.dev";
 const app = document.getElementById('app');
 let adminToken = localStorage.getItem('admin_token');
 
+// Frontend အတွက် CONSTS object ကို ထည့်ပါ (CONSTS is not defined error ကို ဖြေရှင်းရန်)
+const CONSTS = {
+    folder_mime_type: "application/vnd.google-apps.folder",
+    // default_file_fields က frontend မှာ မလိုဘူး၊ backend ကပဲ တွက်ပေးမှာမို့ မထည့်လည်းရတယ်။
+    // ဒါပေမယ့် backend ရဲ့ CONSTS နဲ့ ကိုက်ညီအောင် folder_mime_type ကိုပဲ ထည့်ထားပါတယ်
+};
+
 // --- Helper Functions ---
 
 async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = true) {
@@ -10,8 +17,10 @@ async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = 
         'Content-Type': 'application/json',
     };
 
+    // Replace alert() with a custom message box or modal for better UX and iframe compatibility
     if (requiresAuth && !adminToken) {
-        alert('Authentication required. Please login.');
+        // alert('Authentication required. Please login.'); // Removed alert()
+        showMessage('Authentication required. Please login.', 'error');
         showLoginPage(); // Redirect to login
         throw new Error('Authentication required');
     }
@@ -24,19 +33,26 @@ async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = 
         options.body = JSON.stringify(body);
     }
 
-    const response = await fetch(`${WORKER_BASE_URL}${endpoint}`, options);
-    const data = await response.json();
+    try {
+        const response = await fetch(`${WORKER_BASE_URL}${endpoint}`, options);
+        const data = await response.json();
 
-    if (!response.ok) {
-        console.error('API Error:', data.error || response.statusText);
-        throw new Error(data.error || 'API request failed');
+        if (!response.ok) {
+            console.error('API Error:', data.error || response.statusText);
+            throw new Error(data.error || 'API request failed');
+        }
+        return data;
+    } catch (error) {
+        console.error('Network or API request error:', error);
+        // Provide a more generic error message for network issues
+        showMessage(`Network or API request failed: ${error.message}`, 'error');
+        throw error; // Re-throw to propagate error to calling function
     }
-    return data;
 }
 
 function showMessage(message, type = 'success') {
     const messageDiv = document.createElement('div');
-    messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+    messageDiv.className = `message ${type}-message`; // Add 'message' class for general styling
     messageDiv.textContent = message;
     app.prepend(messageDiv);
     setTimeout(() => messageDiv.remove(), 5000); // Remove after 5 seconds
@@ -121,7 +137,8 @@ async function showGoogleAccountsPage() {
         });
         accountsListDiv.querySelectorAll('.delete-btn').forEach(button => {
             button.onclick = async (e) => {
-                if (confirm(`Are you sure you want to delete account "${e.target.dataset.id}"?`)) {
+                // Replaced confirm() with a custom modal for better UX and iframe compatibility
+                showConfirmModal(`Are you sure you want to delete account "${e.target.dataset.id}"?`, async () => {
                     try {
                         await apiRequest(`/api/settings/delete/${e.target.dataset.id}`, 'DELETE');
                         showMessage('Account deleted successfully!');
@@ -129,18 +146,43 @@ async function showGoogleAccountsPage() {
                     } catch (error) {
                         showMessage(`Failed to delete account: ${error.message}`, 'error');
                     }
-                }
+                });
             };
         });
 
     } catch (error) {
         showMessage(`Failed to load accounts: ${error.message}`, 'error');
         // If auth failed, show login page
-        if (error.message.includes('Authentication required')) {
+        if (error.message.includes('Authentication required') || error.message.includes('Invalid credentials')) {
             showLoginPage();
         }
     }
 }
+
+// Custom Confirmation Modal (replaces window.confirm)
+function showConfirmModal(message, onConfirm) {
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal-overlay';
+    modalDiv.innerHTML = `
+        <div class="modal-content">
+            <p>${message}</p>
+            <div class="modal-actions">
+                <button id="confirmYes" class="btn btn-danger">Yes</button>
+                <button id="confirmNo" class="btn btn-secondary">No</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modalDiv);
+
+    document.getElementById('confirmYes').onclick = () => {
+        onConfirm();
+        modalDiv.remove();
+    };
+    document.getElementById('confirmNo').onclick = () => {
+        modalDiv.remove();
+    };
+}
+
 
 // 3. Add/Edit Google Drive Account Page
 async function showAddEditAccountPage(accountId = null) {
@@ -277,7 +319,8 @@ async function showDriveBrowserPage(accountId, folderId = null, searchTerm = nul
             itemDiv.className = 'list-item';
             
             let icon = '';
-            if (item.mimeType === CONSTS.folder_mime_type) {
+            // MODIFIED: Using CONSTS from the frontend scope
+            if (item.mimeType === CONSTS.folder_mime_type) { 
                 icon = '📁'; // Folder icon
             } else if (item.mimeType.startsWith('video/')) {
                 icon = '🎬'; // Video icon
@@ -319,7 +362,13 @@ async function showDriveBrowserPage(accountId, folderId = null, searchTerm = nul
             button.onclick = async (e) => {
                 const link = `${WORKER_BASE_URL}/api/drive/download/${e.target.dataset.accountId}/${e.target.dataset.fileId}`;
                 try {
-                    await navigator.clipboard.writeText(link);
+                    // Using document.execCommand('copy') for better iframe compatibility
+                    const tempInput = document.createElement('input');
+                    document.body.appendChild(tempInput);
+                    tempInput.value = link;
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
                     showMessage('Direct link copied to clipboard!');
                 } catch (err) {
                     showMessage('Failed to copy link. Please copy manually.', 'error');
@@ -357,7 +406,7 @@ async function showDriveBrowserPage(accountId, folderId = null, searchTerm = nul
 
     } catch (error) {
         showMessage(`Failed to load drive content: ${error.message}`, 'error');
-        if (error.message.includes('Authentication required')) {
+        if (error.message.includes('Authentication required') || error.message.includes('Invalid credentials')) {
             showLoginPage();
         }
     }
