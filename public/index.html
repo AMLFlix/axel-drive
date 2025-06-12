@@ -401,6 +401,7 @@
         <div class="header-logo"><i class="fa-brands fa-google-drive"></i><span>Axel Drive</span></div>
         <div class="search-bar"><span class="material-icons">search</span><input type="search" id="searchDriveInput" placeholder="Search in Drive"></div>
         <div class="header-actions">
+            <button class="icon-btn" id="aboutLink" title="About Axel Drive"><span class="material-icons">info</span></button>
             <button class="icon-btn"><span class="material-icons">help_outline</span></button>
             <button class="icon-btn"><span class="material-icons">settings</span></button>
             <div class="profile-menu" style="display: none;">
@@ -414,12 +415,10 @@
 
     <div class="main-container">
         <aside class="sidebar">
-            <!-- Removed the "+ New" button as requested -->
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="#" id="myDriveLink" class="active"><span class="material-icons">folder</span> My Drive</a></li>
                     <li><a href="#" id="accountsLink"><span class="material-icons">account_box</span> Accounts</a></li>
-                    <li><a href="#" id="aboutLink"><span class="material-icons">info</span> About</a></li>
                 </ul>
             </nav>
         </aside>
@@ -533,9 +532,13 @@
             setActiveNav('accountsLink'); 
             currentAccountId = null; // Unset account when on this page
 
-            if (pageToken === null) { // If starting fresh or new search, reset
+            // If a new search query is provided or pageToken is null, reset search state
+            if (searchQuery !== null || pageToken === null) { 
                 currentAccountListNextPageToken = null;
                 currentAccountSearchQuery = searchQuery || '';
+            }
+
+            if (pageToken === null) { // If starting fresh (first page or new search)
                 appDiv.innerHTML = `<div class="content-header">
                     <h1>Google Drive Accounts</h1>
                 </div>
@@ -559,7 +562,7 @@
                 const searchAccountsInput = document.getElementById('searchAccountsInput');
                 searchAccountsInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
-                        showGoogleAccountsPage(null, searchAccountsInput.value);
+                        showGoogleAccountsPage(null, searchAccountsInput.value); // Pass null to reset pageToken and new search query
                     }
                 });
             }
@@ -570,7 +573,7 @@
                 if (currentAccountSearchQuery) params.append('q', currentAccountSearchQuery);
 
                 const accountsData = await apiRequest(`/api/settings/list?${params.toString()}`);
-                const accounts = accountsData.accounts || []; // Assuming API returns 'accounts' and 'nextPageToken'
+                const accounts = accountsData.accounts || []; 
                 currentAccountListNextPageToken = accountsData.nextPageToken || null;
 
                 const listDiv = document.getElementById('accountsList');
@@ -864,24 +867,27 @@
         }
 
         function showAboutPage() {
-            setActiveNav('aboutLink');
+            setActiveNav('aboutLink'); // This is now a header icon, so no active state for sidebar
             appDiv.innerHTML = `<div class="content-header">
-                <h1>About Axel Drive</h1>
+                <h1>Axel Drive အကြောင်း</h1>
             </div>
             <div class="about-content">
                 <h2>Axel Drive</h2>
-                <p>Version 1.0</p>
-                <p>Developed by <strong>Aung Myo Linn</strong></p>
-                <p>Axel Drive is a web application for managing your Google Drive accounts and files.</p>
-                <p>For support or inquiries, please contact the developer.</p>
+                <p>ဗားရှင်း 1.0</p>
+                <p>တီထွင်သူ: <strong>အောင်မျိုးလင်း</strong></p>
+                <p>Axel Drive သည် သင်၏ Google Drive အကောင့်များနှင့် ဖိုင်များကို စီမံခန့်ခွဲရန် ဝဘ်အက်ပ်တစ်ခုဖြစ်သည်။</p>
+                <p>အကူအညီ သို့မဟုတ် မေးမြန်းစုံစမ်းလိုပါက တီထွင်သူထံ ဆက်သွယ်ပါ။</p>
             </div>`;
-            history.pushState({ page: 'about' }, 'About Axel Drive', '#about');
+            history.pushState({ page: 'about' }, 'Axel Drive အကြောင်း', '#about');
         }
 
         // --- INITIALIZATION ---
         function setActiveNav(linkId) {
             document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-            document.getElementById(linkId).classList.add('active');
+            // About link is now in header-actions, so it doesn't have a sidebar active state
+            if (document.getElementById(linkId)) {
+                document.getElementById(linkId).classList.add('active');
+            }
         }
 
         function initializeAppUI() {
@@ -921,17 +927,17 @@
                 if (e.key === 'Enter') {
                     if (currentAccountId) { 
                         currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack for search results
-                        history.pushState({ page: 'drive', accountId: currentAccountId, folderId: 'root', search: searchInput.value }, `Search: ${searchInput.value}`, `#drive/${currentAccountId}/search?q=${encodeURIComponent(searchInput.value)}`);
+                        history.pushState({ page: 'drive', accountId: currentAccountId, folderId: 'root', search: searchInput.value }, `ရှာဖွေမှု: ${searchInput.value}`, `#drive/${currentAccountId}/search?q=${encodeURIComponent(searchInput.value)}`);
                         showDriveBrowserPage(currentAccountId); 
                     } else { 
-                        showMessage('Please select an account first to search in Drive.'); 
+                        showMessage('ကျေးဇူးပြု၍ Drive တွင်ရှာဖွေရန် အကောင့်တစ်ခုကို ဦးစွာရွေးချယ်ပါ။'); 
                         showGoogleAccountsPage(); 
                     }
                 } 
             });
             document.getElementById('accountsLink').onclick = (e) => { 
                 e.preventDefault(); 
-                history.pushState({ page: 'accounts' }, 'Accounts', '#accounts');
+                history.pushState({ page: 'accounts' }, 'အကောင့်များ', '#accounts');
                 showGoogleAccountsPage(); 
             };
             document.getElementById('myDriveLink').onclick = (e) => {
@@ -940,10 +946,10 @@
                 if (currentAccountId) { 
                     searchInput.value = ''; 
                     currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack for My Drive
-                    history.pushState({ page: 'drive', accountId: currentAccountId, folderId: 'root' }, 'My Drive', `#drive/${currentAccountId}`);
+                    history.pushState({ page: 'drive', accountId: currentAccountId, folderId: 'root' }, 'ကျွန်ုပ်၏ Drive', `#drive/${currentAccountId}`);
                     showDriveBrowserPage(currentAccountId); 
                 }
-                else { showMessage('Please select an account first.'); showGoogleAccountsPage(); }
+                else { showMessage('ကျေးဇူးပြု၍ အကောင့်တစ်ခုကို ဦးစွာရွေးချယ်ပါ။'); showGoogleAccountsPage(); }
             };
             document.getElementById('aboutLink').onclick = (e) => {
                 e.preventDefault();
@@ -964,7 +970,7 @@
                         if (state.folderId && state.folderId !== 'root') {
                              // Fetch actual folder name if possible, otherwise use ID for display
                              // This is a simplified approach, in a real app you might store the full path in history state
-                             currentFolderStack.push({ id: state.folderId, name: `Folder (${state.folderId.substring(0, 5)}...)` });
+                             currentFolderStack.push({ id: state.folderId, name: `ဖိုင်တွဲ (${state.folderId.substring(0, 5)}...)` });
                         }
                         searchInput.value = state.search || ''; // Restore search query if it was a search page
                         showDriveBrowserPage(state.accountId, state.folderId);
