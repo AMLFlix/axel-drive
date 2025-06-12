@@ -401,8 +401,8 @@
         <div class="header-logo"><i class="fa-brands fa-google-drive"></i><span>Axel Drive</span></div>
         <div class="search-bar"><span class="material-icons">search</span><input type="search" id="searchDriveInput" placeholder="Search in Drive"></div>
         <div class="header-actions">
-            <!-- Changed About icon to help_center and moved to tools bar -->
-            <button class="icon-btn" id="aboutLink" title="About Axel Drive"><span class="material-icons">help_center</span></button>
+            <!-- About icon is now "info" and in the header-actions -->
+            <button class="icon-btn" id="aboutLink" title="About Axel Drive"><span class="material-icons">info</span></button>
             <button class="icon-btn"><span class="material-icons">help_outline</span></button>
             <button class="icon-btn"><span class="material-icons">settings</span></button>
             <div class="profile-menu" style="display: none;">
@@ -411,7 +411,8 @@
                     <button id="logoutBtn"><span class="material-icons">logout</span><span>Logout</span></button>
                 </div>
             </div>
-        </header>
+        </div>
+    </header>
 
     <div class="main-container">
         <aside class="sidebar">
@@ -633,10 +634,13 @@
                 });
             } catch (error) { 
                 console.error("Error fetching accounts:", error);
-                if (error.message.includes('Auth')) showLoginPage();
-                // If API returns an error or no accounts, display message to the user
-                const listDiv = document.getElementById('accountsList');
-                listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Failed to load accounts. Please try again later.</p>'; 
+                if (error.message.includes('Auth')) {
+                    showLoginPage();
+                } else {
+                    // If API returns an error or no accounts, display message to the user
+                    const listDiv = document.getElementById('accountsList');
+                    listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Failed to load accounts. Please ensure the backend is running and accessible.</p>'; 
+                }
             }
         }
 
