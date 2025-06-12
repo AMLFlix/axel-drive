@@ -1,417 +1,348 @@
-/* Custom CSS Variables - Dark Theme Only, with Colorful Accents */
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* --- CSS Variables (Material Design 3 Dark Theme) --- */
 :root {
-    --background-color: #1a1a2e; /* Deep dark blue/purple */
-    --app-background: #202a40; /* Slightly lighter, more blue for container */
-    --text-color: #e0e0e0; /* Light gray text */
-    --heading-color: #bb86fc; /* Purple accent for headings */
-    --primary-color: #03dac6; /* Teal/cyan for primary actions */
-    --primary-hover-color: #03a093;
-    --secondary-color: #6a6a8c; /* Muted purple-gray for secondary */
-    --secondary-hover-color: #5b5b7a;
-    --danger-color: #cf6679; /* Soft red for danger */
-    --danger-hover-color: #b0576a;
-    --border-color: #3b3b5c; /* Darker border */
-    --input-bg: #283452; /* Darker input background */
-    --input-border: #4a5a70;
-    --shadow-color: rgba(0, 0, 0, 0.5); /* Stronger shadow */
-    --list-item-hover-bg: #2f3c5f;
-    --message-success-bg: linear-gradient(90deg, #4CAF50, #8bc34a); /* Green gradient */
-    --message-success-text: #ffffff;
-    --message-error-bg: linear-gradient(90deg, #f44336, #e57373); /* Red gradient */
-    --message-error-text: #ffffff;
-    --message-warning-bg: linear-gradient(90deg, #ffc107, #ffeb3b); /* Yellow gradient */
-    --message-warning-text: #333333; /* Dark text for yellow */
-    --header-bg: #202a40;
-    --button-text-color: #ffffff;
-    --icon-color: #bb86fc; /* Heading color for icons */
-    --focus-ring-color: rgba(187, 134, 252, 0.4); /* Purple glow on focus */
+    --primary-color: #6750A4; /* M3 Purple */
+    --on-primary-color: #FFFFFF;
+    --primary-container-color: #EADDFF;
+    --on-primary-container-color: #21005D;
+    
+    --secondary-color: #625B71;
+    --on-secondary-color: #FFFFFF;
+    --secondary-container-color: #E8DEF8;
+    --on-secondary-container-color: #1D192B;
 
-    /* Gradients for buttons */
-    --btn-primary-gradient: linear-gradient(45deg, #03dac6, #00c4b4);
-    --btn-primary-hover-gradient: linear-gradient(45deg, #00c4b4, #00a89b);
-    --btn-secondary-gradient: linear-gradient(45deg, #6a6a8c, #5b5b7a);
-    --btn-secondary-hover-gradient: linear-gradient(45deg, #5b5b7a, #4e4e6a);
-    --btn-danger-gradient: linear-gradient(45deg, #cf6679, #b0576a);
-    --btn-danger-hover-gradient: linear-gradient(45deg, #b0576a, #9e4a5a);
+    --tertiary-color: #7D5260;
+    --on-tertiary-color: #FFFFFF;
+    --tertiary-container-color: #FFD8E4;
+    --on-tertiary-container-color: #31111D;
+    
+    --error-color: #B3261E;
+    --on-error-color: #FFFFFF;
+    
+    --background-color: #1C1B1F; /* Dark background */
+    --on-background-color: #E6E1E5;
+    
+    --surface-color: #1C1B1F;
+    --surface-variant-color: #49454F; /* Card background */
+    --on-surface-variant-color: #CAC4D0; /* Main text color on cards */
+    --outline-color: #938F99;
+    
+    --font-family: 'Roboto', sans-serif;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --shadow-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-elevation-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
-/* General Body Styles */
+/* --- Base Styles --- */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family);
     background-color: var(--background-color);
-    color: var(--text-color);
+    color: var(--on-background-color);
+    margin: 0;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    transition: background-color 0.6s ease; /* Slower, smoother transition */
-    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* App Header */
-.app-header {
-    width: 100%;
-    max-width: 900px; /* Slightly wider header */
-    background-color: var(--header-bg);
-    padding: 25px 40px; /* More padding */
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 5px 20px var(--shadow-color); /* Deeper shadow */
-    border-radius: 0 0 20px 20px; /* More rounded bottom corners */
-    box-sizing: border-box;
-    margin-bottom: 50px;
-    transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-.app-header h1 {
-    margin: 0;
-    color: var(--primary-color);
-    font-size: 2.2em; /* Even larger title */
-    font-weight: 700;
-    text-shadow: 0 0 8px rgba(3, 218, 198, 0.4); /* Subtle glow */
-}
-
-.header-actions {
-    display: flex;
-    gap: 20px; /* More space between header buttons */
-}
-
-/* Main App Container */
 #app {
-    background-color: var(--app-background);
-    padding: 40px; /* More padding */
-    border-radius: 20px; /* Consistent rounded corners */
-    box-shadow: 0 10px 40px var(--shadow-color); /* Even deeper shadow */
-    max-width: 900px; /* Wider content area */
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 60px; /* More space at the bottom */
-    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 h2 {
-    color: var(--heading-color);
-    text-align: center;
-    margin-bottom: 35px; /* More space below heading */
-    font-size: 2.2em;
-    font-weight: 600;
-    text-shadow: 0 0 5px rgba(187, 134, 252, 0.3); /* Subtle glow */
+    color: var(--on-background-color);
+    border-bottom: 2px solid var(--surface-variant-color);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    font-weight: 500;
 }
 
-/* Form Group Styling */
+/* --- Header --- */
+.app-header {
+    background-color: var(--surface-color);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-elevation-1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.app-header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--on-surface-variant-color);
+}
+
+/* --- Buttons --- */
+.btn {
+    border: none;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--border-radius-lg);
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    box-shadow: var(--shadow-elevation-1);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--on-primary-color);
+}
+.btn-primary:hover {
+    background-color: #5d429b;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-container-color);
+    color: var(--on-secondary-container-color);
+}
+.btn-secondary:hover {
+    background-color: #d9d0e0;
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+    color: var(--on-error-color);
+}
+.btn-danger:hover {
+    background-color: #a32018;
+}
+
+.logout-btn {
+    background-color: transparent;
+    color: var(--on-surface-variant-color);
+    border: 1px solid var(--outline-color);
+}
+
+.logout-btn:hover {
+    background-color: var(--surface-variant-color);
+}
+
+/* --- Cards (for forms, lists) --- */
+.card {
+    background-color: var(--surface-variant-color);
+    border-radius: var(--border-radius-md);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-elevation-1);
+}
+
+/* --- Forms --- */
 .form-group {
-    margin-bottom: 30px; /* More space between form elements */
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 12px; /* More space below label */
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--on-surface-variant-color);
     font-weight: 500;
-    color: var(--text-color);
-    font-size: 1.1em;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"] {
-    width: calc(100% - 32px); /* Adjust for padding and border */
-    padding: 16px; /* More padding */
-    border: 1px solid var(--input-border);
-    border-radius: 12px; /* More rounded inputs */
-    font-size: 1.1em;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    -webkit-appearance: none;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--outline-color);
+    border-radius: var(--border-radius-sm);
+    color: var(--on-background-color);
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="password"]:focus {
-    border-color: var(--heading-color);
-    box-shadow: 0 0 0 5px var(--focus-ring-color); /* Wider, softer glow */
+.form-group input:focus {
     outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-container-color);
 }
 
-/* Button Styling - Using Gradients */
-.btn {
-    padding: 16px 32px; /* Larger padding for buttons */
-    border: none;
-    border-radius: 14px; /* More rounded, iOS-like buttons */
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: 600;
-    transition: all 0.3s ease; /* All properties for smoother effects */
-    margin-right: 15px; 
-    white-space: nowrap;
-    color: var(--button-text-color);
-    display: inline-flex; /* For icon alignment */
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* Space between text and icon */
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Subtle text shadow */
-    box-shadow: 0 6px 20px var(--shadow-color); /* Default shadow */
-}
-
-.btn i {
-    font-size: 0.9em; /* Smaller icon size relative to text */
-}
-
-.btn-primary {
-    background: var(--btn-primary-gradient);
-}
-
-.btn-primary:hover {
-    background: var(--btn-primary-hover-gradient);
-    transform: translateY(-4px); /* More pronounced lift */
-    box-shadow: 0 10px 25px var(--shadow-color); /* Deeper shadow on hover */
-}
-
-.btn-secondary {
-    background: var(--btn-secondary-gradient);
-}
-
-.btn-secondary:hover {
-    background: var(--btn-secondary-hover-gradient);
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px var(--shadow-color);
-}
-
-.btn-danger {
-    background: var(--btn-danger-gradient);
-}
-
-.btn-danger:hover {
-    background: var(--btn-danger-hover-gradient);
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px var(--shadow-color);
-}
-
-/* Logout Button - Specific Styling */
-.logout-btn {
-    background: var(--secondary-color); /* Consistent secondary button style */
-    color: var(--button-text-color);
-    box-shadow: 0 5px 15px var(--shadow-color);
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-}
-.logout-btn:hover {
-    background: var(--secondary-hover-color);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px var(--shadow-color);
-}
-
-
-/* List Item Styling (for accounts and drive content) */
+/* --- List Items (Accounts, Files) --- */
 .list-item {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px 25px; /* More padding */
-    margin-bottom: 15px; /* More space between items */
-    background-color: var(--app-background);
-    border-radius: 16px; /* Consistent rounded corners */
-    box-shadow: 0 4px 15px var(--shadow-color); /* Lighter shadow for items */
-    transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
-    border: 1px solid var(--border-color); /* Subtle border for definition */
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: var(--surface-variant-color);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 12px;
+    transition: background-color 0.2s ease;
+    box-shadow: var(--shadow-elevation-1);
 }
 
 .list-item:hover {
-    box-shadow: 0 8px 25px var(--shadow-color);
-    transform: translateY(-5px); /* More pronounced lift on hover */
-    background-color: var(--list-item-hover-bg);
-}
-
-.list-item-info {
-    flex-grow: 1;
-    margin-right: 25px;
-    display: flex;
-    align-items: center; /* Align icon and name */
-    flex-wrap: wrap; /* Allow wrapping for long names */
+    background-color: var(--secondary-container-color);
+    cursor: pointer;
 }
 
 .list-item-name {
-    font-size: 1.2em; /* Slightly larger name */
-    color: var(--text-color);
-    font-weight: 500;
-    word-break: break-word;
-    display: flex; /* For icon alignment */
+    display: flex;
     align-items: center;
-    gap: 10px; /* Space between icon and text */
+    gap: 16px;
+    font-size: 1rem;
+    color: var(--on-surface-variant-color);
 }
 
-.list-item-name i {
-    color: var(--icon-color);
-    font-size: 1.2em; /* Larger icon in list item */
-    width: 25px; /* Fixed width for icons to align text */
+.list-item-name .fas {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    width: 24px;
     text-align: center;
-    text-shadow: 0 0 5px rgba(187, 134, 252, 0.2); /* Subtle glow for icons */
 }
-
-.list-item-details {
-    font-size: 0.9em; /* Smaller details text */
-    color: var(--secondary-color);
-    display: flex;
-    gap: 20px; /* More space between details */
-    margin-top: 5px; /* Space below name */
-    flex-wrap: wrap;
-    padding-left: 35px; /* Indent details to align with text */
-}
-
-.list-item-details span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.list-item-details i {
-    font-size: 0.8em; /* Small icon for details */
-    color: var(--secondary-color);
-}
-
 
 .list-item-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* More space between action buttons */
-    margin-top: 10px; /* Space on small screens */
-}
-@media (min-width: 769px) { /* On larger screens, remove top margin for actions */
-    .list-item-actions {
-        margin-top: 0;
-    }
+    gap: 8px;
 }
 
-
-/* Search bar styling */
+/* --- Search Bar --- */
 .search-container {
     display: flex;
-    gap: 15px; /* More space */
-    margin-top: 25px;
-    margin-bottom: 30px;
-    flex-wrap: wrap; 
-    align-items: center; /* Vertically align items */
-}
-
-.search-container input[type="text"] {
-    flex-grow: 1;
-    min-width: 250px; /* Ensure input has reasonable min-width */
-    padding: 14px; /* Consistent padding */
-    border-radius: 12px; /* Consistent rounded corners */
-}
-
-/* Pagination styles */
-#pagination {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* More space between pagination buttons */
-    margin-top: 40px; /* More top margin */
-    flex-wrap: wrap;
-}
-#pagination .btn {
-    margin-right: 0; 
-    padding: 12px 25px; /* Slightly smaller pagination buttons */
-    font-size: 1em;
-}
-
-/* Message Styling (Success/Error/Warning Toasts) */
-.message {
-    padding: 18px 30px; /* More padding */
-    border-radius: 12px; /* More rounded */
-    margin-bottom: 30px; /* More space below messages */
-    font-weight: 500;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    animation: fadeInOut 6s forwards; /* Longer animation */
-    box-shadow: 0 5px 20px var(--shadow-color); /* Clearer shadow */
-    border: 1px solid transparent; 
-    display: flex; /* For icon */
-    align-items: center;
-    justify-content: center;
     gap: 10px;
+    margin: 20px 0;
 }
-.message i {
-    font-size: 1.3em;
+
+#searchDriveInput {
+    flex-grow: 1;
+    padding: 10px 16px;
+    font-size: 16px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--outline-color);
+    border-radius: var(--border-radius-lg);
+    color: var(--on-background-color);
+}
+
+#searchDriveInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 
-/* Custom Modal Styling (replaces alert/confirm) */
+/* --- Media Player --- */
+.media-player {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+/* --- Modals (Confirmation, Video Player) --- */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Even darker, more opaque overlay */
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000; /* Ensure it's on top */
-    backdrop-filter: blur(5px); /* Subtle blur effect */
+    z-index: 2000;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .modal-content {
-    background-color: var(--modal-bg);
-    padding: 40px; /* More padding */
-    border-radius: 20px; /* Consistent rounded corners */
-    box-shadow: 0 12px 45px var(--modal-shadow); /* Deeper shadow */
+    background-color: var(--surface-variant-color);
+    padding: 24px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-elevation-2);
+    max-width: 500px;
+    width: 100%;
     text-align: center;
-    max-width: 500px; /* Larger modal */
-    width: 90%;
-    color: var(--text-color);
-    border: 1px solid var(--border-color); /* Subtle border */
+    color: var(--on-surface-variant-color);
+}
+.modal-content.video-modal {
+    max-width: 90vw;
+    max-height: 90vh;
+}
+.modal-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
-.modal-content p {
-    font-size: 1.2em; /* Larger text */
-    margin-bottom: 35px; /* More space below text */
+/* --- Message / Toast Notification --- */
+.message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: var(--border-radius-sm);
+    color: var(--on-primary-color);
     font-weight: 500;
+    z-index: 3000;
+    opacity: 0;
+    animation: fadeInOut 5s ease-in-out;
 }
 
-.modal-actions button {
-    margin: 0 12px; /* More spacing between modal buttons */
+.success-message {
+    background-color: var(--primary-color);
 }
 
-/* Loading Overlay & Spinner */
+.error-message {
+    background-color: var(--error-color);
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; bottom: 0px; }
+    10% { opacity: 1; bottom: 20px; }
+    90% { opacity: 1; bottom: 20px; }
+    100% { opacity: 0; bottom: 0px; }
+}
+
+
+/* --- Loading Overlay --- */
 .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* Almost opaque */
-    display: flex;
-    flex-direction: column; /* Stack spinner and text */
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* Hidden by default */
     justify-content: center;
     align-items: center;
-    z-index: 99999; /* Highest z-index */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 9999;
 }
 
 .loading-overlay.visible {
-    opacity: 1;
-    visibility: visible;
+    display: flex;
 }
 
 .spinner {
-    border: 8px solid var(--border-color); /* Thicker border */
-    border-top: 8px solid var(--primary-color); /* Primary color for spinning part */
+    border: 4px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    width: 60px; /* Even larger spinner */
-    height: 60px;
+    border-top: 4px solid var(--primary-color);
+    width: 50px;
+    height: 50px;
     animation: spin 1s linear infinite;
-    box-shadow: 0 0 15px var(--primary-color); /* Glow effect */
 }
+
 .loading-text {
-    color: var(--text-color);
-    margin-top: 20px;
-    font-size: 1.2em;
-    font-weight: 500;
+    color: white;
+    margin-left: 15px;
+    font-size: 1.2rem;
 }
 
 @keyframes spin {
@@ -419,142 +350,31 @@ h2 {
     100% { transform: rotate(360deg); }
 }
 
-/* Player styles */
-#mediaPlayerContainer {
-    margin-top: 40px;
-    background-color: var(--app-background);
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px var(--shadow-color);
-    border: 1px solid var(--border-color);
-}
-
-#mediaPlayerContainer h3 {
+/* --- Pagination --- */
+#pagination {
     text-align: center;
-    color: var(--heading-color);
-    margin-bottom: 25px;
-    font-size: 1.8em;
+    margin-top: 24px;
 }
 
-.video-player, .audio-player {
-    width: 100%;
-    max-width: 700px; /* Wider player */
-    display: block;
-    margin: 0 auto; 
-    border-radius: 12px;
-    outline: none; 
-    background-color: #000; 
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .app-header {
-        padding: 15px 20px;
-        flex-direction: column; 
-        gap: 15px;
-        text-align: center;
-        border-radius: 0; 
-        margin-bottom: 30px;
-    }
-
-    .app-header h1 {
-        font-size: 1.8em;
-    }
-
-    .header-actions {
-        flex-direction: column; 
-        gap: 10px;
-        width: 100%;
-    }
-    .header-actions .btn {
-        width: 100%; 
-        margin-right: 0;
-    }
-
+/* --- Responsive Design --- */
+@media (max-width: 600px) {
     #app {
-        padding: 25px;
-        margin-top: 0; 
-        border-radius: 12px; 
-        box-shadow: none; 
+        padding: 10px;
     }
-
-    h2 {
-        font-size: 1.8em;
-        margin-bottom: 25px;
-    }
-
-    .form-group input {
-        padding: 14px;
-        font-size: 1em;
-    }
-
-    .btn {
-        padding: 14px 20px;
-        font-size: 1em;
-        margin-bottom: 10px; 
-        margin-right: 0;
-        width: 100%; 
-    }
-    .btn:last-child {
-        margin-bottom: 0;
-    }
-
+    
     .list-item {
-        flex-direction: column; 
+        flex-direction: column;
         align-items: flex-start;
-        padding: 15px;
-        margin-bottom: 10px;
-        border-radius: 10px;
-    }
-
-    .list-item-info {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .list-item-name {
-        font-size: 1.1em;
-    }
-
-    .list-item-name i {
-        font-size: 1.1em;
-        width: 20px;
-    }
-
-    .list-item-details {
-        font-size: 0.8em;
-        gap: 10px;
-        margin-top: 5px;
-        padding-left: 30px; 
+        gap: 12px;
     }
 
     .list-item-actions {
-        width: 100%; 
-        justify-content: flex-start; 
-        gap: 8px; 
-    }
-
-    .search-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .search-container input, .search-container .btn {
         width: 100%;
-        margin-right: 0;
+        justify-content: flex-end;
     }
 
-    #pagination {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    #pagination .btn {
-        width: auto; 
-        flex-grow: 1; 
-    }
-    .modal-content {
-        padding: 30px;
-    }
-    .modal-content p {
-        font-size: 1.1em;
+    .btn {
+        padding: 8px 16px;
+        font-size: 12px;
     }
 }
