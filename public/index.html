@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,7 +96,12 @@
             width: 256px; background-color: var(--sidebar-surface-color); padding: 16px 12px;
             display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--border-color);
         }
-        /* Removed .new-btn styles as the button is removed */
+        .new-btn {
+            background-color: var(--active-item-bg); color: var(--active-item-text); border: none; padding: 16px;
+            border-radius: var(--border-radius); display: flex; align-items: center; gap: 12px;
+            font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .new-btn:hover { filter: brightness(0.95); }
         .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
         .sidebar-nav li a {
             display: flex; align-items: center; gap: 16px; padding: 8px 16px;
@@ -126,22 +131,10 @@
         .form-group input:focus { outline: 2px solid var(--button-bg); border-color: transparent; }
         .btn { 
             padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 4px; cursor: pointer; border: none;
-            transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s ease; /* Added transform */
+            transition: background-color 0.2s, box-shadow 0.2s;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            display: flex; /* Ensure icon and text are aligned */
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
         }
-        .btn:hover { 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
-            transform: translateY(-2px); /* Slight lift on hover */
-        }
-        .btn:active {
-            transform: translateY(0); /* Press effect */
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
+        .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
         .btn-primary { background-color: #4285F4; color: white; } /* Google Blue */
         .btn-primary:hover { background-color: #357ae8; }
         .btn-success { background-color: #34A853; color: white; } /* Google Green */
@@ -152,12 +145,6 @@
         .btn-warning:hover { background-color: #e3a800; }
         .btn-secondary { background-color: #5f6368; color: white; } /* Google Grey */
         .btn-secondary:hover { background-color: #505458; }
-        /* Added more specific colorful styles for general buttons if desired */
-        .btn-info { background-color: #03A9F4; color: white; } /* Light Blue */
-        .btn-info:hover { background-color: #039BE5; }
-        .btn-purple { background-color: #9C27B0; color: white; } /* Purple */
-        .btn-purple:hover { background-color: #8E24AA; }
-
 
         /* --- Colorful Icons --- */
         .icon-folder { color: #528ff5 !important; }
@@ -309,42 +296,6 @@
             font-size: 24px;
         }
 
-        .account-list-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 16px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-            gap: 10px; /* Space between items */
-        }
-
-        .account-list-controls .search-bar {
-            max-width: 300px; /* Limit search bar width */
-            margin-right: 10px; /* Space between search and button */
-        }
-        .account-list-controls .btn {
-            white-space: nowrap; /* Prevent button text from wrapping */
-        }
-
-        .about-content {
-            padding: 20px;
-            background-color: var(--dialog-surface-color);
-            border-radius: 8px;
-            margin-top: 20px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-        .about-content h2 {
-            color: var(--text-primary);
-            margin-bottom: 15px;
-        }
-        .about-content p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .app-header {
@@ -381,7 +332,7 @@
             .content-area {
                 padding: 0 10px;
             }
-            .new-btn { /* This class is no longer used for the "+ New" button but keep for general .btn responsiveness if needed */
+            .new-btn {
                 width: 100%;
                 text-align: center;
                 justify-content: center;
@@ -396,15 +347,6 @@
             .modal-content {
                 margin: 10px;
             }
-            .account-list-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .account-list-controls .search-bar {
-                max-width: 100%;
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
         }
     </style>
 </head>
@@ -412,17 +354,15 @@
     <div id="progressBar"></div>
 
     <header class="app-header">
-        <div class="header-logo"><i class="fa-brands fa-google-drive"></i><span>Axel Drive</span></div>
+        <div class="header-logo"><i class="fa-brands fa-google-drive"></i><span>Drive</span></div>
         <div class="search-bar"><span class="material-icons">search</span><input type="search" id="searchDriveInput" placeholder="Search in Drive"></div>
         <div class="header-actions">
-            <!-- About icon is now "info" and in the header-actions -->
-            <button class="icon-btn" id="aboutLink" title="About Axel Drive"><span class="material-icons">info</span></button>
             <button class="icon-btn"><span class="material-icons">help_outline</span></button>
             <button class="icon-btn"><span class="material-icons">settings</span></button>
             <div class="profile-menu" style="display: none;">
                 <button class="profile-btn" id="profileBtn">A</button>
                 <div class="dropdown-menu" id="profileDropdown">
-                    <button id="logoutBtn" class="btn btn-danger"><span class="material-icons">logout</span><span>Logout</span></button>
+                    <button id="logoutBtn"><span class="material-icons">logout</span><span>Logout</span></button>
                 </div>
             </div>
         </div>
@@ -430,6 +370,7 @@
 
     <div class="main-container">
         <aside class="sidebar">
+            <button class="new-btn"><span class="material-icons">add</span> New</button>
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="#" id="myDriveLink" class="active"><span class="material-icons">folder</span> My Drive</a></li>
@@ -483,17 +424,10 @@
             }
             try {
                 const res = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
-                if (!res.ok) {
-                    const errorData = await res.json();
-                    throw new Error(errorData.error || `API request failed with status: ${res.status}`);
-                }
-                return await res.json();
-            } catch (err) { 
-                console.error('API Error:', err); 
-                showMessage(err.message, 'error'); 
-                hideLoading(); // Ensure loading indicator is hidden on error
-                throw err; 
-            }
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'API request failed');
+                return data;
+            } catch (err) { console.error('API Error:', err); showMessage(err.message, 'error'); throw err; }
             finally { hideLoading(); }
         }
 
@@ -506,9 +440,7 @@
 
         function handleLogout() {
             localStorage.removeItem('admin_token'); adminToken = null;
-            showMessage('You have been logged out.'); 
-            history.pushState({ page: 'login' }, 'Login', '#login'); // Update history
-            showLoginPage();
+            showMessage('You have been logged out.'); showLoginPage();
         }
         
         function getFileIcon(mimeType) {
@@ -540,135 +472,69 @@
                 try {
                     const data = await apiRequest('/api/auth/login', 'POST', { username: u, password: p }, false);
                     adminToken = data.token; localStorage.setItem('admin_token', adminToken);
-                    container.remove(); 
-                    initializeAppUI();
-                    history.pushState({ page: 'accounts' }, 'Accounts', '#accounts'); // Initial state after login
-                } catch (error) { /* Handled by apiRequest's catch */ }
+                    container.remove(); initializeAppUI();
+                } catch (error) { /* Handled */ }
             };
         }
 
-        let currentAccountListNextPageToken = null;
-        let currentAccountSearchQuery = '';
-
-        async function showGoogleAccountsPage(pageToken = null, searchQuery = null) {
+        async function showGoogleAccountsPage() {
             setActiveNav('accountsLink'); 
             currentAccountId = null; // Unset account when on this page
-
-            // If a new search query is provided or pageToken is null, reset search state
-            if (searchQuery !== null || pageToken === null) { 
-                currentAccountListNextPageToken = null;
-                currentAccountSearchQuery = searchQuery || '';
-            }
-
-            if (pageToken === null) { // If starting fresh (first page or new search)
-                appDiv.innerHTML = `<div class="content-header">
-                    <h1>Google Drive Accounts</h1>
-                </div>
-                <div class="account-list-controls">
-                    <div class="search-bar">
-                        <span class="material-icons">search</span>
-                        <input type="search" id="searchAccountsInput" placeholder="Search accounts" value="${currentAccountSearchQuery}">
-                    </div>
-                    <button id="addAccountBtn" class="btn btn-success">
-                        <span class="material-icons">add</span> Add New Account
-                    </button>
-                </div>
-                <div id="accountsList" class="account-card-container"></div>
-                <div id="accountPagination" style="text-align: center; padding: 20px;"></div>`;
-                
-                document.getElementById('addAccountBtn').onclick = () => {
-                    history.pushState({ page: 'addEditAccount' }, 'Add Account', '#addEditAccount');
-                    showAddEditAccountPage();
-                };
-
-                const searchAccountsInput = document.getElementById('searchAccountsInput');
-                searchAccountsInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        showGoogleAccountsPage(null, searchAccountsInput.value); // Pass null to reset pageToken and new search query
-                    }
-                });
-            }
-
+            appDiv.innerHTML = `<div class="content-header">
+                <h1>Google Drive Accounts</h1>
+            </div>
+            <button id="addAccountBtn" class="btn btn-success" style="margin-top:16px;">
+                <span class="material-icons">add</span> Add New Account
+            </button>
+            <div id="accountsList" class="account-card-container"></div>`; // Use the new container class
+            document.getElementById('addAccountBtn').onclick = () => showAddEditAccountPage();
             try {
-                const params = new URLSearchParams({ pageSize: 10 }); // Pagination for accounts
-                if (pageToken) params.append('pageToken', pageToken);
-                if (currentAccountSearchQuery) params.append('q', currentAccountSearchQuery);
-
-                const accountsData = await apiRequest(`/api/settings/list?${params.toString()}`);
-                // Ensure accountsData.accounts is an array, default to empty if not present
-                const accounts = accountsData.accounts || []; 
-                currentAccountListNextPageToken = accountsData.nextPageToken || null;
-
+                const accounts = await apiRequest('/api/settings/list');
                 const listDiv = document.getElementById('accountsList');
-                if (pageToken === null) listDiv.innerHTML = ''; // Clear for new search or initial load
-                
-                if (!accounts.length && pageToken === null) { 
-                    listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">No accounts added yet or no results found.</p>'; 
-                } else {
-                    listDiv.insertAdjacentHTML('beforeend', accounts.map(acc => `
-                        <div class="account-card">
-                            <div class="account-card-header">
-                                <span class="material-icons">account_circle</span>
-                                <span>${acc.name}</span>
-                            </div>
-                            <div class="account-info">
-                                <strong>Account ID:</strong> <span>${acc.id}</span>
-                            </div>
-                            <div class="account-card-actions">
-                                <button class="btn btn-primary view-btn" data-id="${acc.id}" title="View Files">
-                                    <span class="material-icons">folder_open</span> View Files
-                                </button>
-                                <button class="btn btn-warning edit-btn" data-id="${acc.id}" title="Edit">
-                                    <span class="material-icons">edit</span> Edit
-                                </button>
-                                <button class="btn btn-danger delete-btn" data-id="${acc.id}" title="Delete">
-                                    <span class="material-icons">delete</span> Delete
-                                </button>
-                            </div>
-                        </div>`).join(''));
+                if (!accounts.length) { 
+                    listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">No accounts added yet.</p>'; 
+                    return; 
                 }
-                
-                const paginationDiv = document.getElementById('accountPagination');
-                if(currentAccountListNextPageToken) {
-                    paginationDiv.innerHTML = `<button id="loadMoreAccountsBtn" class="btn btn-primary">Load More Accounts</button>`;
-                    document.getElementById('loadMoreAccountsBtn').onclick = () => showGoogleAccountsPage(currentAccountListNextPageToken, currentAccountSearchQuery);
-                } else {
-                    paginationDiv.innerHTML = '';
-                }
-
-
+                listDiv.innerHTML = accounts.map(acc => `
+                    <div class="account-card">
+                        <div class="account-card-header">
+                            <span class="material-icons">account_circle</span>
+                            <span>${acc.name}</span>
+                        </div>
+                        <div class="account-info">
+                            <strong>Account ID:</strong> <span>${acc.id}</span>
+                        </div>
+                        <div class="account-card-actions">
+                            <button class="btn btn-primary view-btn" data-id="${acc.id}" title="View Files">
+                                <span class="material-icons">folder_open</span> View Files
+                            </button>
+                            <button class="btn btn-warning edit-btn" data-id="${acc.id}" title="Edit">
+                                <span class="material-icons">edit</span> Edit
+                            </button>
+                            <button class="btn btn-danger delete-btn" data-id="${acc.id}" title="Delete">
+                                <span class="material-icons">delete</span> Delete
+                            </button>
+                        </div>
+                    </div>`).join('');
                 listDiv.querySelectorAll('.view-btn').forEach(b => b.onclick = (e) => {
                     currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack
-                    history.pushState({ page: 'drive', accountId: e.currentTarget.dataset.id, folderId: 'root' }, 'My Drive', `#drive/${e.currentTarget.dataset.id}`);
                     showDriveBrowserPage(e.currentTarget.dataset.id);
                 });
-                listDiv.querySelectorAll('.edit-btn').forEach(b => b.onclick = (e) => {
-                    history.pushState({ page: 'addEditAccount', accountId: e.currentTarget.dataset.id }, 'Edit Account', `#editAccount/${e.currentTarget.dataset.id}`);
-                    showAddEditAccountPage(e.currentTarget.dataset.id);
-                });
+                listDiv.querySelectorAll('.edit-btn').forEach(b => b.onclick = (e) => showAddEditAccountPage(e.currentTarget.dataset.id));
                 listDiv.querySelectorAll('.delete-btn').forEach(b => b.onclick = (e) => {
                     const id = e.currentTarget.dataset.id;
                     showConfirmModal(`Delete account "${id}"?`, async () => {
                         await apiRequest(`/api/settings/delete/${id}`, 'DELETE');
-                        showMessage('Account deleted.'); showGoogleAccountsPage(); // Reload current page
+                        showMessage('Account deleted.'); showGoogleAccountsPage();
                     });
                 });
-            } catch (error) { 
-                console.error("Error fetching accounts:", error);
-                if (error.message.includes('Auth')) {
-                    showLoginPage();
-                } else {
-                    // If API returns an error or no accounts, display message to the user
-                    const listDiv = document.getElementById('accountsList');
-                    listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Failed to load accounts. Please ensure the backend is running and accessible.</p>'; 
-                }
-            }
+            } catch (error) { if (error.message.includes('Auth')) showLoginPage(); }
         }
 
         async function showAddEditAccountPage(accountId = null) {
             const account = accountId ? await apiRequest(`/api/settings/get/${accountId}`) : {};
             appDiv.innerHTML = `<div class="content-header">
-                    <button id="backButton" class="btn btn-secondary"><span class="material-icons">arrow_back</span> Back to Accounts</button>
+                    <button id="backButton"><span class="material-icons">arrow_back</span> Back to Accounts</button>
                     <h1>${accountId ? 'Edit' : 'Add'} Account</h1>
                 </div>
                 <div class="card" style="margin-top:16px;max-width:600px;">
@@ -689,11 +555,10 @@
                     refresh_token: document.getElementById('refreshToken').value,
                 };
                 await apiRequest(accountId ? `/api/settings/update/${payload.id}` : '/api/settings/add', accountId ? 'PUT' : 'POST', payload);
-                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); 
-                history.back(); // Use history.back to return to the accounts page
+                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); showGoogleAccountsPage();
             };
-            document.getElementById('cancelBtn').onclick = () => history.back();
-            document.getElementById('backButton').onclick = () => history.back(); // Back button functionality
+            document.getElementById('cancelBtn').onclick = () => showGoogleAccountsPage();
+            document.getElementById('backButton').onclick = () => showGoogleAccountsPage(); // Back button functionality
         }
 
         async function showDriveBrowserPage(accountId, folderId = 'root', pageToken = null) {
@@ -703,23 +568,18 @@
             // Update folder stack for back button if not a search
             if (!searchInput.value) {
                 const currentFolder = currentFolderStack[currentFolderStack.length - 1];
-                if (currentFolder.id !== folderId) { // Only push if it's a new folder, not just pageToken update
+                if (currentFolder.id !== folderId && folderId !== 'root') {
                     // Fetch folder name to add to stack
-                    if (folderId !== 'root') {
-                         try {
-                            const folderMeta = await apiRequest(`/api/drive/get/${accountId}/${folderId}`);
-                            currentFolderStack.push({ id: folderId, name: folderMeta.name });
-                            history.pushState({ page: 'drive', accountId: accountId, folderId: folderId }, folderMeta.name, `#drive/${accountId}/${folderId}`);
-                        } catch (error) {
-                            console.error('Failed to get folder metadata:', error);
-                            // Fallback to ID if name fetch fails
-                            currentFolderStack.push({ id: folderId, name: `Folder (${folderId.substring(0, 5)}...)` });
-                            history.pushState({ page: 'drive', accountId: accountId, folderId: folderId }, `Folder (${folderId.substring(0, 5)}...)`, `#drive/${accountId}/${folderId}`);
-                        }
-                    } else { // It's 'root' and current stack is not 'root'
-                        currentFolderStack = [{ id: 'root', name: 'My Drive' }];
-                        history.pushState({ page: 'drive', accountId: accountId, folderId: 'root' }, 'My Drive', `#drive/${accountId}`);
+                    try {
+                        const folderMeta = await apiRequest(`/api/drive/get/${accountId}/${folderId}`);
+                        currentFolderStack.push({ id: folderId, name: folderMeta.name });
+                    } catch (error) {
+                        console.error('Failed to get folder metadata:', error);
+                        // Fallback to ID if name fetch fails
+                        currentFolderStack.push({ id: folderId, name: `Folder (${folderId.substring(0, 5)}...)` });
                     }
+                } else if (folderId === 'root' && currentFolder.id !== 'root') {
+                    currentFolderStack = [{ id: 'root', name: 'My Drive' }];
                 }
             } else {
                 currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset stack for search results
@@ -734,7 +594,7 @@
                     : (currentFolderStack.length > 1 ? currentFolderStack[currentFolderStack.length - 1].name : 'My Drive');
 
                 appDiv.innerHTML = `<div class="content-header">
-                        ${(currentFolderStack.length > 1 || isSearch) ? `<button id="backButton" class="btn btn-secondary"><span class="material-icons">arrow_back</span> Back</button>` : ''}
+                        ${currentFolderStack.length > 1 ? `<button id="backButton"><span class="material-icons">arrow_back</span> Back</button>` : ''}
                         <h1>${headerTitle}</h1>
                         <div id="view-toggles">
                             <button class="icon-btn" id="view-grid-btn" title="Grid view"><span class="material-icons">view_module</span></button>
@@ -746,23 +606,11 @@
                 
                 document.getElementById('view-list-btn').onclick = () => { viewMode = 'list'; renderItems(currentFiles); };
                 document.getElementById('view-grid-btn').onclick = () => { viewMode = 'grid'; renderItems(currentFiles); };
-                
-                // Back button functionality for drive pages
-                if (document.getElementById('backButton')) {
+                if (currentFolderStack.length > 1) {
                     document.getElementById('backButton').onclick = () => {
-                        if (isSearch) { // If it was a search, go back to My Drive root
-                            searchInput.value = '';
-                            currentFolderStack = [{ id: 'root', name: 'My Drive' }];
-                            history.pushState({ page: 'drive', accountId: accountId, folderId: 'root' }, 'My Drive', `#drive/${accountId}`);
-                            showDriveBrowserPage(accountId, 'root');
-                        } else if (currentFolderStack.length > 1) {
-                            currentFolderStack.pop(); // Remove current folder from stack
-                            const prevFolder = currentFolderStack[currentFolderStack.length - 1];
-                            history.back(); // Go back using browser history API
-                        } else { // If already at root and not search, go back to accounts page
-                            history.pushState({ page: 'accounts' }, 'Accounts', '#accounts');
-                            showGoogleAccountsPage();
-                        }
+                        currentFolderStack.pop(); // Remove current folder from stack
+                        const prevFolder = currentFolderStack[currentFolderStack.length - 1];
+                        showDriveBrowserPage(accountId, prevFolder.id);
                     };
                 }
             }
@@ -838,18 +686,10 @@
         }
         
         function attachActionListeners() {
-            document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => {
-                const folderId = e.currentTarget.dataset.id;
-                history.pushState({ page: 'drive', accountId: currentAccountId, folderId: folderId }, 'Folder', `#drive/${currentAccountId}/${folderId}`);
-                showDriveBrowserPage(currentAccountId, folderId);
-            });
+            document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.id));
             document.querySelectorAll('.file-card').forEach(card => {
                 if (card.dataset.mimeType === CONSTS.folder_mime_type) {
-                    card.ondblclick = e => {
-                        const folderId = e.currentTarget.dataset.folderId;
-                        history.pushState({ page: 'drive', accountId: currentAccountId, folderId: folderId }, 'Folder', `#drive/${currentAccountId}/${folderId}`);
-                        showDriveBrowserPage(currentAccountId, folderId);
-                    };
+                    card.ondblclick = e => showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.folderId);
                 }
             });
             document.querySelectorAll('.copy-link-btn').forEach(b => b.onclick = e => {
@@ -876,9 +716,8 @@
             const url = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${id}/${encodeURIComponent(name)}`;
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            // Removed type attribute from source for broader compatibility
             modal.innerHTML = `<div class="modal-content video-modal">
-                <h3>${name}</h3><video controls autoplay class="media-player"><source src="${url}"></video>
+                <h3>${name}</h3><video controls autoplay class="media-player"><source src="${url}" type="${mimeType}"></video>
                 <div class="modal-actions"><button class="btn btn-secondary">Close</button></div>
             </div>`;
             document.body.appendChild(modal);
@@ -898,58 +737,17 @@
             modal.querySelector('#confirm').onclick = () => { onConfirm(); modal.remove(); };
         }
 
-        function showAboutPage() {
-            // No need to set active nav for a header icon
-            appDiv.innerHTML = `<div class="content-header">
-                <h1>About Axel Drive</h1>
-            </div>
-            <div class="about-content">
-                <h2>Axel Drive</h2>
-                <p>Version 1.0</p>
-                <p>Developed by <strong>Aung Myo Linn</strong></p>
-                <p>Axel Drive is a web application for managing your Google Drive accounts and files.</p>
-                <p>For support or inquiries, please contact the developer.</p>
-            </div>`;
-            history.pushState({ page: 'about' }, 'About Axel Drive', '#about');
-        }
-
         // --- INITIALIZATION ---
         function setActiveNav(linkId) {
             document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-            // Only set active for sidebar links
-            if (linkId === 'myDriveLink' || linkId === 'accountsLink') {
-                if (document.getElementById(linkId)) {
-                    document.getElementById(linkId).classList.add('active');
-                }
-            }
+            document.getElementById(linkId).classList.add('active');
         }
 
         function initializeAppUI() {
             document.querySelector('.main-container').style.display = 'flex';
             document.querySelector('.app-header .search-bar').style.display = 'flex';
             profileMenu.style.display = 'block';
-            // Determine initial page based on URL hash or default to accounts
-            const initialPath = window.location.hash.substring(1); // Remove '#'
-            if (initialPath.startsWith('drive/')) {
-                const parts = initialPath.split('/');
-                const accountId = parts[1];
-                const folderId = parts[2] || 'root';
-                currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Ensure stack is initialized
-                if (folderId !== 'root') currentFolderStack.push({ id: folderId, name: `Folder (${folderId.substring(0, 5)}...)` }); // Placeholder, name will be fetched if needed
-                showDriveBrowserPage(accountId, folderId);
-            } else if (initialPath === 'accounts') {
-                showGoogleAccountsPage();
-            } else if (initialPath === 'addEditAccount') {
-                showAddEditAccountPage();
-            } else if (initialPath.startsWith('editAccount/')) {
-                showAddEditAccountPage(initialPath.split('/')[1]);
-            } else if (initialPath === 'about') {
-                showAboutPage();
-            }
-            else {
-                showGoogleAccountsPage();
-                history.replaceState({ page: 'accounts' }, 'Accounts', '#accounts'); // Replace initial blank state
-            }
+            showGoogleAccountsPage();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -957,66 +755,17 @@
             profileBtn.onclick = () => profileDropdown.classList.toggle('show');
             document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target)) profileDropdown.classList.remove('show'); });
             logoutBtn.onclick = handleLogout;
-            searchInput.addEventListener('keypress', (e) => { 
-                if (e.key === 'Enter') {
-                    if (currentAccountId) { 
-                        currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack for search results
-                        history.pushState({ page: 'drive', accountId: currentAccountId, folderId: 'root', search: searchInput.value }, `Search: ${searchInput.value}`, `#drive/${currentAccountId}/search?q=${encodeURIComponent(searchInput.value)}`);
-                        showDriveBrowserPage(currentAccountId); 
-                    } else { 
-                        showMessage('Please select an account first to search in Drive.'); 
-                        showGoogleAccountsPage(); 
-                    }
-                } 
-            });
-            document.getElementById('accountsLink').onclick = (e) => { 
-                e.preventDefault(); 
-                history.pushState({ page: 'accounts' }, 'Accounts', '#accounts');
-                showGoogleAccountsPage(); 
-            };
+            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && currentAccountId) showDriveBrowserPage(currentAccountId); });
+            document.getElementById('accountsLink').onclick = (e) => { e.preventDefault(); showGoogleAccountsPage(); };
             document.getElementById('myDriveLink').onclick = (e) => {
                 e.preventDefault();
                 // Check if an account is selected before navigating to My Drive
                 if (currentAccountId) { 
                     searchInput.value = ''; 
                     currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset folder stack for My Drive
-                    history.pushState({ page: 'drive', accountId: currentAccountId, folderId: 'root' }, 'My Drive', `#drive/${currentAccountId}`);
                     showDriveBrowserPage(currentAccountId); 
                 }
                 else { showMessage('Please select an account first.'); showGoogleAccountsPage(); }
-            };
-            document.getElementById('aboutLink').onclick = (e) => {
-                e.preventDefault();
-                showAboutPage();
-            };
-
-            // Handle browser back/forward buttons
-            window.onpopstate = (event) => {
-                const state = event.state;
-                if (state) {
-                    if (state.page === 'accounts') {
-                        showGoogleAccountsPage(state.pageToken, state.searchQuery);
-                    } else if (state.page === 'addEditAccount') {
-                        showAddEditAccountPage(state.accountId);
-                    } else if (state.page === 'drive') {
-                        // Reconstruct currentFolderStack from state for proper back navigation
-                        currentFolderStack = [{ id: 'root', name: 'My Drive' }];
-                        if (state.folderId && state.folderId !== 'root') {
-                             // Fetch actual folder name if possible, otherwise use ID for display
-                             // This is a simplified approach, in a real app you might store the full path in history state
-                             currentFolderStack.push({ id: state.folderId, name: `Folder (${state.folderId.substring(0, 5)}...)` });
-                        }
-                        searchInput.value = state.search || ''; // Restore search query if it was a search page
-                        showDriveBrowserPage(state.accountId, state.folderId);
-                    } else if (state.page === 'login') {
-                        showLoginPage();
-                    } else if (state.page === 'about') {
-                        showAboutPage();
-                    }
-                } else {
-                    // Default behavior if no specific state (e.g., initial load or deep link)
-                    if (adminToken) initializeAppUI(); else showLoginPage();
-                }
             };
         });
     </script>
