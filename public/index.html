@@ -84,6 +84,10 @@
         }
         .icon-btn.active { background-color: var(--hover-bg-color); color: var(--text-primary); }
         .icon-btn:hover { background-color: var(--hover-bg-color); color: var(--text-primary); }
+        /* MODIFICATION: Specific colors for header action icons */
+        .header-actions .icon-btn .material-icons {
+            color: #8AB4F8; /* A vibrant blue for interactive elements */
+        }
         .profile-btn {
             width: 32px; height: 32px; background-color: #673AB7; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-weight: 500; color: white; cursor: pointer;
@@ -99,14 +103,17 @@
             text-align: left; border: none; background: none; color: var(--text-primary); cursor: pointer;
         }
         #logoutBtn:hover { background-color: var(--hover-bg-color); }
-        /* MODIFICATION: Style for developer credit */
+        #logoutBtn .material-icons { color: #EA4335; } /* Red for logout */
+
+        /* MODIFICATION: Style for developer credit when in sidebar */
         .developer-credit {
             padding: 10px 16px;
             font-size: 12px;
             text-align: center;
             color: var(--text-secondary);
             border-top: 1px solid var(--border-color);
-            margin-top: 8px;
+            margin-top: auto; /* Pushes it to the bottom of the flex container */
+            padding-bottom: 20px; /* Add some padding at the bottom */
             display: flex; /* Added for alignment */
             flex-direction: column; /* Stack elements vertically */
             align-items: center; /* Center horizontally */
@@ -146,6 +153,13 @@
         }
         .sidebar-nav li a:hover { background-color: var(--hover-bg-color); }
         .sidebar-nav li a.active { background-color: var(--active-item-bg); color: var(--active-item-text); font-weight: 500; }
+        /* MODIFICATION: Colorful icons for sidebar navigation */
+        .sidebar-nav li a .material-icons {
+            font-size: 24px; /* Slightly larger for prominence */
+        }
+        .sidebar-nav li a#myDriveLink .material-icons { color: #0A84FF; } /* iOS Blue */
+        .sidebar-nav li a#accountsLink .material-icons { color: #FFD60A; } /* iOS Yellow (Account Circle) */
+
 
         .content-area { flex-grow: 1; padding: 0 24px; display: flex; flex-direction: column; overflow-y: auto; }
         .content-header {
@@ -174,7 +188,10 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; justify-content: center;
         }
         .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-        .btn .material-icons { font-size: 18px; } /* Icon size inside buttons */
+        .btn .material-icons { 
+            font-size: 20px; /* Slightly larger icons in buttons */
+            color: white; /* Ensure good contrast against button background */
+        }
         .btn-primary { background-color: var(--btn-primary-bg); color: white; }
         .btn-primary:hover { background-color: var(--btn-primary-hover); }
         .btn-success { background-color: var(--btn-success-bg); color: white; }
@@ -186,7 +203,7 @@
         .btn-secondary { background-color: var(--btn-secondary-bg); color: white; }
         .btn-secondary:hover { background-color: var(--btn-secondary-hover); }
 
-        /* MODIFICATION: Brighter, more distinct "iOS-style" icon colors */
+        /* MODIFICATION: Brighter, more distinct "iOS-style" icon colors for file types */
         .icon-folder { color: #0A84FF !important; } /* iOS Blue */
         .icon-movie { color: #FF453A !important; } /* iOS Red */
         .icon-music_note { color: #FF2D55 !important; } /* iOS Pink */
@@ -233,6 +250,15 @@
         }
         .file-card:hover .card-actions { opacity: 1; }
         .card-actions .icon-btn { padding: 6px; }
+        /* MODIFICATION: Colorful action icons for file cards/tables */
+        .actions-cell .icon-btn .material-icons, .card-actions .icon-btn .material-icons {
+            color: #8AB4F8; /* A vibrant blue for action icons */
+            font-size: 20px; /* Slightly larger for prominence */
+        }
+        .actions-cell .icon-btn .material-icons.play-btn, .card-actions .icon-btn .material-icons.play-btn {
+            color: #30D158; /* Green for play button */
+        }
+
 
         .message {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -278,7 +304,7 @@
             padding: 10px 0; margin-bottom: 10px; transition: color 0.2s;
         }
         #backButton:hover { color: var(--btn-primary-bg); }
-        #backButton .material-icons { font-size: 24px; }
+        #backButton .material-icons { color: #8AB4F8; font-size: 24px; } /* Colorful back icon */
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
@@ -296,6 +322,18 @@
             .card { margin: 20px auto; padding: 15px; }
             .account-card-container { grid-template-columns: 1fr; }
             .modal-content { margin: 10px; }
+            /* MODIFICATION: Developer credit visible in mobile */
+            .sidebar .developer-credit {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 10px;
+                padding-bottom: 10px;
+                border-top: none; /* No top border if it's not the last element in desktop */
+            }
+            .sidebar .developer-credit span { display: none; } /* Hide "Powered by" text on small screens */
+            .sidebar .developer-credit div { display: flex; gap: 15px; } /* Align icons */
         }
     </style>
 </head>
@@ -312,14 +350,7 @@
                 <button class="profile-btn" id="profileBtn">A</button>
                 <div class="dropdown-menu" id="profileDropdown">
                     <button id="logoutBtn"><span class="material-icons">logout</span><span>Logout</span></button>
-                    <div class="developer-credit">
-                        <span>Powered By Aung Myo Linn</span>
-                        <div>
-                            <a href="https://www.facebook.com/aungmyolinn.dev" target="_blank" title="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
-                            <a href="https://t.me/aungmyolinn_dev" target="_blank" title="Telegram"><i class="fab fa-telegram fa-lg"></i></a>
-                        </div>
                     </div>
-                </div>
             </div>
         </div>
     </header>
@@ -332,6 +363,13 @@
                     <li><a href="#" id="accountsLink"><span class="material-icons">account_box</span> Accounts</a></li>
                 </ul>
             </nav>
+            <div class="developer-credit">
+                <span>Powered By Aung Myo Linn</span>
+                <div>
+                    <a href="https://www.facebook.com/aungmyolinn.dev" target="_blank" title="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="https://t.me/aungmyolinn_dev" target="_blank" title="Telegram"><i class="fab fa-telegram fa-lg"></i></a>
+                </div>
+            </div>
         </aside>
 
         <main class="content-area"><div id="app"></div></main>
@@ -352,7 +390,7 @@
         let currentAccountId = null;
         let currentFiles = [];
         let viewMode = 'grid'; // 'list' or 'grid'
-        let currentFolderStack = [{ id: 'root', name: 'My Drive' }];
+        let currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // For Drive Browser
 
         const CONSTS = { folder_mime_type: "application/vnd.google-apps.folder" };
 
@@ -373,7 +411,8 @@
             if (auth) {
                 if (!adminToken) {
                     showMessage('Authentication required.');
-                    showLoginPage(); hideLoading(); throw new Error('Auth required');
+                    navigateTo('login'); // MODIFICATION: Use navigateTo for login
+                    hideLoading(); throw new Error('Auth required');
                 }
                 headers['Authorization'] = `Bearer ${adminToken}`;
             }
@@ -395,7 +434,8 @@
 
         function handleLogout() {
             localStorage.removeItem('admin_token'); adminToken = null;
-            showMessage('You have been logged out.'); showLoginPage();
+            showMessage('You have been logged out.'); 
+            navigateTo('login', {}, true); // MODIFICATION: navigate to login, replace history
         }
         
         function getFileIcon(mimeType) {
@@ -409,10 +449,69 @@
         }
 
         // --- UI RENDERING ---
-        function showLoginPage() {
+
+        // MODIFICATION: Centralized navigation function
+        function navigateTo(page, params = {}, replace = false) {
+            // Push current state to browser history before rendering new page
+            const currentState = { page: page, params: params };
+            if (replace) {
+                window.history.replaceState(currentState, '', `?page=${page}`);
+            } else {
+                window.history.pushState(currentState, '', `?page=${page}`);
+            }
+            
+            renderPage(page, params);
+        }
+
+        function renderPage(page, params = {}) {
+            // Show/hide main UI elements based on page
+            const mainContainer = document.querySelector('.main-container');
+            const searchBar = document.querySelector('.app-header .search-bar');
             profileMenu.style.display = 'none';
-            document.querySelector('.main-container').style.display = 'none';
-            document.querySelector('.app-header .search-bar').style.display = 'none';
+            mainContainer.style.display = 'none';
+            searchBar.style.display = 'none';
+
+            // Remove any existing login container if present
+            const loginContainer = document.getElementById('login-container');
+            if (loginContainer) loginContainer.remove();
+
+            switch (page) {
+                case 'login':
+                    showLoginPage();
+                    break;
+                case 'accounts':
+                    profileMenu.style.display = 'block';
+                    mainContainer.style.display = 'flex';
+                    searchBar.style.display = 'none'; // Search bar not needed for accounts page
+                    showGoogleAccountsPage();
+                    break;
+                case 'addEditAccount':
+                    profileMenu.style.display = 'block';
+                    mainContainer.style.display = 'flex';
+                    searchBar.style.display = 'none';
+                    showAddEditAccountPage(params.accountId);
+                    break;
+                case 'drive':
+                    profileMenu.style.display = 'block';
+                    mainContainer.style.display = 'flex';
+                    searchBar.style.display = 'flex';
+                    currentAccountId = params.accountId; // Ensure currentAccountId is set
+                    currentFolderStack = params.folderStack || [{ id: 'root', name: 'My Drive' }]; // Restore folder stack
+                    showDriveBrowserPage(params.accountId, params.folderId || 'root', params.pageToken);
+                    break;
+                default:
+                    // Default to accounts page if no valid page in history or initial load
+                    if (adminToken) {
+                        navigateTo('accounts', {}, true); // Replace current history with accounts
+                    } else {
+                        navigateTo('login', {}, true); // Replace current history with login
+                    }
+                    break;
+            }
+        }
+
+
+        function showLoginPage() {
             const container = document.createElement('div');
             container.id = 'login-container';
             container.innerHTML = `<div class="card">
@@ -427,7 +526,8 @@
                 try {
                     const data = await apiRequest('/api/auth/login', 'POST', { username: u, password: p }, false);
                     adminToken = data.token; localStorage.setItem('admin_token', adminToken);
-                    container.remove(); initializeAppUI();
+                    // container.remove(); // Removed as renderPage will handle DOM updates
+                    navigateTo('accounts', {}, true); // MODIFICATION: Navigate to accounts, replace history
                 } catch (error) { /* Handled */ }
             };
         }
@@ -450,7 +550,7 @@
             <div id="accountsList" class="account-card-container"></div>
             <div id="accountPagination" style="text-align: center; padding: 20px;"></div>`; // Added for potential future pagination
 
-            document.getElementById('addAccountBtn').onclick = () => showAddEditAccountPage();
+            document.getElementById('addAccountBtn').onclick = () => navigateTo('addEditAccount'); // MODIFICATION: Use navigateTo
             
             const accountSearchInput = document.getElementById('accountSearchInput');
             accountSearchInput.addEventListener('input', () => filterAndRenderAccounts());
@@ -462,7 +562,7 @@
                     allAccounts = await apiRequest('/api/settings/list');
                     filterAndRenderAccounts();
                 } catch (error) { 
-                    if (error.message.includes('Auth')) showLoginPage(); 
+                    if (error.message.includes('Auth')) navigateTo('login'); // MODIFICATION: Use navigateTo
                     else {
                         const listDiv = document.getElementById('accountsList');
                         listDiv.innerHTML = `<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Error loading accounts: ${error.message}</p>`;
@@ -482,7 +582,7 @@
                 listDiv.innerHTML = filteredAccounts.map(acc => `
                     <div class="account-card">
                         <div class="account-card-header">
-                            <span class="material-icons icon-account_circle">account_circle</span>
+                            <span class="material-icons ${getFileIcon('account').colorClass}">account_circle</span>
                             <span>${acc.name}</span>
                         </div>
                         <div class="account-info">
@@ -505,11 +605,11 @@
                 document.querySelectorAll('.view-btn').forEach(btn => {
                     btn.onclick = (e) => {
                         currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset stack on account view
-                        showDriveBrowserPage(e.currentTarget.dataset.id, 'root');
+                        navigateTo('drive', { accountId: e.currentTarget.dataset.id, folderId: 'root' }); // MODIFICATION: Use navigateTo
                     };
                 });
                 document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.onclick = (e) => showAddEditAccountPage(e.currentTarget.dataset.id);
+                    btn.onclick = (e) => navigateTo('addEditAccount', { accountId: e.currentTarget.dataset.id }); // MODIFICATION: Use navigateTo
                 });
                 document.querySelectorAll('.delete-btn').forEach(btn => {
                     btn.onclick = (e) => {
@@ -552,10 +652,11 @@
                     refresh_token: document.getElementById('refreshToken').value,
                 };
                 await apiRequest(accountId ? `/api/settings/update/${payload.id}` : '/api/settings/add', accountId ? 'PUT' : 'POST', payload);
-                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); showGoogleAccountsPage();
+                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); 
+                navigateTo('accounts', {}, true); // MODIFICATION: Navigate back to accounts, replace history
             };
-            document.getElementById('cancelBtn').onclick = () => showGoogleAccountsPage();
-            document.getElementById('backButton').onclick = () => showGoogleAccountsPage();
+            document.getElementById('cancelBtn').onclick = () => navigateTo('accounts', {}, true); // MODIFICATION: Navigate back to accounts, replace history
+            document.getElementById('backButton').onclick = () => navigateTo('accounts', {}, true); // MODIFICATION: Navigate back to accounts, replace history
         }
         
         // MODIFICATION: Logic for back button and folder stack is now more robust.
@@ -565,9 +666,8 @@
 
             // Handle folder stack for back button
             const isSearch = !!searchInput.value;
-            if (!isSearch) {
+            if (!isSearch && folderId !== 'root') { // Only add to stack if not search and not root folder
                 const currentFolderInStack = currentFolderStack[currentFolderStack.length - 1];
-                // Navigating into a new subfolder or initial load if stack is empty or target folder is different
                 if (!currentFolderInStack || currentFolderInStack.id !== folderId) {
                     try {
                         const folderMeta = await apiRequest(`/api/drive/get/${accountId}/${folderId}`);
@@ -577,17 +677,19 @@
                         currentFolderStack.push({ id: folderId, name: `Folder` });
                     }
                 }
-            } else {
-                // Reset stack for new search results
-                currentFolderStack = [{ id: 'root', name: `Search: "${searchInput.value}"` }];
+            } else if (folderId === 'root' && currentFolderStack.length > 1) { // Reset stack if explicitly navigating to root
+                currentFolderStack = [{ id: 'root', name: 'My Drive' }];
+            } else if (isSearch) {
+                currentFolderStack = [{ id: 'search', name: `Search: "${searchInput.value}"` }];
             }
+
 
             if (!pageToken) {
                 currentFiles = []; // Clear files only on initial page load (not for "Load More")
                 const headerTitle = currentFolderStack[currentFolderStack.length - 1].name;
 
                 appDiv.innerHTML = `<div class="content-header">
-                            ${currentFolderStack.length > 1 ? `<button id="backButton"><span class="material-icons">arrow_back</span> Back</button>` : '<div></div>'}
+                            ${currentFolderStack.length > 1 || isSearch ? `<button id="backButton"><span class="material-icons">arrow_back</span> Back</button>` : '<div></div>'}
                             <h1>${headerTitle}</h1>
                             <div id="view-toggles">
                                 <button class="icon-btn" id="view-grid-btn" title="Grid view"><span class="material-icons">view_module</span></button>
@@ -601,21 +703,32 @@
                 document.getElementById('view-grid-btn').onclick = () => { viewMode = 'grid'; renderItems(currentFiles); };
 
                 // MODIFICATION: Back button logic is refined to handle step-by-step exit
-                if (currentFolderStack.length > 1) {
+                // This back button is for folder navigation within the drive browser
+                if (currentFolderStack.length > 1 || isSearch) {
                     document.getElementById('backButton').onclick = () => {
-                        currentFolderStack.pop(); // Pop the current folder
-                        const prevFolder = currentFolderStack[currentFolderStack.length - 1]; // Get the previous folder
-                        searchInput.value = ''; // Clear search input
-                        showDriveBrowserPage(accountId, prevFolder.id); // Go to previous folder
+                        searchInput.value = ''; // Clear search input on back
+                        if (isSearch) { // If currently in search, go back to root of current account
+                            navigateTo('drive', { accountId: currentAccountId, folderId: 'root', folderStack: [{id: 'root', name: 'My Drive'}] }, true); // Replace
+                        } else {
+                            currentFolderStack.pop(); // Pop the current folder
+                            const prevFolder = currentFolderStack[currentFolderStack.length - 1]; // Get the previous folder
+                            navigateTo('drive', { accountId: currentAccountId, folderId: prevFolder.id, folderStack: currentFolderStack }, true); // Replace
+                        }
                     };
                 }
             }
 
             try {
-                const isSearch = !!searchInput.value;
+                const isSearchQuery = !!searchInput.value;
                 const params = new URLSearchParams({ pageSize: 50 });
-                const apiUrl = isSearch ? `/api/drive/search/${accountId}` : `/api/drive/list/${accountId}/${folderId || 'root'}`;
-                if (isSearch) params.append('q', searchInput.value);
+                let apiUrl;
+                if (isSearchQuery) {
+                    apiUrl = `/api/drive/search/${accountId}`;
+                    params.append('q', searchInput.value);
+                } else {
+                    apiUrl = `/api/drive/list/${accountId}/${folderId || 'root'}`;
+                }
+                
                 if (pageToken) params.append('pageToken', pageToken);
                 
                 const data = await apiRequest(`${apiUrl}?${params.toString()}`);
@@ -629,13 +742,13 @@
                     document.getElementById('loadMoreBtn').onclick = () => {
                         // Pass current folder ID and next page token
                         const currentFolder = currentFolderStack[currentFolderStack.length-1];
-                        showDriveBrowserPage(accountId, currentFolder.id, data.nextPageToken);
+                        navigateTo('drive', { accountId: currentAccountId, folderId: currentFolder.id, pageToken: data.nextPageToken, folderStack: currentFolderStack });
                     };
                 } else {
                     paginationDiv.innerHTML = '';
                 }
 
-            } catch (error) { if (error.message.includes('Auth')) showLoginPage(); }
+            } catch (error) { if (error.message.includes('Auth')) navigateTo('login'); } // MODIFICATION: Use navigateTo
         }
 
         function renderItems(files) {
@@ -692,11 +805,11 @@
         function attachActionListeners() {
             // For both grid and list, clicking a folder opens it
             document.querySelectorAll('[data-mime-type="application/vnd.google-apps.folder"]').forEach(folder => {
-                folder.ondblclick = (e) => showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.id);
+                folder.ondblclick = (e) => navigateTo('drive', { accountId: currentAccountId, folderId: e.currentTarget.dataset.id }); // MODIFICATION: Use navigateTo
             });
             document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => {
                 e.stopPropagation(); // Prevent card's dblclick from firing
-                showDriveBrowserPage(currentAccountId, e.currentTarget.dataset.id)
+                navigateTo('drive', { accountId: currentAccountId, folderId: e.currentTarget.dataset.id }); // MODIFICATION: Use navigateTo
             });
 
             document.querySelectorAll('.copy-link-btn').forEach(b => b.onclick = e => {
@@ -760,14 +873,17 @@
         }
 
         function initializeAppUI() {
-            document.querySelector('.main-container').style.display = 'flex';
-            document.querySelector('.app-header .search-bar').style.display = 'flex';
-            profileMenu.style.display = 'block';
-            showGoogleAccountsPage();
+            // Check if there's a specific page requested in URL or default to accounts
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialPage = urlParams.get('page') || (adminToken ? 'accounts' : 'login');
+            
+            // Push initial state without adding to browser history explicitly
+            window.history.replaceState({ page: initialPage, params: {} }, '', `?page=${initialPage}`);
+            renderPage(initialPage);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (adminToken) initializeAppUI(); else showLoginPage();
+            initializeAppUI();
             profileBtn.onclick = () => profileDropdown.classList.toggle('show');
             document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target)) profileDropdown.classList.remove('show'); });
 
@@ -776,22 +892,40 @@
                 showConfirmModal('Are you sure you want to logout?', handleLogout);
             };
 
-            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && currentAccountId) showDriveBrowserPage(currentAccountId); });
+            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && currentAccountId) {
+                navigateTo('drive', { accountId: currentAccountId, folderId: 'search', folderStack: [{id: 'search', name: `Search: "${searchInput.value}"`}] }); // MODIFICATION: Use navigateTo for search
+            } });
             
             document.getElementById('accountsLink').onclick = (e) => { 
                 e.preventDefault(); 
-                currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset stack
                 searchInput.value = '';
-                showGoogleAccountsPage(); 
+                navigateTo('accounts'); // MODIFICATION: Use navigateTo
             };
             document.getElementById('myDriveLink').onclick = (e) => {
                 e.preventDefault();
                 if (currentAccountId) { 
                     searchInput.value = ''; 
-                    currentFolderStack = [{ id: 'root', name: 'My Drive' }];
-                    showDriveBrowserPage(currentAccountId, 'root'); 
+                    navigateTo('drive', { accountId: currentAccountId, folderId: 'root' }); // MODIFICATION: Use navigateTo
                 }
-                else { showMessage('Please select an account first from the "Accounts" page.'); showGoogleAccountsPage(); }
+                else { showMessage('Please select an account first from the "Accounts" page.'); navigateTo('accounts'); } // MODIFICATION: Use navigateTo
+            };
+
+            // MODIFICATION: Handle browser history popstate event for back button
+            window.onpopstate = (event) => {
+                if (event.state) {
+                    renderPage(event.state.page, event.state.params);
+                } else {
+                    // This happens when the browser history goes back beyond the initial state pushed by us
+                    // Or if the user tries to navigate back from the first page of the app.
+                    showConfirmModal('Are you sure you want to exit?', () => {
+                        // If confirmed, allow browser to navigate away (or close tab/app if possible)
+                        // For web apps, this usually just means letting history naturally take its course
+                        // or, if at the absolute start, prompt them to close tab.
+                        window.history.back(); // Try to go back one more time, which might exit
+                    });
+                    // If user cancels, push the current state back to history to prevent immediate exit
+                    window.history.pushState(window.history.state, '', window.location.href);
+                }
             };
         });
     </script>
