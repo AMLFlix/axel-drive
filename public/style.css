@@ -62,13 +62,27 @@ body {
     line-height: 1.6;
     height: 100vh; /* Ensure full viewport height */
     overflow: hidden; /* Prevent body scroll, content will scroll within main-content */
+    display: flex; /* Make body a flex container to manage header and app div */
+    flex-direction: column; /* Stack header and app div vertically */
+}
+
+/* --- Utility Class for Hiding Elements --- */
+.hidden {
+    display: none !important;
 }
 
 /* --- App Layout --- */
+#app {
+    flex-grow: 1; /* Allows #app to take remaining vertical space */
+    display: flex; /* #app manages login-container and main-app */
+    overflow: hidden; /* Important for nested scrolling */
+}
+
 .main-app {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Takes full viewport height */
+    height: 100%; /* Takes full height of #app */
+    width: 100%; /* Takes full width of #app */
 }
 
 .app-header {
@@ -234,7 +248,7 @@ body {
 .context-action-bar {
     padding: 8px 16px;
     border-bottom: 1px solid var(--outline-color);
-    display: flex; /* Controlled by JS to show/hide */
+    display: flex; /* Controlled by JS to show/hide with .hidden */
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
@@ -363,7 +377,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%; /* Take full height of #app */
+    width: 100%; /* Take full width of #app */
 }
 .login-card {
     background: var(--surface-variant-color);
@@ -700,6 +715,12 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* --- Pagination --- */
+#pagination {
+    text-align: center;
+    margin-top: 24px;
 }
 
 /* --- Responsive Design --- */

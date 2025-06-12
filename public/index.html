@@ -4,84 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axel Drive - Admin Panel</title>
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Custom CSS for styling -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Loading Overlay: Shown during API requests -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
         <p class="loading-text">Loading...</p>
     </div>
 
-    <!-- Message Container: For toast notifications (success/error messages) -->
     <div id="messageContainer"></div>
 
-    <!-- Login Container: Visible before successful login -->
-    <div id="login-container" class="login-container">
-        <!-- Login form will be dynamically loaded here by app.js -->
-    </div>
+    <header class="app-header">
+        <div class="header-left">
+            <i class="fas fa-rocket header-icon"></i>
+            <h1 class="app-title">Axel Drive</h1>
+        </div>
+        <div class="search-bar-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchDriveInput" placeholder="Search in Drive...">
+        </div>
+        <div class="header-actions">
+            <button id="logoutBtn" class="icon-btn" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </header>
 
-    <!-- Main Application Container: Visible after successful login -->
-    <div id="main-app" class="main-app" style="display: none;">
-        <!-- App Header -->
-        <header class="app-header">
-            <div class="header-left">
-                <i class="fas fa-rocket header-icon"></i>
-                <h1 class="app-title">Axel Drive</h1>
+    <div id="app">
+        <div id="login-container" class="login-container">
             </div>
-            <div class="search-bar-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchDriveInput" placeholder="Search in Drive...">
-            </div>
-            <div class="header-actions">
-                <button id="logoutBtn" class="icon-btn" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
-        </header>
-        
-        <!-- Main Application Body: Contains sidebar and main content area -->
-        <div class="app-body">
-            <!-- Sidebar Navigation -->
-            <nav id="sidebar" class="sidebar">
-                <div class="sidebar-header">
-                    <h3>Accounts</h3>
-                    <button id="addAccountBtn" class="icon-btn" title="Add New Account">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-                <ul id="accountsList" class="accounts-list">
-                    <!-- Google Drive accounts will be dynamically loaded here -->
-                </ul>
-            </nav>
 
-            <!-- Main Content Area: Where different views (drive, forms) are rendered -->
-            <main id="main-content" class="main-content">
-                <!-- Context Action Bar: For actions on selected files/folders -->
-                <div id="context-action-bar" class="context-action-bar" style="display: none;">
-                    <!-- Action buttons will be dynamically loaded here -->
-                </div>
-                <!-- Breadcrumb Bar: For navigating through folders -->
-                <div id="breadcrumb-bar" class="breadcrumb-bar">
-                    <!-- Breadcrumbs will be dynamically loaded here -->
-                </div>
-                <!-- Drive Grid View: Displays files and folders -->
-                <div id="drive-grid-view" class="drive-grid-view">
-                    <!-- Files and folders will be dynamically loaded here -->
-                </div>
-                <!-- Add/Edit Account View: Form for adding or editing accounts -->
-                <div id="add-edit-account-view" style="display: none;">
-                    <!-- Add/Edit form will be dynamically loaded here -->
-                </div>
-            </main>
+        <div id="main-app" class="main-app">
+            <div class="app-body">
+                <nav id="sidebar" class="sidebar">
+                    <div class="sidebar-header">
+                        <h3>Accounts</h3>
+                        <button id="addAccountBtn" class="icon-btn" title="Add New Account">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <ul id="accountsList" class="accounts-list">
+                        </ul>
+                </nav>
+
+                <main id="main-content" class="main-content">
+                    <div id="context-action-bar" class="context-action-bar">
+                        </div>
+                    <div id="breadcrumb-bar" class="breadcrumb-bar">
+                        </div>
+                    <div id="drive-grid-view" class="drive-grid-view">
+                        </div>
+                    <div id="add-edit-account-view">
+                        </div>
+                    <div id="pagination"></div>
+                </main>
+            </div>
         </div>
     </div>
 
-    <!-- Main JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>
