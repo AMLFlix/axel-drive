@@ -1,886 +1,594 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drive</title>
-    <!-- Google Fonts: Roboto and Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Font Awesome for more icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Axel Drive - Dashboard</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- Google Drive Inspired UI --- */
+        /* Custom CSS Variables - Dark Theme Only, with Colorful Accents */
         :root {
-            --bg-color: #1f1f1f;
-            --surface-color: #1e1e1e;
-            --header-surface-color: #282a2d;
-            --sidebar-surface-color: #282a2d;
-            --dialog-surface-color: #282a2d;
-            --hover-bg-color: #ffffff1a;
-            --text-primary: #e8eaed;
-            --text-secondary: #bdc1c6;
-            --border-color: #5f6368;
-            --active-item-bg: #c2e7ff;
-            --active-item-text: #001d35;
-            --button-bg: #8ab4f8;
-            --button-text: #202124;
-            --font-family: 'Roboto', sans-serif;
-            --border-radius: 16px;
-            --item-border-radius: 4px;
+            --background-color: #1a1a2e;
+            --app-background: #202a40;
+            --text-color: #e0e0e0;
+            --heading-color: #bb86fc;
+            --primary-color: #03dac6;
+            --secondary-color: #6a6a8c;
+            --danger-color: #cf6679;
+            --border-color: #3b3b5c;
+            --input-bg: #283452;
+            --input-border: #4a5a70;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --list-item-hover-bg: #2f3c5f;
+            --header-bg: #202a40;
+            --button-text-color: #ffffff;
+            --icon-color: #bb86fc;
+            --focus-ring-color: rgba(187, 134, 252, 0.4);
+            --btn-primary-gradient: linear-gradient(45deg, #03dac6, #00c4b4);
+            --btn-primary-hover-gradient: linear-gradient(45deg, #00c4b4, #00a89b);
+            --btn-danger-gradient: linear-gradient(45deg, #cf6679, #b0576a);
+            --btn-danger-hover-gradient: linear-gradient(45deg, #b0576a, #9e4a5a);
+            --message-success-bg: linear-gradient(90deg, #4CAF50, #8bc34a);
+            --message-error-bg: linear-gradient(90deg, #f44336, #e57373);
         }
 
+        /* General Body Styles */
         body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- Global Loader / Progress Bar --- */
-        #progressBar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: transparent;
-            z-index: 9999;
-            overflow: hidden;
-            display: none;
-        }
-
-        #progressBar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--button-bg);
-            animation: indeterminate-progress 1.5s infinite ease-in-out;
-        }
-
-        @keyframes indeterminate-progress {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* --- Main Layout --- */
-        .main-container {
-            display: flex;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-        
-        /* --- Header --- */
-        .app-header {
-            background-color: var(--header-surface-color);
-            padding: 8px 20px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
-
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 22px;
-            font-weight: 500;
-            margin-right: 20px;
-        }
-
-        .header-logo i {
-            color: var(--button-bg);
-        }
-
-        .search-bar {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            background-color: #313335;
-            padding: 0 8px;
-            border-radius: 24px;
-            max-width: 720px;
-        }
-
-        .search-bar .material-icons {
-            color: var(--text-secondary);
-            padding: 8px;
-        }
-        
-        .search-bar input {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-primary);
-            padding: 12px 8px;
-            font-size: 16px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-            gap: 8px;
-        }
-        
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-btn:hover {
-            background-color: var(--hover-bg-color);
-        }
-
-        .profile-btn {
-            width: 32px;
-            height: 32px;
-            background-color: #673AB7;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 500;
-            color: white;
-            cursor: pointer;
-        }
-
-        .profile-menu {
-            position: relative;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            background-color: var(--dialog-surface-color);
-            border-radius: var(--item-border-radius);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 100;
-            width: 200px;
-        }
-        
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        #logoutBtn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            width: 100%;
-            text-align: left;
-            border: none;
-            background: none;
-            color: var(--text-primary);
-            cursor: pointer;
-        }
-        #logoutBtn:hover {
-             background-color: var(--hover-bg-color);
-        }
-
-
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 256px;
-            background-color: var(--sidebar-surface-color);
-            padding: 16px 12px;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            border-right: 1px solid var(--border-color);
-        }
-        
-        .new-btn {
-            background-color: #3c4043;
-            color: var(--text-primary);
-            border: none;
-            padding: 16px;
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .new-btn:hover {
-            background-color: #4c5053;
-        }
-
-        .sidebar-nav ul {
-            list-style: none;
             padding: 0;
-            margin: 0;
-        }
-        .sidebar-nav li a {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 8px 16px;
-            border-radius: var(--border-radius);
-            text-decoration: none;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-        .sidebar-nav li a.active, .sidebar-nav li a:hover {
-            background-color: var(--hover-bg-color);
-        }
-        .sidebar-nav li a.active {
-            background-color: var(--active-item-bg);
-            color: var(--active-item-text);
-            font-weight: 500;
-        }
-
-
-        /* --- Main Content --- */
-        .content-area {
-            flex-grow: 1;
-            padding: 0 24px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for bottom nav */
         }
 
-        .content-header {
-            padding: 20px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .content-header h1 {
-            font-size: 22px;
-            margin: 0;
-        }
-        
-        .content-header .icon-btn {
-            margin-left: 8px;
-        }
-        
+        /* Main App Container */
         #app {
-           flex-grow: 1;
-           padding-top: 16px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-grow: 1;
+            transition: opacity 0.4s ease;
         }
         
-        /* --- Login & Settings Card --- */
-        .card {
-            background-color: var(--dialog-surface-color);
-            border-radius: 8px;
-            padding: 24px;
-            margin: 40px auto;
-            max-width: 450px;
-            border: 1px solid var(--border-color);
+        #app.loading {
+            opacity: 0.5;
+            pointer-events: none;
         }
-        .form-group {
-            margin-bottom: 20px;
+
+        /* Page/View Animation */
+        .view {
+            animation: fadeIn 0.5s forwards;
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--text-secondary);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        h2 {
+            color: var(--heading-color);
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2.2em;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(187, 134, 252, 0.3);
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background-color: var(--header-bg); display: flex;
+            justify-content: space-around; padding: 10px 0;
+            box-shadow: 0 -5px 20px var(--shadow-color);
+            border-top: 1px solid var(--border-color); z-index: 1000;
+        }
+        .nav-item {
+            background: none; border: none; color: var(--secondary-color);
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: color 0.3s ease, transform 0.3s ease;
+            font-size: 0.8em; padding: 5px 10px; border-radius: 8px;
+        }
+        .nav-item i { font-size: 1.6em; margin-bottom: 5px; }
+        .nav-item.active { color: var(--primary-color); transform: scale(1.1); }
+        .nav-item:hover:not(.active) { color: var(--text-color); }
+
+        /* Generic Button */
+        .btn {
+            background: var(--btn-primary-gradient); padding: 14px 28px;
+            border: none; border-radius: 12px; cursor: pointer;
+            font-size: 1.05em; font-weight: 600; transition: all 0.3s ease;
+            color: var(--button-text-color); display: inline-flex;
+            align-items: center; justify-content: center; gap: 8px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--shadow-color); }
+        .btn.btn-danger { background: var(--btn-danger-gradient); }
+        .btn.btn-danger:hover { background: var(--btn-danger-hover-gradient); }
+        
+        /* Icon only Button */
+        .btn-icon {
+            background: var(--app-background); border: 1px solid var(--border-color);
+            color: var(--text-color); width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; font-size: 1em; transition: all 0.2s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+        .btn-icon:hover { transform: translateY(-2px); box-shadow: 0 6px 15px var(--shadow-color); }
+        .btn-icon.view-btn:hover { color: #2196F3; border-color: #2196F3; }
+        .btn-icon.edit-btn:hover { color: #FFC107; border-color: #FFC107; }
+        .btn-icon.delete-btn:hover { color: var(--danger-color); border-color: var(--danger-color); }
+        .btn-icon.play-btn:hover { color: var(--primary-color); border-color: var(--primary-color); }
+        .btn-icon.copy-link-btn:hover { color: #9C27B0; border-color: #9C27B0; }
+        .btn-icon.browse-folder-btn:hover { color: #00BCD4; border-color: #00BCD4; }
+
+        /* Form Styling */
+        .form-container { background-color: var(--app-background); padding: 30px; border-radius: 16px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 10px; font-weight: 500; color: var(--text-color); }
         .form-group input {
-            width: 100%;
-            padding: 12px;
-            background-color: #313335;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: var(--text-primary);
-            font-size: 16px;
-            box-sizing: border-box;
+            width: 100%; padding: 14px; box-sizing: border-box;
+            border: 1px solid var(--input-border); border-radius: 10px; font-size: 1em;
+            background-color: var(--input-bg); color: var(--text-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .form-group input:focus {
-             outline: 2px solid var(--button-bg);
-             border-color: transparent;
+            border-color: var(--heading-color);
+            box-shadow: 0 0 0 4px var(--focus-ring-color); outline: none;
         }
-        .btn {
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
+
+        /* List Item Styling (Accounts & Files) */
+        .item-list { list-style: none; padding: 0; margin: 0; }
+        .list-item {
+            display: flex; align-items: center; padding: 20px;
+            margin-bottom: 15px; background-color: var(--app-background);
+            border-radius: 16px; box-shadow: 0 4px 15px var(--shadow-color);
+            transition: all 0.3s ease; border: 1px solid var(--border-color);
         }
-        .btn-primary {
-            background-color: var(--button-bg);
-            color: var(--button-text);
-        }
+        .list-item:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 25px var(--shadow-color); background-color: var(--list-item-hover-bg); }
+        .list-item-info { flex-grow: 1; display: flex; align-items: center; gap: 15px; }
+        .list-item-info i { font-size: 1.8em; color: var(--icon-color); width: 30px; text-align: center; }
+        .list-item-name { font-size: 1.2em; font-weight: 500; }
+        .list-item-details { font-size: 0.9em; color: var(--secondary-color); margin-top: 4px; }
+        .list-item-actions { display: flex; gap: 12px; }
+
+        /* Drive Browser Specifics */
+        .browser-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .search-container { display: flex; flex-grow: 1; gap: 10px; }
+        .search-container input { flex-grow: 1; padding: 12px; }
+        #pagination { text-align: center; margin-top: 25px; }
+        #mediaPlayerContainer { margin-top: 30px; background-color: var(--app-background); padding: 20px; border-radius: 16px; }
+        #mediaPlayerContainer video, #mediaPlayerContainer audio { width: 100%; border-radius: 12px; }
         
-        /* --- File/Account List Table --- */
-        .file-table {
-            width: 100%;
-            border-collapse: collapse;
-            color: var(--text-primary);
-        }
+        /* Modal, Message Styling */
+        #messageContainer { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10001; width: 90%; max-width: 500px; }
+        .message { padding: 15px 25px; border-radius: 10px; margin-bottom: 10px; font-weight: 500; text-align: center; color: white; box-shadow: 0 5px 20px var(--shadow-color); animation: slideDownFadeOut 5s forwards; }
+        .message.success { background: var(--message-success-bg); }
+        .message.error { background: var(--message-error-bg); }
+        @keyframes slideDownFadeOut { 0% { opacity: 0; transform: translateY(-20px); } 10%, 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
 
-        .file-table th, .file-table td {
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); }
+        .modal-content { background-color: var(--app-background); padding: 40px; border-radius: 20px; text-align: center; max-width: 500px; width: 90%; color: var(--text-color); border: 1px solid var(--border-color); animation: zoomIn 0.3s; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-content p { font-size: 1.2em; margin-bottom: 35px; }
+        .modal-actions .btn { margin: 0 12px; }
 
-        .file-table th {
-            color: var(--text-secondary);
-            font-weight: 500;
+        /* Responsive */
+        @media (max-width: 768px) {
+            h2 { font-size: 1.8em; }
+            .list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .list-item-actions { width: 100%; justify-content: flex-end; }
+            .browser-header { flex-direction: column; }
         }
-
-        .file-table tr:hover {
-            background-color: var(--hover-bg-color);
-        }
-        
-        .file-name-cell {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .file-name-cell .material-icons {
-            color: var(--text-secondary);
-        }
-        
-        .actions-cell {
-            text-align: right;
-        }
-        .actions-cell .icon-btn {
-            opacity: 0; /* Hidden by default */
-            transition: opacity 0.2s;
-        }
-        .file-table tr:hover .actions-cell .icon-btn {
-            opacity: 1; /* Show on hover */
-        }
-        
-        /* Message/Toast */
-        .message {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 4px;
-            background-color: #323639;
-            color: var(--text-primary);
-            z-index: 3000;
-            opacity: 0;
-            animation: fadeInOut 5s ease-in-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; bottom: 0px; }
-            10% { opacity: 1; bottom: 30px; }
-            90% { opacity: 1; bottom: 30px; }
-            100% { opacity: 0; bottom: 0px; }
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            background-color: var(--dialog-surface-color);
-            padding: 24px; border-radius: 8px; max-width: 500px; width: 100%;
-        }
-         .modal-content.video-modal { max-width: 90vw; max-height: 90vh; }
-        .modal-actions { margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px; }
-        video.media-player { width: 100%; border-radius: 8px; }
-
     </style>
 </head>
 <body>
-    <div id="progressBar"></div>
 
-    <header class="app-header">
-        <div class="header-logo">
-            <i class="fa-brands fa-google-drive"></i>
-            <span>Drive</span>
-        </div>
-        <div class="search-bar">
-            <span class="material-icons">search</span>
-            <input type="search" id="searchDriveInput" placeholder="Search in Drive">
-        </div>
-        <div class="header-actions">
-            <button class="icon-btn"><span class="material-icons">help_outline</span></button>
-            <button class="icon-btn"><span class="material-icons">settings</span></button>
-            <div class="profile-menu" style="display: none;">
-                <button class="profile-btn" id="profileBtn">A</button>
-                <div class="dropdown-menu" id="profileDropdown">
-                    <button id="logoutBtn">
-                        <span class="material-icons">logout</span>
-                        <span>Logout</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <aside class="sidebar">
-            <button class="new-btn"><span class="material-icons">add</span> New</button>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="#" id="myDriveLink" class="active"><span class="material-icons">folder</span> My Drive</a></li>
-                    <li><a href="#" id="accountsLink"><span class="material-icons">account_box</span> Accounts</a></li>
-                </ul>
-            </nav>
-        </aside>
-
-        <main class="content-area">
-            <div id="app">
-                <!-- Dynamic content will be rendered here -->
-            </div>
-        </main>
+    <div id="app">
+        <!-- Content will be rendered here by JS -->
     </div>
 
-    <script>
-        // --- CONFIG & STATE ---
-        const WORKER_BASE_URL = "https://axel-drive.comtv.workers.dev";
-        const appDiv = document.getElementById('app');
-        const progressBar = document.getElementById('progressBar');
-        const profileMenu = document.querySelector('.profile-menu');
-        const profileBtn = document.getElementById('profileBtn');
-        const profileDropdown = document.getElementById('profileDropdown');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const searchInput = document.getElementById('searchDriveInput');
-        
-        let adminToken = localStorage.getItem('admin_token');
-        let currentAccountId = null; // Track which account is being browsed
+    <nav class="bottom-nav">
+        <!-- JS will control visibility of these items -->
+    </nav>
+    
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage">Are you sure?</p>
+            <div class="modal-actions">
+                <button id="modalConfirm" class="btn">Confirm</button>
+                <button id="modalCancel" class="btn btn-danger">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="messageContainer"></div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const WORKER_BASE_URL = "https://axel-drive.comtv.workers.dev";
+        const app = document.getElementById('app');
+        const nav = document.querySelector('.bottom-nav');
+        const modal = document.getElementById('modal');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalConfirm = document.getElementById('modalConfirm');
+        const modalCancel = document.getElementById('modalCancel');
+        const messageContainer = document.getElementById('messageContainer');
+
+        let adminToken = localStorage.getItem('admin_token');
+        let onConfirmCallback = null;
         const CONSTS = {
             folder_mime_type: "application/vnd.google-apps.folder",
         };
 
-        // --- HELPER FUNCTIONS ---
-        function showLoading() { progressBar.style.display = 'block'; }
-        function hideLoading() { progressBar.style.display = 'none'; }
-        
-        function formatBytes(bytes, decimals = 2) {
-            if (bytes === null || bytes === undefined || bytes === 0) return '-';
-            const k = 1024;
-            const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-        }
-        
-        function formatDate(isoString) {
-            if (!isoString) return '-';
-            return new Date(isoString).toLocaleDateString('en-GB', {
-                day: 'numeric', month: 'short', year: 'numeric'
-            });
-        }
-        
-        async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = true) {
-            showLoading();
+        // --- Helper Functions ---
+        async function apiRequest(endpoint, method = 'GET', body = null) {
+            app.classList.add('loading');
             const headers = { 'Content-Type': 'application/json' };
-            if (requiresAuth) {
-                if (!adminToken) {
-                    showMessage('Authentication required. Please login.');
-                    showLoginPage();
-                    hideLoading();
-                    throw new Error('Authentication required');
-                }
+            if (adminToken) {
                 headers['Authorization'] = `Bearer ${adminToken}`;
             }
 
-            const options = { method, headers };
-            if (body) options.body = JSON.stringify(body);
-
             try {
-                const response = await fetch(`${WORKER_BASE_URL}${endpoint}`, options);
+                const response = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
+                if (response.status === 401) { // Unauthorized
+                    logout();
+                    throw new Error('Authentication failed. Please login again.');
+                }
+                const data = await response.json();
                 if (!response.ok) {
-                    const data = await response.json().catch(() => ({ error: 'API request failed with status ' + response.status }));
                     throw new Error(data.error || 'API request failed');
                 }
-                return await response.json();
+                return data;
             } catch (error) {
-                console.error('API Error:', error);
                 showMessage(error.message, 'error');
                 throw error;
             } finally {
-                hideLoading();
+                 app.classList.remove('loading');
+            }
+        }
+        
+        function showMessage(message, type = 'success') {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageContainer.appendChild(messageEl);
+            setTimeout(() => messageEl.remove(), 4900);
+        }
+
+        function showConfirmModal(message, callback) {
+            modalMessage.textContent = message;
+            onConfirmCallback = callback;
+            modal.style.display = 'flex';
+        }
+
+        modalConfirm.addEventListener('click', () => {
+            if (onConfirmCallback) onConfirmCallback();
+            modal.style.display = 'none';
+        });
+        modalCancel.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        function logout() {
+            localStorage.removeItem('admin_token');
+            adminToken = null;
+            renderUI();
+        }
+
+        // --- UI Rendering Functions ---
+        function renderNav() {
+            if (adminToken) {
+                nav.innerHTML = `
+                    <button class="nav-item active" data-view="accounts"><i class="fas fa-server"></i><span>Accounts</span></button>
+                    <button class="nav-item" data-view="addAccount"><i class="fas fa-plus-circle"></i><span>Add New</span></button>
+                    <button class="nav-item" data-view="settings"><i class="fas fa-cog"></i><span>Settings</span></button>
+                `;
+                 nav.style.display = 'flex';
+            } else {
+                nav.innerHTML = '';
+                 nav.style.display = 'none';
             }
         }
 
-        function showMessage(message) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            messageDiv.textContent = message;
-            document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 5000);
+        function renderView(view, params = {}) {
+            renderNav();
+            // Update nav active state
+            nav.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.view === view);
+            });
+            
+            // Clear previous content
+            app.innerHTML = '';
+            
+            switch (view) {
+                case 'login': renderLoginPage(); break;
+                case 'accounts': renderAccountsPage(); break;
+                case 'addAccount': renderAddEditAccountPage(); break;
+                case 'editAccount': renderAddEditAccountPage(params.accountId); break;
+                case 'browseDrive': renderDriveBrowserPage(params.accountId, params.folderId, params.searchTerm, params.pageToken); break;
+                case 'settings': renderSettingsPage(); break;
+                default: renderLoginPage();
+            }
         }
 
-        function handleLogout() {
-            localStorage.removeItem('admin_token');
-            adminToken = null;
-            showMessage('You have been logged out.');
-            showLoginPage();
-        }
-        
-        function getFileIcon(mimeType) {
-            if (mimeType === CONSTS.folder_mime_type) return 'folder';
-            if (mimeType.startsWith('video/')) return 'movie';
-            if (mimeType.startsWith('audio/')) return 'music_note';
-            if (mimeType.startsWith('image/')) return 'image';
-            if (mimeType.includes('pdf')) return 'picture_as_pdf';
-            if (mimeType.includes('zip') || mimeType.includes('rar')) return 'archive';
-            return 'article';
-        }
-
-
-        // --- UI RENDERING FUNCTIONS ---
-        
-        function showLoginPage() {
-            profileMenu.style.display = 'none';
-            document.querySelector('.main-container').style.display = 'none';
-            document.querySelector('.app-header .search-bar').style.display = 'none';
-            document.body.insertAdjacentHTML('beforeend', `
-                <div id="login-container">
-                    <div class="card">
-                        <h2>Admin Login</h2>
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" value="admin">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password">
-                        </div>
-                        <button id="loginBtn" class="btn btn-primary" style="width: 100%;">Login</button>
-                    </div>
-                </div>
-            `);
-
+        function renderLoginPage() {
+            app.innerHTML = `
+                <div class="view form-container">
+                    <h2>Admin Login</h2>
+                    <div class="form-group"><label for="username">Username</label><input type="text" id="username" value="admin"></div>
+                    <div class="form-group"><label for="password">Password</label><input type="password" id="password" value="123admin"></div>
+                    <button id="loginBtn" class="btn">Login</button>
+                </div>`;
             document.getElementById('loginBtn').onclick = async () => {
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 try {
-                    const data = await apiRequest('/api/auth/login', 'POST', { username, password }, false);
+                    const data = await apiRequest('/api/auth/login', 'POST', { username, password });
                     adminToken = data.token;
                     localStorage.setItem('admin_token', adminToken);
-                    document.getElementById('login-container').remove();
-                    initializeAppUI();
-                } catch (error) { /* Handled by apiRequest */ }
+                    showMessage('Login successful!');
+                    renderView('accounts');
+                } catch (error) { /* showMessage is called in apiRequest */ }
             };
         }
 
-        async function showGoogleAccountsPage() {
-            setActiveNav('accountsLink');
-            appDiv.innerHTML = `
-                <div class="content-header"><h1>Google Drive Accounts</h1></div>
-                <button id="addAccountBtn" class="new-btn" style="width: auto; margin-top: 16px;">
-                    <span class="material-icons">add</span> Add New Account
-                </button>
-                <div id="accountsList" style="margin-top: 16px;"></div>
-            `;
-            document.getElementById('addAccountBtn').onclick = () => showAddEditAccountPage();
-
+        async function renderAccountsPage() {
+            app.innerHTML = `<div class="view"><h2>Google Drive Accounts</h2><ul class="item-list" id="accountsList"><li>Loading...</li></ul></div>`;
+            const listEl = document.getElementById('accountsList');
             try {
                 const accounts = await apiRequest('/api/settings/list');
-                const listDiv = document.getElementById('accountsList');
-                if (accounts.length === 0) {
-                    listDiv.innerHTML = '<p>No accounts added yet.</p>';
-                    return;
-                }
-                
-                const table = `
-                    <table class="file-table">
-                        <thead><tr><th>Name</th><th>Account ID</th><th style="text-align:right;">Actions</th></tr></thead>
-                        <tbody>
-                        ${accounts.map(acc => `
-                            <tr>
-                                <td class="file-name-cell">
-                                    <span class="material-icons">account_circle</span>
-                                    ${acc.name}
-                                </td>
-                                <td>${acc.id}</td>
-                                <td class="actions-cell">
-                                    <button class="icon-btn view-btn" data-id="${acc.id}" title="View Files"><span class="material-icons">folder_open</span></button>
-                                    <button class="icon-btn edit-btn" data-id="${acc.id}" title="Edit"><span class="material-icons">edit</span></button>
-                                    <button class="icon-btn delete-btn" data-id="${acc.id}" title="Delete"><span class="material-icons">delete</span></button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                        </tbody>
-                    </table>
-                `;
-                listDiv.innerHTML = table;
-
-                listDiv.querySelectorAll('.view-btn').forEach(b => b.onclick = (e) => {
-                    currentAccountId = e.currentTarget.dataset.id;
-                    showDriveBrowserPage(currentAccountId);
-                });
-                listDiv.querySelectorAll('.edit-btn').forEach(b => b.onclick = (e) => showAddEditAccountPage(e.currentTarget.dataset.id));
-                listDiv.querySelectorAll('.delete-btn').forEach(b => b.onclick = (e) => {
-                    const id = e.currentTarget.dataset.id;
-                    showConfirmModal(`Delete account "${id}"?`, async () => {
-                        await apiRequest(`/api/settings/delete/${id}`, 'DELETE');
-                        showMessage('Account deleted.');
-                        showGoogleAccountsPage();
-                    });
-                });
+                listEl.innerHTML = accounts.length === 0 ? '<li>No accounts found. Add one from the "Add New" tab.</li>' :
+                    accounts.map(acc => `
+                        <li class="list-item">
+                            <div class="list-item-info">
+                                <i class="fab fa-google-drive"></i>
+                                <div><div class="list-item-name">${acc.name}</div><div class="list-item-details">ID: ${acc.id}</div></div>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn-icon view-btn" title="View Files" data-id="${acc.id}"><i class="fas fa-folder-open"></i></button>
+                                <button class="btn-icon edit-btn" title="Edit" data-id="${acc.id}"><i class="fas fa-pencil-alt"></i></button>
+                                <button class="btn-icon delete-btn" title="Delete" data-id="${acc.id}"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </li>`).join('');
             } catch (error) {
-                if (error.message.includes('Authentication')) showLoginPage();
+                listEl.innerHTML = '<li>Failed to load accounts.</li>';
             }
         }
 
-        async function showAddEditAccountPage(accountId = null) {
+        async function renderAddEditAccountPage(accountId = null) {
             let account = {};
             if (accountId) {
-                account = await apiRequest(`/api/settings/get/${accountId}`);
-            }
-            appDiv.innerHTML = `
-                <div class="content-header"><h1>${accountId ? 'Edit' : 'Add'} Account</h1></div>
-                <div class="card" style="margin-top: 16px; max-width: 600px;">
-                    <div class="form-group">
-                        <label>Account ID:</label>
-                        <input type="text" id="accountId" value="${account.id || ''}" ${accountId ? 'readonly' : ''}>
-                    </div>
-                    <div class="form-group"><label>Account Name:</label><input type="text" id="accountName" value="${account.name || ''}"></div>
-                    <div class="form-group"><label>Client ID:</label><input type="text" id="clientId" value="${account.client_id || ''}"></div>
-                    <div class="form-group"><label>Client Secret:</label><input type="text" id="clientSecret" value="${account.client_secret || ''}"></div>
-                    <div class="form-group"><label>Refresh Token:</label><input type="text" id="refreshToken" value="${account.refresh_token || ''}"></div>
-                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                        <button id="cancelBtn" class="btn" style="background:var(--hover-bg-color); color: var(--text-primary);">Cancel</button>
-                        <button id="saveAccountBtn" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('saveAccountBtn').onclick = async () => {
-                const payload = {
-                    id: document.getElementById('accountId').value, name: document.getElementById('accountName').value,
-                    client_id: document.getElementById('clientId').value, client_secret: document.getElementById('clientSecret').value,
-                    refresh_token: document.getElementById('refreshToken').value,
-                };
-                const endpoint = accountId ? `/api/settings/update/${payload.id}` : '/api/settings/add';
-                const method = accountId ? 'PUT' : 'POST';
-                await apiRequest(endpoint, method, payload);
-                showMessage(`Account ${accountId ? 'updated' : 'added'}.`);
-                showGoogleAccountsPage();
-            };
-            document.getElementById('cancelBtn').onclick = () => showGoogleAccountsPage();
-        }
-
-
-        async function showDriveBrowserPage(accountId, folderId = 'root', pageToken = null) {
-            setActiveNav('myDriveLink');
-            currentAccountId = accountId; // Keep track of the current account
-            
-            const isSearch = !!searchInput.value;
-            let title = isSearch ? `Search results for "${searchInput.value}"` : 'My Drive';
-            
-            if (!pageToken) { // Only render header on first page load
-                appDiv.innerHTML = `
-                    <div class="content-header">
-                        <h1>${title}</h1>
-                        <div>
-                            <button class="icon-btn"><span class="material-icons">view_list</span></button>
-                            <button class="icon-btn"><span class="material-icons">info</span></button>
-                        </div>
-                    </div>
-                    <div id="driveContent">
-                         <table class="file-table">
-                            <thead><tr><th>Name</th><th>Owner</th><th>Last modified</th><th>File size</th><th class="actions-cell"></th></tr></thead>
-                            <tbody id="file-list-body"></tbody>
-                        </table>
-                        <div id="pagination" style="text-align: center; padding: 20px;"></div>
-                    </div>
-                `;
-            }
-
-            const fileListBody = document.getElementById('file-list-body');
-            const paginationDiv = document.getElementById('pagination');
-
-            try {
-                let apiUrl, params = new URLSearchParams({ pageSize: 50 });
-                if (isSearch) {
-                    apiUrl = `/api/drive/search/${accountId}`;
-                    params.append('q', searchInput.value);
-                } else {
-                    apiUrl = `/api/drive/list/${accountId}/${folderId || 'root'}`;
-                }
-                if (pageToken) params.append('pageToken', pageToken);
-                
-                const data = await apiRequest(`${apiUrl}?${params.toString()}`);
-                
-                if (!data.files || data.files.length === 0) {
-                    if (!pageToken) fileListBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Folder is empty or no results found.</td></tr>';
-                    paginationDiv.innerHTML = ''; // No more pages
+                try {
+                    account = await apiRequest(`/api/settings/get/${accountId}`);
+                } catch (error) {
+                    renderView('accounts');
                     return;
                 }
-                
-                const rowsHtml = data.files.map(item => `
-                    <tr>
-                        <td class="file-name-cell">
-                           <span class="material-icons">${getFileIcon(item.mimeType)}</span>
-                           ${item.name}
-                        </td>
-                        <td>${item.owners && item.owners.length > 0 ? item.owners[0].displayName : 'me'}</td>
-                        <td>${formatDate(item.modifiedTime)}</td>
-                        <td>${formatBytes(item.size)}</td>
-                        <td class="actions-cell">
-                             ${item.mimeType === CONSTS.folder_mime_type 
-                                ? `<button class="icon-btn browse-folder-btn" data-folder-id="${item.id}" title="Open folder"><span class="material-icons">folder_open</span></button>`
-                                : `<button class="icon-btn copy-link-btn" data-file-id="${item.id}" title="Copy link"><span class="material-icons">link</span></button>`
-                             }
-                             ${item.mimeType.startsWith('video/') 
-                                ? `<button class="icon-btn play-btn" data-file-id="${item.id}" data-mime-type="${item.mimeType}" data-file-name="${item.name}" title="Play"><span class="material-icons">play_circle</span></button>`
-                                : ''
-                             }
-                        </td>
-                    </tr>
-                `).join('');
+            }
+            app.innerHTML = `
+                <div class="view form-container">
+                    <h2>${accountId ? 'Edit' : 'Add'} Account</h2>
+                    <div class="form-group"><label>Account ID</label><input type="text" id="accountId" value="${account.id || ''}" ${accountId ? 'readonly' : ''}></div>
+                    <div class="form-group"><label>Account Name</label><input type="text" id="accountName" value="${account.name || ''}"></div>
+                    <div class="form-group"><label>Client ID</label><input type="text" id="clientId" value="${account.client_id || ''}"></div>
+                    <div class="form-group"><label>Client Secret</label><input type="text" id="clientSecret" value="${account.client_secret || ''}"></div>
+                    <div class="form-group"><label>Refresh Token</label><input type="text" id="refreshToken" value="${account.refresh_token || ''}"></div>
+                    <button id="saveAccountBtn" class="btn">Save Account</button>
+                </div>`;
+            document.getElementById('saveAccountBtn').onclick = async () => {
+                const id = document.getElementById('accountId').value;
+                const data = {
+                    id: id, name: document.getElementById('accountName').value,
+                    client_id: document.getElementById('clientId').value,
+                    client_secret: document.getElementById('clientSecret').value,
+                    refresh_token: document.getElementById('refreshToken').value
+                };
+                try {
+                    if (accountId) await apiRequest(`/api/settings/update/${id}`, 'PUT', data);
+                    else await apiRequest('/api/settings/add', 'POST', data);
+                    showMessage(`Account ${accountId ? 'updated' : 'added'} successfully!`);
+                    renderView('accounts');
+                } catch (error) { /* Handled in apiRequest */ }
+            };
+        }
+        
+        async function renderDriveBrowserPage(accountId, folderId = null, searchTerm = null, pageToken = null) {
+            const path = sessionStorage.getItem(`path_${accountId}`) ? JSON.parse(sessionStorage.getItem(`path_${accountId}`)) : [{id: null, name: 'Root'}];
 
-                fileListBody.insertAdjacentHTML('beforeend', rowsHtml);
+            app.innerHTML = `
+                <div class="view">
+                    <div class="browser-header">
+                        <div id="breadcrumbs"></div>
+                        <div class="search-container">
+                             <input type="text" id="searchDriveInput" class="form-group input" placeholder="Search in this account..." value="${searchTerm || ''}">
+                             <button id="searchDriveBtn" class="btn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    <ul class="item-list" id="driveContent"><li>Loading...</li></ul>
+                    <div id="pagination"></div>
+                    <div id="mediaPlayerContainer"></div>
+                </div>`;
 
-                paginationDiv.innerHTML = data.nextPageToken
-                    ? `<button id="loadMoreBtn" class="btn btn-primary">Load More</button>`
-                    : '';
-                if(data.nextPageToken) {
-                    document.getElementById('loadMoreBtn').onclick = () => showDriveBrowserPage(accountId, folderId, data.nextPageToken);
+            const driveContent = document.getElementById('driveContent');
+
+            // Breadcrumbs
+            const breadcrumbs = document.getElementById('breadcrumbs');
+            if (!searchTerm) {
+                breadcrumbs.innerHTML = path.map((p, i) => `<a href="#" class="breadcrumb-link" data-index="${i}">${p.name}</a>`).join(' &raquo; ');
+            } else {
+                 breadcrumbs.innerHTML = `<span>Search Results for "${searchTerm}"</span>`;
+            }
+
+            try {
+                let apiUrl, queryParams = new URLSearchParams({ pageSize: 50 });
+                if (searchTerm) {
+                    apiUrl = `/api/drive/search/${accountId}`;
+                    queryParams.append('q', searchTerm);
+                } else {
+                    apiUrl = `/api/drive/list/${accountId}/${folderId || ''}`;
                 }
+                if (pageToken) queryParams.append('pageToken', pageToken);
+                
+                const data = await apiRequest(`${apiUrl}?${queryParams.toString()}`);
+                
+                const getFileIcon = (mimeType) => {
+                    if (mimeType === CONSTS.folder_mime_type) return 'fa-folder';
+                    if (mimeType.startsWith('video/')) return 'fa-file-video';
+                    if (mimeType.startsWith('audio/')) return 'fa-file-audio';
+                    if (mimeType.startsWith('image/')) return 'fa-file-image';
+                    return 'fa-file-alt';
+                };
 
-                // Attach event listeners for newly added rows
-                document.querySelectorAll('.browse-folder-btn:not([data-listener-attached])').forEach(b => {
-                    b.setAttribute('data-listener-attached', 'true');
-                    b.onclick = e => showDriveBrowserPage(accountId, e.currentTarget.dataset.folderId);
-                });
-                document.querySelectorAll('.copy-link-btn:not([data-listener-attached])').forEach(b => {
-                    b.setAttribute('data-listener-attached', 'true');
-                    b.onclick = e => {
-                        const link = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${e.currentTarget.dataset.fileId}`;
-                        navigator.clipboard.writeText(link).then(() => showMessage('Link copied!'), () => showMessage('Failed to copy.'));
-                    }
-                });
-                document.querySelectorAll('.play-btn:not([data-listener-attached])').forEach(b => {
-                    b.setAttribute('data-listener-attached', 'true');
-                    b.onclick = e => playMediaInModal(accountId, e.currentTarget.dataset);
-                });
-
+                driveContent.innerHTML = data.files && data.files.length > 0 ?
+                    data.files.map(item => `
+                        <li class="list-item">
+                            <div class="list-item-info">
+                                <i class="fas ${getFileIcon(item.mimeType)}"></i>
+                                <div><div class="list-item-name">${item.name}</div></div>
+                            </div>
+                            <div class="list-item-actions">
+                                ${item.mimeType !== CONSTS.folder_mime_type ? `<button class="btn-icon copy-link-btn" title="Copy Link" data-file-id="${item.id}"><i class="fas fa-link"></i></button>` : ''}
+                                ${(item.mimeType.startsWith('video/') || item.mimeType.startsWith('audio/')) ? `<button class="btn-icon play-btn" title="Play" data-file-id="${item.id}" data-mime-type="${item.mimeType}"><i class="fas fa-play"></i></button>` : ''}
+                                ${item.mimeType === CONSTS.folder_mime_type ? `<button class="btn-icon browse-folder-btn" title="Browse" data-folder-id="${item.id}" data-folder-name="${item.name}"><i class="fas fa-folder-open"></i></button>` : ''}
+                            </div>
+                        </li>`).join('') :
+                    `<li>${searchTerm ? 'No search results found.' : 'This folder is empty.'}</li>`;
+                
+                // Pagination
+                const paginationDiv = document.getElementById('pagination');
+                paginationDiv.innerHTML = '';
+                if (data.nextPageToken) {
+                    const loadMoreBtn = document.createElement('button');
+                    loadMoreBtn.className = 'btn';
+                    loadMoreBtn.textContent = 'Load More';
+                    loadMoreBtn.onclick = () => renderDriveBrowserPage(accountId, folderId, searchTerm, data.nextPageToken);
+                    paginationDiv.appendChild(loadMoreBtn);
+                }
             } catch (error) {
-                if (error.message.includes('Authentication')) showLoginPage();
+                driveContent.innerHTML = '<li>Error loading content.</li>';
             }
         }
         
-        // --- MODAL & ACTION FUNCTIONS ---
-        function playMediaInModal(accountId, {fileId, mimeType, fileName}) {
-            const streamUrl = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${fileId}`;
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `
-                <div class="modal-content video-modal">
-                    <h3>${fileName}</h3>
-                    <video controls autoplay class="media-player">
-                        <source src="${streamUrl}" type="${mimeType}">
-                    </video>
-                    <div class="modal-actions">
-                        <button class="btn btn-primary">Close</button>
-                    </div>
+        function renderSettingsPage(){
+             app.innerHTML = `
+                <div class="view form-container">
+                    <h2>Settings</h2>
+                    <p>You are logged in as an administrator.</p>
+                    <button id="logoutBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
-            `;
-            document.body.appendChild(modal);
-            modal.querySelector('button').onclick = () => modal.remove();
-            modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
+             `;
         }
 
-        function showConfirmModal(message, onConfirm) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <p>${message}</p>
-                    <div class="modal-actions">
-                        <button class="btn" style="background:var(--hover-bg-color); color: var(--text-primary);">Cancel</button>
-                        <button class="btn" style="background:#d93025; color:white;">Confirm</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            const [cancelBtn, confirmBtn] = modal.querySelectorAll('button');
-            cancelBtn.onclick = () => modal.remove();
-            confirmBtn.onclick = () => { onConfirm(); modal.remove(); };
-        }
+        // --- Event Delegation ---
+        document.body.addEventListener('click', async (e) => {
+            // Nav clicks
+            const navLink = e.target.closest('.nav-item');
+            if (navLink) return renderView(navLink.dataset.view);
 
-        // --- INITIALIZATION & EVENT LISTENERS ---
-        function setActiveNav(linkId) {
-            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-            document.getElementById(linkId).classList.add('active');
-        }
-
-        function initializeAppUI() {
-            document.querySelector('.main-container').style.display = 'flex';
-            document.querySelector('.app-header .search-bar').style.display = 'flex';
-            profileMenu.style.display = 'block';
-            showGoogleAccountsPage(); // Start with accounts page
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (adminToken) {
-                initializeAppUI();
-            } else {
-                showLoginPage();
+            // Accounts page clicks
+            if(e.target.closest('.view-btn')) {
+                sessionStorage.removeItem(`path_${e.target.closest('.view-btn').dataset.id}`); // Clear path history
+                return renderView('browseDrive', { accountId: e.target.closest('.view-btn').dataset.id });
+            }
+            if(e.target.closest('.edit-btn')) return renderView('editAccount', { accountId: e.target.closest('.edit-btn').dataset.id });
+            if(e.target.closest('.delete-btn')) {
+                const id = e.target.closest('.delete-btn').dataset.id;
+                showConfirmModal(`Are you sure you want to delete account "${id}"?`, async () => {
+                    try {
+                        await apiRequest(`/api/settings/delete/${id}`, 'DELETE');
+                        showMessage('Account deleted!');
+                        renderView('accounts');
+                    } catch (error) { /* Handled */ }
+                });
             }
 
-            // Global Event Listeners
-            profileBtn.onclick = () => profileDropdown.classList.toggle('show');
-            document.addEventListener('click', (e) => {
-                if (!profileMenu.contains(e.target)) {
-                    profileDropdown.classList.remove('show');
-                }
-            });
-            
-            logoutBtn.onclick = handleLogout;
-
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && currentAccountId) {
-                    showDriveBrowserPage(currentAccountId);
-                }
-            });
-            
-            // Sidebar Navigation
-            document.getElementById('accountsLink').onclick = (e) => {
+            // Drive browser clicks
+            if(e.target.closest('.breadcrumb-link')) {
                 e.preventDefault();
-                showGoogleAccountsPage();
-            };
-            document.getElementById('myDriveLink').onclick = (e) => {
-                e.preventDefault();
-                if (currentAccountId) {
-                    searchInput.value = ''; // Clear search when clicking my drive
-                    showDriveBrowserPage(currentAccountId);
-                } else {
-                    showMessage('Please select an account first from the Accounts page.');
-                    showGoogleAccountsPage();
-                }
-            };
+                const accountId = new URLSearchParams(window.location.search).get('accountId');
+                const path = JSON.parse(sessionStorage.getItem(`path_${accountId}`) || '[]');
+                const index = parseInt(e.target.dataset.index, 10);
+                path.splice(index + 1); // Cut path to the clicked point
+                sessionStorage.setItem(`path_${accountId}`, JSON.stringify(path));
+                const folderId = path[path.length - 1].id;
+                renderView('browseDrive', { accountId, folderId });
+            }
+             if(e.target.closest('.browse-folder-btn')) {
+                const btn = e.target.closest('.browse-folder-btn');
+                const accountId = new URLSearchParams(window.location.search).get('accountId');
+                const path = JSON.parse(sessionStorage.getItem(`path_${accountId}`) || '[]');
+                path.push({id: btn.dataset.folderId, name: btn.dataset.folderName});
+                sessionStorage.setItem(`path_${accountId}`, JSON.stringify(path));
+                renderView('browseDrive', { accountId, folderId: btn.dataset.folderId });
+             }
+             if(e.target.closest('.copy-link-btn')) {
+                const accountId = new URLSearchParams(window.location.search).get('accountId');
+                const fileId = e.target.closest('.copy-link-btn').dataset.fileId;
+                const link = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${fileId}`;
+                navigator.clipboard.writeText(link).then(() => showMessage('Link copied!'), () => showMessage('Failed to copy.','error'));
+             }
+             if(e.target.closest('.play-btn')) {
+                 const btn = e.target.closest('.play-btn');
+                 const accountId = new URLSearchParams(window.location.search).get('accountId');
+                 const fileId = btn.dataset.fileId;
+                 const mimeType = btn.dataset.mimeType;
+                 const streamUrl = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${fileId}`;
+                 const playerContainer = document.getElementById('mediaPlayerContainer');
+                 
+                 const playerHTML = mimeType.startsWith('video/') ? 
+                    `<video controls autoplay><source src="${streamUrl}" type="${mimeType}"></video>` :
+                    `<audio controls autoplay><source src="${streamUrl}" type="${mimeType}"></audio>`;
+                 playerContainer.innerHTML = `<h3>Now Playing</h3>${playerHTML}`;
+             }
+             if(e.target.closest('#searchDriveBtn')) {
+                const accountId = new URLSearchParams(window.location.search).get('accountId');
+                const query = document.getElementById('searchDriveInput').value;
+                if (query) renderView('browseDrive', { accountId, searchTerm: query });
+             }
+            
+            // Settings clicks
+            if(e.target.closest('#logoutBtn')) {
+                 showConfirmModal('Are you sure you want to logout?', logout);
+            }
         });
+
+        // --- Initial Load ---
+        function renderUI() {
+            const params = new URLSearchParams(window.location.search);
+            const view = params.get('view') || (adminToken ? 'accounts' : 'login');
+            renderView(view, Object.fromEntries(params.entries()));
+        }
+
+        // Handle history changes (back/forward buttons)
+        window.addEventListener('popstate', renderUI);
+
+        // Initial render logic
+        renderUI();
+        // Update URL to reflect current view for better history/bookmarking
+        history.replaceState({view: 'initial'}, '', `?view=${adminToken ? 'accounts' : 'login'}`);
+        // Modify event listeners to push state
+        document.body.addEventListener('click', e => {
+            const navLink = e.target.closest('.nav-item');
+            if (navLink) {
+                history.pushState({view: navLink.dataset.view}, '', `?view=${navLink.dataset.view}`);
+            }
+            if(e.target.closest('.view-btn')) {
+                const accountId = e.target.closest('.view-btn').dataset.id;
+                history.pushState({view: 'browseDrive'}, '', `?view=browseDrive&accountId=${accountId}`);
+            }
+        });
+
+    });
     </script>
 </body>
 </html>
