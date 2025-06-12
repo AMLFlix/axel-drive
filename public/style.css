@@ -1,75 +1,75 @@
 /* Custom CSS Variables for Light/Dark Theme */
 :root {
-    /* Light Theme */
-    --background-color: #f0f2f5;
+    /* Light Theme - Default */
+    --background-color: #eef2f6; /* Very light subtle blue-gray */
     --app-background: #ffffff;
-    --text-color: #333333;
-    --heading-color: #007bff;
-    --border-color: #e0e0e0;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-color: #34495e; /* Darker text for readability */
+    --heading-color: #2c3e50; /* Even darker for headings */
+    --primary-color: #3498db; /* A vibrant blue */
+    --primary-hover-color: #2980b9;
+    --secondary-color: #95a5a6; /* Subtle gray */
+    --secondary-hover-color: #7f8c8d;
+    --danger-color: #e74c3c;
+    --danger-hover-color: #c0392b;
+    --border-color: #e0e6ec;
     --input-bg: #ffffff;
-    --input-border: #cccccc;
-    --btn-primary-bg: #007bff;
-    --btn-primary-hover-bg: #0056b3;
-    --btn-secondary-bg: #6c757d;
-    --btn-secondary-hover-bg: #5a6268;
-    --btn-danger-bg: #dc3545;
-    --btn-danger-hover-bg: #c82333;
+    --input-border: #d5dbdf;
+    --shadow-color: rgba(0, 0, 0, 0.08); /* Lighter, subtle shadow */
+    --list-item-hover-bg: #f8fbfd;
     --message-success-bg: #d4edda;
     --message-success-text: #155724;
     --message-error-bg: #f8d7da;
     --message-error-text: #721c24;
     --message-warning-bg: #fff3cd;
     --message-warning-text: #856404;
-    --list-item-hover-bg: #f5f5f5;
-    --modal-bg: #ffffff;
-    --modal-shadow: rgba(0, 0, 0, 0.2);
-    --icon-color: #6c757d;
     --header-bg: #ffffff;
+    --button-text-color: #ffffff;
+    --icon-color: #8e9aab; /* Subtle icon color */
+    --focus-ring-color: rgba(52, 152, 219, 0.3); /* Primary color for focus */
 }
 
 body.dark-theme {
     /* Dark Theme */
-    --background-color: #1a1a1a;
-    --app-background: #2a2a2a;
-    --text-color: #e0e0e0;
-    --heading-color: #61dafb; /* Light blue for contrast in dark theme */
-    --border-color: #444444;
-    --shadow-color: rgba(0, 0, 0, 0.4);
-    --input-bg: #3a3a3a;
-    --input-border: #555555;
-    --btn-primary-bg: #61dafb;
-    --btn-primary-hover-bg: #21a1f1;
-    --btn-secondary-bg: #555555;
-    --btn-secondary-hover-bg: #666666;
-    --btn-danger-bg: #ef5350;
-    --btn-danger-hover-bg: #c62828;
-    --message-success-bg: #4caf50;
+    --background-color: #1c232e; /* Dark blue-gray background */
+    --app-background: #27313f; /* Slightly lighter for app container */
+    --text-color: #ecf0f1; /* Light text */
+    --heading-color: #f0f0f0; /* White for headings */
+    --primary-color: #64b5f6; /* Brighter blue for dark theme */
+    --primary-hover-color: #42a5f5;
+    --secondary-color: #607d8b; /* Darker gray */
+    --secondary-hover-color: #78909c;
+    --danger-color: #ef5350;
+    --danger-hover-color: #e53935;
+    --border-color: #3b4c60;
+    --input-bg: #323d4e;
+    --input-border: #4a5a70;
+    --shadow-color: rgba(0, 0, 0, 0.4); /* More prominent shadow for dark theme */
+    --list-item-hover-bg: #303d4e;
+    --message-success-bg: #43a047;
     --message-success-text: #ffffff;
-    --message-error-bg: #f44336;
+    --message-error-bg: #d32f2f;
     --message-error-text: #ffffff;
     --message-warning-bg: #ffc107;
     --message-warning-text: #212121;
-    --list-item-hover-bg: #3a3a3a;
-    --modal-bg: #2a2a2a;
-    --modal-shadow: rgba(0, 0, 0, 0.5);
-    --icon-color: #bdbdbd;
-    --header-bg: #2a2a2a;
+    --header-bg: #27313f;
+    --button-text-color: #ffffff;
+    --icon-color: #bbdefb; /* Light icon color for contrast */
+    --focus-ring-color: rgba(100, 181, 246, 0.3);
 }
 
 /* General Body Styles */
 body {
-    font-family: 'Inter', sans-serif; /* Modern, clean font */
-    background-color: var(--background-color); 
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
     margin: 0;
-    padding: 0; /* Remove body padding, let container handle it */
+    padding: 0;
     display: flex;
-    flex-direction: column; /* Stack header and app vertically */
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    transition: background-color 0.3s ease; /* Smooth theme transition */
+    transition: background-color 0.4s ease, color 0.4s ease; /* Smooth theme transition */
 }
 
 /* App Header */
@@ -82,117 +82,125 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px var(--shadow-color);
-    border-radius: 0 0 12px 12px; /* Rounded bottom corners for header */
+    box-shadow: 0 4px 15px var(--shadow-color); /* Stronger shadow for header */
+    border-radius: 0 0 16px 16px; /* More prominent rounded bottom corners */
     box-sizing: border-box;
-    margin-bottom: 30px;
+    margin-bottom: 40px; /* More space below header */
+    transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .app-header h1 {
     margin: 0;
-    color: var(--heading-color);
-    font-size: 1.8em;
+    color: var(--primary-color); /* Use primary color for app title */
+    font-size: 2em; /* Slightly larger title */
     font-weight: 700;
+    letter-spacing: -0.5px; /* Tighter letter spacing */
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px; /* Space between header buttons */
 }
 
 /* Main App Container */
 #app {
     background-color: var(--app-background);
-    padding: 30px;
-    border-radius: 12px; /* iOS-like rounded corners */
-    box-shadow: 0 6px 20px var(--shadow-color); /* Soft, subtle shadow */
+    padding: 35px; /* More padding */
+    border-radius: 16px; /* More rounded corners for iOS style */
+    box-shadow: 0 8px 30px var(--shadow-color); /* Deeper shadow */
     max-width: 800px;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 50px; /* Space at the bottom */
+    margin-bottom: 50px;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 h2 {
     color: var(--heading-color);
     text-align: center;
-    margin-bottom: 25px;
-    font-size: 1.8em;
+    margin-bottom: 30px; /* More space below heading */
+    font-size: 2em; /* Larger heading */
     font-weight: 600;
 }
 
 /* Form Group Styling */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* More space between form elements */
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px; /* More space below label */
     font-weight: 500;
     color: var(--text-color);
+    font-size: 1.05em;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"] {
-    width: calc(100% - 24px); /* Adjust for padding and border */
-    padding: 12px;
+    width: calc(100% - 28px); /* Adjust for padding and border */
+    padding: 14px; /* More padding for larger touch targets */
     border: 1px solid var(--input-border);
-    border-radius: 8px; /* Slightly more rounded inputs */
-    font-size: 1em;
+    border-radius: 10px; /* More rounded inputs */
+    font-size: 1.05em;
     background-color: var(--input-bg);
     color: var(--text-color);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    -webkit-appearance: none; /* Remove default iOS input styling */
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="password"]:focus {
-    border-color: var(--btn-primary-bg);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Focus highlight */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--focus-ring-color); /* Wider, softer focus ring */
     outline: none;
 }
 
 /* Button Styling */
 .btn {
-    padding: 12px 25px;
+    padding: 14px 28px; /* More padding for larger buttons */
     border: none;
-    border-radius: 8px; /* iOS-like rounded buttons */
+    border-radius: 12px; /* More rounded, iOS-like buttons */
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1.05em;
     font-weight: 600;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    margin-right: 10px; 
-    white-space: nowrap; /* Prevent button text from wrapping */
+    margin-right: 15px; /* More spacing between buttons */
+    white-space: nowrap;
+    color: var(--button-text-color);
 }
 
 .btn-primary {
-    background-color: var(--btn-primary-bg);
-    color: white;
-    box-shadow: 0 4px 10px var(--shadow-color);
+    background-color: var(--primary-color);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .btn-primary:hover {
-    background-color: var(--btn-primary-hover-bg);
-    transform: translateY(-2px); /* Slight lift on hover */
-    box-shadow: 0 6px 15px var(--shadow-color);
+    background-color: var(--primary-hover-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 .btn-secondary {
-    background-color: var(--btn-secondary-bg);
-    color: white;
-    box-shadow: 0 4px 10px var(--shadow-color);
+    background-color: var(--secondary-color);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .btn-secondary:hover {
-    background-color: var(--btn-secondary-hover-bg);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px var(--shadow-color);
+    background-color: var(--secondary-hover-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 .btn-danger {
-    background-color: var(--btn-danger-bg);
-    color: white;
-    box-shadow: 0 4px 10px var(--shadow-color);
+    background-color: var(--danger-color);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .btn-danger:hover {
-    background-color: var(--btn-danger-hover-bg);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px var(--shadow-color);
+    background-color: var(--danger-hover-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 /* Theme Toggle Button */
@@ -200,89 +208,117 @@ h2 {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9em;
-    padding: 8px 15px;
-    border-radius: 20px; /* Pill shape */
+    font-size: 0.95em;
+    padding: 10px 20px; /* Slightly larger padding for toggle */
+    border-radius: 25px; /* More pill-shaped */
+}
+
+/* Logout Button */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    padding: 10px 20px;
+    border-radius: 25px;
 }
 
 /* List Item Styling (for accounts and drive content) */
 .list-item {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: var(--app-background); /* Use app background for list items */
-    border-radius: 10px; /* Rounded corners for list items */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Lighter shadow for items */
+    padding: 18px 20px; /* More padding */
+    margin-bottom: 12px; /* More space between items */
+    background-color: var(--app-background);
+    border-radius: 12px; /* Consistent rounded corners */
+    box-shadow: 0 3px 12px var(--shadow-color); /* Lighter shadow for items */
     transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    border: 1px solid var(--border-color); /* Subtle border for definition */
 }
 
 .list-item:hover {
-    box-shadow: 0 4px 15px var(--shadow-color);
-    transform: translateY(-3px);
+    box-shadow: 0 6px 20px var(--shadow-color);
+    transform: translateY(-4px); /* More pronounced lift on hover */
     background-color: var(--list-item-hover-bg);
 }
 
+.list-item-info {
+    flex-grow: 1;
+    margin-right: 20px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column; /* Stack name and details */
+}
+
 .list-item-name {
-    font-size: 1.1em;
+    font-size: 1.15em;
     color: var(--text-color);
-    flex-grow: 1; 
-    margin-right: 15px; /* Space between name and actions */
-    word-break: break-all; /* Break long words */
+    font-weight: 500;
+    margin-bottom: 5px; /* Space between name and details */
+    word-break: break-word;
 }
 
 .list-item-name i {
-    margin-right: 8px;
+    margin-right: 10px;
     color: var(--icon-color);
-    font-size: 1.2em;
+    font-size: 1.3em;
+    width: 25px; /* Fixed width for icons to align text */
+    text-align: center;
+}
+
+.list-item-details {
+    font-size: 0.85em;
+    color: var(--secondary-color);
+    display: flex;
+    gap: 15px; /* Space between details */
+    flex-wrap: wrap;
 }
 
 .list-item-actions {
     display: flex;
-    flex-wrap: wrap; /* Allow action buttons to wrap */
-    gap: 8px; 
+    flex-wrap: wrap;
+    gap: 10px; /* More space between action buttons */
+}
+
+/* Search bar styling */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Allow wrapping */
+}
+
+.search-container input[type="text"] {
+    flex-grow: 1;
+    min-width: 200px; /* Allow input to shrink but not too much */
+}
+
+/* Pagination styles */
+#pagination {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+#pagination .btn {
+    margin-right: 0; /* Remove extra margin for pagination buttons */
 }
 
 /* Message Styling (Success/Error/Warning Toasts) */
 .message {
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 15px 25px; /* More padding */
+    border-radius: 10px; /* More rounded */
+    margin-bottom: 25px; /* More space below messages */
     font-weight: 500;
     text-align: center;
-    position: relative; /* For animation */
-    overflow: hidden; /* Hide overflow from animation */
-    animation: fadeInOut 5s forwards; /* Animation for messages */
-    box-shadow: 0 2px 8px var(--shadow-color);
-    border: 1px solid transparent; /* Default transparent border */
-}
-
-.success-message {
-    background-color: var(--message-success-bg);
-    color: var(--message-success-text);
-    border-color: var(--message-success-text);
-}
-
-.error-message {
-    background-color: var(--message-error-bg);
-    color: var(--message-error-text);
-    border-color: var(--message-error-text);
-}
-
-.warning-message {
-    background-color: var(--message-warning-bg);
-    color: var(--message-warning-text);
-    border-color: var(--message-warning-text);
-}
-
-/* Keyframe animation for messages */
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: translateY(-10px); }
-    10% { opacity: 1; transform: translateY(0); }
-    90% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-10px); }
+    position: relative;
+    overflow: hidden;
+    animation: fadeInOut 5s forwards; 
+    box-shadow: 0 4px 15px var(--shadow-color);
+    border: 1px solid transparent; 
 }
 
 /* Custom Modal Styling (replaces alert/confirm) */
@@ -292,7 +328,7 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+    background-color: rgba(0, 0, 0, 0.75); /* Slightly darker overlay */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -301,22 +337,23 @@ h2 {
 
 .modal-content {
     background-color: var(--modal-bg);
-    padding: 30px;
-    border-radius: 12px; /* Rounded corners */
-    box-shadow: 0 8px 25px var(--modal-shadow);
+    padding: 35px; /* More padding */
+    border-radius: 16px; /* Consistent rounded corners */
+    box-shadow: 0 10px 35px var(--modal-shadow); /* Deeper shadow */
     text-align: center;
-    max-width: 400px;
+    max-width: 450px; /* Slightly larger modal */
     width: 90%;
     color: var(--text-color);
 }
 
 .modal-content p {
-    font-size: 1.1em;
-    margin-bottom: 25px;
+    font-size: 1.15em;
+    margin-bottom: 30px; /* More space below text */
+    font-weight: 500;
 }
 
 .modal-actions button {
-    margin: 0 8px;
+    margin: 0 10px; /* More spacing between modal buttons */
 }
 
 /* Loading Overlay & Spinner */
@@ -326,11 +363,11 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    background-color: rgba(0, 0, 0, 0.8); /* Even darker, more opaque */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Ensure it's on top of everything */
+    z-index: 9999; 
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -342,11 +379,11 @@ h2 {
 }
 
 .spinner {
-    border: 4px solid var(--border-color); /* Light border */
-    border-top: 4px solid var(--heading-color); /* Primary color for spinning part */
+    border: 6px solid var(--border-color); /* Thicker border */
+    border-top: 6px solid var(--primary-color); /* Primary color for spinning part */
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px; /* Larger spinner */
+    height: 50px;
     animation: spin 1s linear infinite;
 }
 
@@ -357,90 +394,132 @@ h2 {
 
 /* Player styles */
 #mediaPlayerContainer {
-    margin-top: 20px;
+    margin-top: 30px;
     background-color: var(--app-background);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px var(--shadow-color);
 }
 
 #mediaPlayerContainer h3 {
     text-align: center;
     color: var(--heading-color);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
 }
 
 .video-player, .audio-player {
     width: 100%;
     max-width: 600px; 
     display: block;
-    margin: 0 auto; /* Center player */
-    border-radius: 10px;
-    outline: none; /* Remove default focus outline */
+    margin: 0 auto; 
+    border-radius: 12px;
+    outline: none; 
+    background-color: #000; /* Black background for players */
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .app-header {
         padding: 15px 20px;
-        flex-direction: column; /* Stack header items */
+        flex-direction: column; 
         gap: 10px;
         text-align: center;
-        border-radius: 0; /* No rounded corners for header on mobile */
+        border-radius: 0; 
+        margin-bottom: 25px;
     }
 
     .app-header h1 {
-        font-size: 1.5em;
+        font-size: 1.8em;
     }
 
-    .theme-toggle {
-        margin-top: 10px;
+    .header-actions {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px;
+        width: 100%;
+    }
+    .header-actions .btn {
+        width: 100%; /* Full width buttons */
+        margin-right: 0;
     }
 
     #app {
-        padding: 20px;
-        margin-top: 20px;
-        border-radius: 8px; /* Slightly less rounded on small screens */
+        padding: 25px;
+        margin-top: 0; /* No top margin on mobile, already handled by header */
+        border-radius: 8px; 
+        box-shadow: none; /* Lighter on mobile */
     }
 
     h2 {
-        font-size: 1.5em;
+        font-size: 1.7em;
+        margin-bottom: 20px;
+    }
+
+    .form-group input {
+        padding: 12px;
+        font-size: 1em;
     }
 
     .btn {
-        padding: 10px 18px;
-        font-size: 0.9em;
+        padding: 12px 20px;
+        font-size: 0.95em;
         margin-bottom: 10px; 
-        margin-right: 5px; /* Adjust button spacing */
+        margin-right: 0;
+        width: 100%; /* Full width buttons on mobile */
+    }
+    .btn:last-child {
+        margin-bottom: 0;
     }
 
     .list-item {
         flex-direction: column; 
         align-items: flex-start;
-        padding: 10px;
-        margin-bottom: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
+
+    .list-item-info {
+        margin-right: 0;
+        margin-bottom: 10px;
     }
 
     .list-item-name {
-        margin-right: 0;
-        margin-bottom: 10px; /* Space between name and actions */
+        font-size: 1.05em;
+    }
+
+    .list-item-name i {
+        font-size: 1.1em;
+        width: 20px;
+    }
+
+    .list-item-details {
+        font-size: 0.8em;
+        gap: 10px;
+        margin-bottom: 10px; /* Space above actions */
     }
 
     .list-item-actions {
         width: 100%; 
         justify-content: flex-start; 
-        gap: 5px; 
+        gap: 8px; 
     }
 
-    #searchDriveInput {
-        width: calc(100% - 10px); /* Full width for input */
+    .search-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .search-container input, .search-container .btn {
+        width: 100%;
         margin-right: 0;
-        margin-bottom: 10px;
     }
 
-    #searchDriveBtn, #clearSearchBtn {
-        width: calc(50% - 5px); /* Half width for search buttons */
-        margin-right: 5px;
-        margin-bottom: 0;
+    #pagination {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    #pagination .btn {
+        width: auto; /* Let buttons size naturally or set a max-width */
+        flex-grow: 1; /* Allow buttons to grow */
     }
 }
