@@ -11,14 +11,12 @@
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark-theme">
     <header class="app-header">
         <h1>Axel Drive</h1>
         <div class="header-actions">
-            <button id="themeToggle" class="btn btn-secondary theme-toggle">
-                <i class="fas fa-moon"></i> Dark Mode
-            </button>
-            <button id="logoutBtn" class="btn btn-secondary logout-btn" style="display: none;">
+            <!-- Logout Button - Will be shown when logged in -->
+            <button id="logoutBtn" class="btn logout-btn" style="display: none;">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </button>
         </div>
@@ -31,6 +29,7 @@
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
+        <p class="loading-text">Loading...</p>
     </div>
 
     <!-- Custom JavaScript -->

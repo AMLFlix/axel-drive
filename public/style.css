@@ -1,60 +1,38 @@
-/* Custom CSS Variables for Light/Dark Theme */
+/* Custom CSS Variables - Dark Theme Only, with Colorful Accents */
 :root {
-    /* Light Theme - Default */
-    --background-color: #eef2f6; /* Very light subtle blue-gray */
-    --app-background: #ffffff;
-    --text-color: #34495e; /* Darker text for readability */
-    --heading-color: #2c3e50; /* Even darker for headings */
-    --primary-color: #3498db; /* A vibrant blue */
-    --primary-hover-color: #2980b9;
-    --secondary-color: #95a5a6; /* Subtle gray */
-    --secondary-hover-color: #7f8c8d;
-    --danger-color: #e74c3c;
-    --danger-hover-color: #c0392b;
-    --border-color: #e0e6ec;
-    --input-bg: #ffffff;
-    --input-border: #d5dbdf;
-    --shadow-color: rgba(0, 0, 0, 0.08); /* Lighter, subtle shadow */
-    --list-item-hover-bg: #f8fbfd;
-    --message-success-bg: #d4edda;
-    --message-success-text: #155724;
-    --message-error-bg: #f8d7da;
-    --message-error-text: #721c24;
-    --message-warning-bg: #fff3cd;
-    --message-warning-text: #856404;
-    --header-bg: #ffffff;
-    --button-text-color: #ffffff;
-    --icon-color: #8e9aab; /* Subtle icon color */
-    --focus-ring-color: rgba(52, 152, 219, 0.3); /* Primary color for focus */
-}
-
-body.dark-theme {
-    /* Dark Theme */
-    --background-color: #1c232e; /* Dark blue-gray background */
-    --app-background: #27313f; /* Slightly lighter for app container */
-    --text-color: #ecf0f1; /* Light text */
-    --heading-color: #f0f0f0; /* White for headings */
-    --primary-color: #64b5f6; /* Brighter blue for dark theme */
-    --primary-hover-color: #42a5f5;
-    --secondary-color: #607d8b; /* Darker gray */
-    --secondary-hover-color: #78909c;
-    --danger-color: #ef5350;
-    --danger-hover-color: #e53935;
-    --border-color: #3b4c60;
-    --input-bg: #323d4e;
+    --background-color: #1a1a2e; /* Deep dark blue/purple */
+    --app-background: #202a40; /* Slightly lighter, more blue for container */
+    --text-color: #e0e0e0; /* Light gray text */
+    --heading-color: #bb86fc; /* Purple accent for headings */
+    --primary-color: #03dac6; /* Teal/cyan for primary actions */
+    --primary-hover-color: #03a093;
+    --secondary-color: #6a6a8c; /* Muted purple-gray for secondary */
+    --secondary-hover-color: #5b5b7a;
+    --danger-color: #cf6679; /* Soft red for danger */
+    --danger-hover-color: #b0576a;
+    --border-color: #3b3b5c; /* Darker border */
+    --input-bg: #283452; /* Darker input background */
     --input-border: #4a5a70;
-    --shadow-color: rgba(0, 0, 0, 0.4); /* More prominent shadow for dark theme */
-    --list-item-hover-bg: #303d4e;
-    --message-success-bg: #43a047;
+    --shadow-color: rgba(0, 0, 0, 0.5); /* Stronger shadow */
+    --list-item-hover-bg: #2f3c5f;
+    --message-success-bg: linear-gradient(90deg, #4CAF50, #8bc34a); /* Green gradient */
     --message-success-text: #ffffff;
-    --message-error-bg: #d32f2f;
+    --message-error-bg: linear-gradient(90deg, #f44336, #e57373); /* Red gradient */
     --message-error-text: #ffffff;
-    --message-warning-bg: #ffc107;
-    --message-warning-text: #212121;
-    --header-bg: #27313f;
+    --message-warning-bg: linear-gradient(90deg, #ffc107, #ffeb3b); /* Yellow gradient */
+    --message-warning-text: #333333; /* Dark text for yellow */
+    --header-bg: #202a40;
     --button-text-color: #ffffff;
-    --icon-color: #bbdefb; /* Light icon color for contrast */
-    --focus-ring-color: rgba(100, 181, 246, 0.3);
+    --icon-color: #bb86fc; /* Heading color for icons */
+    --focus-ring-color: rgba(187, 134, 252, 0.4); /* Purple glow on focus */
+
+    /* Gradients for buttons */
+    --btn-primary-gradient: linear-gradient(45deg, #03dac6, #00c4b4);
+    --btn-primary-hover-gradient: linear-gradient(45deg, #00c4b4, #00a89b);
+    --btn-secondary-gradient: linear-gradient(45deg, #6a6a8c, #5b5b7a);
+    --btn-secondary-hover-gradient: linear-gradient(45deg, #5b5b7a, #4e4e6a);
+    --btn-danger-gradient: linear-gradient(45deg, #cf6679, #b0576a);
+    --btn-danger-hover-gradient: linear-gradient(45deg, #b0576a, #9e4a5a);
 }
 
 /* General Body Styles */
@@ -69,159 +47,162 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    transition: background-color 0.4s ease, color 0.4s ease; /* Smooth theme transition */
+    transition: background-color 0.6s ease; /* Slower, smoother transition */
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* App Header */
 .app-header {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px; /* Slightly wider header */
     background-color: var(--header-bg);
-    padding: 20px 30px;
+    padding: 25px 40px; /* More padding */
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 15px var(--shadow-color); /* Stronger shadow for header */
-    border-radius: 0 0 16px 16px; /* More prominent rounded bottom corners */
+    box-shadow: 0 5px 20px var(--shadow-color); /* Deeper shadow */
+    border-radius: 0 0 20px 20px; /* More rounded bottom corners */
     box-sizing: border-box;
-    margin-bottom: 40px; /* More space below header */
+    margin-bottom: 50px;
     transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .app-header h1 {
     margin: 0;
-    color: var(--primary-color); /* Use primary color for app title */
-    font-size: 2em; /* Slightly larger title */
+    color: var(--primary-color);
+    font-size: 2.2em; /* Even larger title */
     font-weight: 700;
-    letter-spacing: -0.5px; /* Tighter letter spacing */
+    text-shadow: 0 0 8px rgba(3, 218, 198, 0.4); /* Subtle glow */
 }
 
 .header-actions {
     display: flex;
-    gap: 15px; /* Space between header buttons */
+    gap: 20px; /* More space between header buttons */
 }
 
 /* Main App Container */
 #app {
     background-color: var(--app-background);
-    padding: 35px; /* More padding */
-    border-radius: 16px; /* More rounded corners for iOS style */
-    box-shadow: 0 8px 30px var(--shadow-color); /* Deeper shadow */
-    max-width: 800px;
+    padding: 40px; /* More padding */
+    border-radius: 20px; /* Consistent rounded corners */
+    box-shadow: 0 10px 40px var(--shadow-color); /* Even deeper shadow */
+    max-width: 900px; /* Wider content area */
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 50px;
+    margin-bottom: 60px; /* More space at the bottom */
     transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 h2 {
     color: var(--heading-color);
     text-align: center;
-    margin-bottom: 30px; /* More space below heading */
-    font-size: 2em; /* Larger heading */
+    margin-bottom: 35px; /* More space below heading */
+    font-size: 2.2em;
     font-weight: 600;
+    text-shadow: 0 0 5px rgba(187, 134, 252, 0.3); /* Subtle glow */
 }
 
 /* Form Group Styling */
 .form-group {
-    margin-bottom: 25px; /* More space between form elements */
+    margin-bottom: 30px; /* More space between form elements */
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 10px; /* More space below label */
+    margin-bottom: 12px; /* More space below label */
     font-weight: 500;
     color: var(--text-color);
-    font-size: 1.05em;
+    font-size: 1.1em;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"] {
-    width: calc(100% - 28px); /* Adjust for padding and border */
-    padding: 14px; /* More padding for larger touch targets */
+    width: calc(100% - 32px); /* Adjust for padding and border */
+    padding: 16px; /* More padding */
     border: 1px solid var(--input-border);
-    border-radius: 10px; /* More rounded inputs */
-    font-size: 1.05em;
+    border-radius: 12px; /* More rounded inputs */
+    font-size: 1.1em;
     background-color: var(--input-bg);
     color: var(--text-color);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    -webkit-appearance: none; /* Remove default iOS input styling */
+    -webkit-appearance: none;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="password"]:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px var(--focus-ring-color); /* Wider, softer focus ring */
+    border-color: var(--heading-color);
+    box-shadow: 0 0 0 5px var(--focus-ring-color); /* Wider, softer glow */
     outline: none;
 }
 
-/* Button Styling */
+/* Button Styling - Using Gradients */
 .btn {
-    padding: 14px 28px; /* More padding for larger buttons */
+    padding: 16px 32px; /* Larger padding for buttons */
     border: none;
-    border-radius: 12px; /* More rounded, iOS-like buttons */
+    border-radius: 14px; /* More rounded, iOS-like buttons */
     cursor: pointer;
-    font-size: 1.05em;
+    font-size: 1.1em;
     font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    margin-right: 15px; /* More spacing between buttons */
+    transition: all 0.3s ease; /* All properties for smoother effects */
+    margin-right: 15px; 
     white-space: nowrap;
     color: var(--button-text-color);
+    display: inline-flex; /* For icon alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between text and icon */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Subtle text shadow */
+    box-shadow: 0 6px 20px var(--shadow-color); /* Default shadow */
+}
+
+.btn i {
+    font-size: 0.9em; /* Smaller icon size relative to text */
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    box-shadow: 0 5px 15px var(--shadow-color);
+    background: var(--btn-primary-gradient);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-hover-color);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px var(--shadow-color);
+    background: var(--btn-primary-hover-gradient);
+    transform: translateY(-4px); /* More pronounced lift */
+    box-shadow: 0 10px 25px var(--shadow-color); /* Deeper shadow on hover */
 }
 
 .btn-secondary {
-    background-color: var(--secondary-color);
-    box-shadow: 0 5px 15px var(--shadow-color);
+    background: var(--btn-secondary-gradient);
 }
 
 .btn-secondary:hover {
-    background-color: var(--secondary-hover-color);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px var(--shadow-color);
+    background: var(--btn-secondary-hover-gradient);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px var(--shadow-color);
 }
 
 .btn-danger {
-    background-color: var(--danger-color);
-    box-shadow: 0 5px 15px var(--shadow-color);
+    background: var(--btn-danger-gradient);
 }
 
 .btn-danger:hover {
-    background-color: var(--danger-hover-color);
+    background: var(--btn-danger-hover-gradient);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px var(--shadow-color);
+}
+
+/* Logout Button - Specific Styling */
+.logout-btn {
+    background: var(--secondary-color); /* Consistent secondary button style */
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+.logout-btn:hover {
+    background: var(--secondary-hover-color);
     transform: translateY(-3px);
     box-shadow: 0 8px 20px var(--shadow-color);
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95em;
-    padding: 10px 20px; /* Slightly larger padding for toggle */
-    border-radius: 25px; /* More pill-shaped */
-}
-
-/* Logout Button */
-.logout-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95em;
-    padding: 10px 20px;
-    border-radius: 25px;
-}
 
 /* List Item Styling (for accounts and drive content) */
 .list-item {
@@ -229,97 +210,133 @@ h2 {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 20px; /* More padding */
-    margin-bottom: 12px; /* More space between items */
+    padding: 20px 25px; /* More padding */
+    margin-bottom: 15px; /* More space between items */
     background-color: var(--app-background);
-    border-radius: 12px; /* Consistent rounded corners */
-    box-shadow: 0 3px 12px var(--shadow-color); /* Lighter shadow for items */
-    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    border-radius: 16px; /* Consistent rounded corners */
+    box-shadow: 0 4px 15px var(--shadow-color); /* Lighter shadow for items */
+    transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
     border: 1px solid var(--border-color); /* Subtle border for definition */
 }
 
 .list-item:hover {
-    box-shadow: 0 6px 20px var(--shadow-color);
-    transform: translateY(-4px); /* More pronounced lift on hover */
+    box-shadow: 0 8px 25px var(--shadow-color);
+    transform: translateY(-5px); /* More pronounced lift on hover */
     background-color: var(--list-item-hover-bg);
 }
 
 .list-item-info {
     flex-grow: 1;
-    margin-right: 20px;
+    margin-right: 25px;
     display: flex;
-    align-items: flex-start;
-    flex-direction: column; /* Stack name and details */
+    align-items: center; /* Align icon and name */
+    flex-wrap: wrap; /* Allow wrapping for long names */
 }
 
 .list-item-name {
-    font-size: 1.15em;
+    font-size: 1.2em; /* Slightly larger name */
     color: var(--text-color);
     font-weight: 500;
-    margin-bottom: 5px; /* Space between name and details */
     word-break: break-word;
+    display: flex; /* For icon alignment */
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
 }
 
 .list-item-name i {
-    margin-right: 10px;
     color: var(--icon-color);
-    font-size: 1.3em;
+    font-size: 1.2em; /* Larger icon in list item */
     width: 25px; /* Fixed width for icons to align text */
     text-align: center;
+    text-shadow: 0 0 5px rgba(187, 134, 252, 0.2); /* Subtle glow for icons */
 }
 
 .list-item-details {
-    font-size: 0.85em;
+    font-size: 0.9em; /* Smaller details text */
     color: var(--secondary-color);
     display: flex;
-    gap: 15px; /* Space between details */
+    gap: 20px; /* More space between details */
+    margin-top: 5px; /* Space below name */
     flex-wrap: wrap;
+    padding-left: 35px; /* Indent details to align with text */
 }
+
+.list-item-details span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.list-item-details i {
+    font-size: 0.8em; /* Small icon for details */
+    color: var(--secondary-color);
+}
+
 
 .list-item-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 10px; /* More space between action buttons */
+    margin-top: 10px; /* Space on small screens */
 }
+@media (min-width: 769px) { /* On larger screens, remove top margin for actions */
+    .list-item-actions {
+        margin-top: 0;
+    }
+}
+
 
 /* Search bar styling */
 .search-container {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 25px;
-    flex-wrap: wrap; /* Allow wrapping */
+    gap: 15px; /* More space */
+    margin-top: 25px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; 
+    align-items: center; /* Vertically align items */
 }
 
 .search-container input[type="text"] {
     flex-grow: 1;
-    min-width: 200px; /* Allow input to shrink but not too much */
+    min-width: 250px; /* Ensure input has reasonable min-width */
+    padding: 14px; /* Consistent padding */
+    border-radius: 12px; /* Consistent rounded corners */
 }
 
 /* Pagination styles */
 #pagination {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
+    gap: 20px; /* More space between pagination buttons */
+    margin-top: 40px; /* More top margin */
+    flex-wrap: wrap;
 }
 #pagination .btn {
-    margin-right: 0; /* Remove extra margin for pagination buttons */
+    margin-right: 0; 
+    padding: 12px 25px; /* Slightly smaller pagination buttons */
+    font-size: 1em;
 }
 
 /* Message Styling (Success/Error/Warning Toasts) */
 .message {
-    padding: 15px 25px; /* More padding */
-    border-radius: 10px; /* More rounded */
-    margin-bottom: 25px; /* More space below messages */
+    padding: 18px 30px; /* More padding */
+    border-radius: 12px; /* More rounded */
+    margin-bottom: 30px; /* More space below messages */
     font-weight: 500;
     text-align: center;
     position: relative;
     overflow: hidden;
-    animation: fadeInOut 5s forwards; 
-    box-shadow: 0 4px 15px var(--shadow-color);
+    animation: fadeInOut 6s forwards; /* Longer animation */
+    box-shadow: 0 5px 20px var(--shadow-color); /* Clearer shadow */
     border: 1px solid transparent; 
+    display: flex; /* For icon */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
+.message i {
+    font-size: 1.3em;
+}
+
 
 /* Custom Modal Styling (replaces alert/confirm) */
 .modal-overlay {
@@ -328,32 +345,34 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75); /* Slightly darker overlay */
+    background-color: rgba(0, 0, 0, 0.85); /* Even darker, more opaque overlay */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; 
+    z-index: 10000; /* Ensure it's on top */
+    backdrop-filter: blur(5px); /* Subtle blur effect */
 }
 
 .modal-content {
     background-color: var(--modal-bg);
-    padding: 35px; /* More padding */
-    border-radius: 16px; /* Consistent rounded corners */
-    box-shadow: 0 10px 35px var(--modal-shadow); /* Deeper shadow */
+    padding: 40px; /* More padding */
+    border-radius: 20px; /* Consistent rounded corners */
+    box-shadow: 0 12px 45px var(--modal-shadow); /* Deeper shadow */
     text-align: center;
-    max-width: 450px; /* Slightly larger modal */
+    max-width: 500px; /* Larger modal */
     width: 90%;
     color: var(--text-color);
+    border: 1px solid var(--border-color); /* Subtle border */
 }
 
 .modal-content p {
-    font-size: 1.15em;
-    margin-bottom: 30px; /* More space below text */
+    font-size: 1.2em; /* Larger text */
+    margin-bottom: 35px; /* More space below text */
     font-weight: 500;
 }
 
 .modal-actions button {
-    margin: 0 10px; /* More spacing between modal buttons */
+    margin: 0 12px; /* More spacing between modal buttons */
 }
 
 /* Loading Overlay & Spinner */
@@ -363,14 +382,15 @@ h2 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Even darker, more opaque */
+    background-color: rgba(0, 0, 0, 0.9); /* Almost opaque */
     display: flex;
+    flex-direction: column; /* Stack spinner and text */
     justify-content: center;
     align-items: center;
-    z-index: 9999; 
+    z-index: 99999; /* Highest z-index */
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
 .loading-overlay.visible {
@@ -379,12 +399,19 @@ h2 {
 }
 
 .spinner {
-    border: 6px solid var(--border-color); /* Thicker border */
-    border-top: 6px solid var(--primary-color); /* Primary color for spinning part */
+    border: 8px solid var(--border-color); /* Thicker border */
+    border-top: 8px solid var(--primary-color); /* Primary color for spinning part */
     border-radius: 50%;
-    width: 50px; /* Larger spinner */
-    height: 50px;
+    width: 60px; /* Even larger spinner */
+    height: 60px;
     animation: spin 1s linear infinite;
+    box-shadow: 0 0 15px var(--primary-color); /* Glow effect */
+}
+.loading-text {
+    color: var(--text-color);
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: 500;
 }
 
 @keyframes spin {
@@ -394,28 +421,29 @@ h2 {
 
 /* Player styles */
 #mediaPlayerContainer {
-    margin-top: 30px;
+    margin-top: 40px;
     background-color: var(--app-background);
-    padding: 25px;
+    padding: 30px;
     border-radius: 16px;
     box-shadow: 0 6px 20px var(--shadow-color);
+    border: 1px solid var(--border-color);
 }
 
 #mediaPlayerContainer h3 {
     text-align: center;
     color: var(--heading-color);
-    margin-bottom: 20px;
-    font-size: 1.5em;
+    margin-bottom: 25px;
+    font-size: 1.8em;
 }
 
 .video-player, .audio-player {
     width: 100%;
-    max-width: 600px; 
+    max-width: 700px; /* Wider player */
     display: block;
     margin: 0 auto; 
     border-radius: 12px;
     outline: none; 
-    background-color: #000; /* Black background for players */
+    background-color: #000; 
 }
 
 /* Responsive Adjustments */
@@ -423,10 +451,10 @@ h2 {
     .app-header {
         padding: 15px 20px;
         flex-direction: column; 
-        gap: 10px;
+        gap: 15px;
         text-align: center;
         border-radius: 0; 
-        margin-bottom: 25px;
+        margin-bottom: 30px;
     }
 
     .app-header h1 {
@@ -434,38 +462,38 @@ h2 {
     }
 
     .header-actions {
-        flex-direction: column; /* Stack buttons vertically */
+        flex-direction: column; 
         gap: 10px;
         width: 100%;
     }
     .header-actions .btn {
-        width: 100%; /* Full width buttons */
+        width: 100%; 
         margin-right: 0;
     }
 
     #app {
         padding: 25px;
-        margin-top: 0; /* No top margin on mobile, already handled by header */
-        border-radius: 8px; 
-        box-shadow: none; /* Lighter on mobile */
+        margin-top: 0; 
+        border-radius: 12px; 
+        box-shadow: none; 
     }
 
     h2 {
-        font-size: 1.7em;
-        margin-bottom: 20px;
+        font-size: 1.8em;
+        margin-bottom: 25px;
     }
 
     .form-group input {
-        padding: 12px;
+        padding: 14px;
         font-size: 1em;
     }
 
     .btn {
-        padding: 12px 20px;
-        font-size: 0.95em;
+        padding: 14px 20px;
+        font-size: 1em;
         margin-bottom: 10px; 
         margin-right: 0;
-        width: 100%; /* Full width buttons on mobile */
+        width: 100%; 
     }
     .btn:last-child {
         margin-bottom: 0;
@@ -476,7 +504,7 @@ h2 {
         align-items: flex-start;
         padding: 15px;
         margin-bottom: 10px;
-        border-radius: 8px;
+        border-radius: 10px;
     }
 
     .list-item-info {
@@ -485,7 +513,7 @@ h2 {
     }
 
     .list-item-name {
-        font-size: 1.05em;
+        font-size: 1.1em;
     }
 
     .list-item-name i {
@@ -496,7 +524,8 @@ h2 {
     .list-item-details {
         font-size: 0.8em;
         gap: 10px;
-        margin-bottom: 10px; /* Space above actions */
+        margin-top: 5px;
+        padding-left: 30px; 
     }
 
     .list-item-actions {
@@ -507,7 +536,7 @@ h2 {
 
     .search-container {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
     }
     .search-container input, .search-container .btn {
         width: 100%;
@@ -519,7 +548,13 @@ h2 {
         gap: 10px;
     }
     #pagination .btn {
-        width: auto; /* Let buttons size naturally or set a max-width */
-        flex-grow: 1; /* Allow buttons to grow */
+        width: auto; 
+        flex-grow: 1; 
+    }
+    .modal-content {
+        padding: 30px;
+    }
+    .modal-content p {
+        font-size: 1.1em;
     }
 }
