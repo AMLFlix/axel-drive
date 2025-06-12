@@ -1,41 +1,56 @@
 /* --- Google Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons'); /* Although not directly used, good to have if needed */
 
 /* --- CSS Variables (Material Design 3 Dark Theme) --- */
 :root {
+    /* Primary Colors */
     --primary-color: #6750A4; /* M3 Purple */
     --on-primary-color: #FFFFFF;
     --primary-container-color: #EADDFF;
     --on-primary-container-color: #21005D;
     
+    /* Secondary Colors */
     --secondary-color: #625B71;
     --on-secondary-color: #FFFFFF;
     --secondary-container-color: #E8DEF8;
     --on-secondary-container-color: #1D192B;
 
+    /* Tertiary Colors */
     --tertiary-color: #7D5260;
     --on-tertiary-color: #FFFFFF;
     --tertiary-container-color: #FFD8E4;
     --on-tertiary-container-color: #31111D;
     
+    /* Error Colors */
     --error-color: #B3261E;
     --on-error-color: #FFFFFF;
     
+    /* Neutral/Background Colors */
     --background-color: #1C1B1F; /* Dark background */
-    --on-background-color: #E6E1E5;
+    --on-background-color: #E6E1E5; /* Text color on background */
     
-    --surface-color: #1C1B1F;
+    --surface-color: #1C1B1F; /* Component background, e.g., header */
     --surface-variant-color: #49454F; /* Card background */
     --on-surface-variant-color: #CAC4D0; /* Main text color on cards */
-    --outline-color: #938F99;
+    --outline-color: #938F99; /* Borders, outlines */
     
+    /* Typography */
     --font-family: 'Roboto', sans-serif;
+
+    /* Corner Radii */
     --border-radius-sm: 8px;
     --border-radius-md: 12px;
-    --border-radius-lg: 16px;
+    --border-radius-lg: 16px; /* For larger elements like buttons */
+
+    /* Shadows (Material Design Elevations) */
     --shadow-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     --shadow-elevation-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+
+    /* Specific UI colors */
+    --macos-folder-blue: #4195e8; /* For Mac OS folder icon */
+    --selection-bg: #EADDFF; /* Lighter primary for selected items */
+    --selection-border: var(--primary-color);
 }
 
 /* --- Base Styles --- */
@@ -45,23 +60,17 @@ body {
     color: var(--on-background-color);
     margin: 0;
     line-height: 1.6;
+    height: 100vh; /* Ensure full viewport height */
+    overflow: hidden; /* Prevent body scroll, content will scroll within main-content */
 }
 
-#app {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
+/* --- App Layout --- */
+.main-app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Takes full viewport height */
 }
 
-h2 {
-    color: var(--on-background-color);
-    border-bottom: 2px solid var(--surface-variant-color);
-    padding-bottom: 10px;
-    margin-bottom: 24px;
-    font-weight: 500;
-}
-
-/* --- Header --- */
 .app-header {
     background-color: var(--surface-color);
     padding: 12px 24px;
@@ -69,24 +78,365 @@ h2 {
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow-elevation-1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    flex-shrink: 0; /* Prevent header from shrinking */
+    gap: 20px; /* Space between sections */
 }
 
-.app-header h1 {
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-icon {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+}
+
+.app-title {
     font-size: 1.5rem;
     margin: 0;
     color: var(--on-surface-variant-color);
+    font-weight: 500;
 }
 
-/* --- Buttons --- */
+.search-bar-container {
+    flex-grow: 1; /* Allows search bar to take available space */
+    display: flex;
+    align-items: center;
+    background-color: var(--surface-variant-color); /* Slightly different background for search */
+    border-radius: var(--border-radius-lg); /* Rounded corners for search bar */
+    padding: 0 16px;
+    height: 48px; /* Consistent height */
+    max-width: 500px; /* Limit search bar width */
+}
+
+.search-icon {
+    color: var(--on-surface-variant-color);
+    font-size: 18px;
+}
+
+#searchDriveInput {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    padding-left: 12px;
+    color: var(--on-background-color);
+}
+
+.header-actions {
+    margin-left: auto; /* Pushes actions to the right */
+}
+
+.app-body {
+    display: flex;
+    flex-grow: 1; /* Allows body to take remaining vertical space */
+    overflow: hidden; /* Manages overflow for its children (sidebar/main-content) */
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: 280px; /* Wider sidebar */
+    background-color: var(--surface-color); /* Matches header */
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--outline-color);
+    flex-shrink: 0; /* Prevents sidebar from shrinking */
+    overflow-y: auto; /* Allows scrolling if many accounts */
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 10px;
+    color: var(--on-surface-variant-color);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.accounts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.accounts-list li {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: var(--border-radius-lg); /* Pill shape for active item */
+    cursor: pointer;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-surface-variant-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.accounts-list li:hover {
+    background-color: var(--surface-variant-color);
+}
+
+.accounts-list li.active {
+    background-color: var(--primary-container-color);
+    color: var(--on-primary-container-color);
+    font-weight: 700;
+}
+
+.accounts-list li .fab.fa-google-drive {
+    margin-right: 12px;
+    color: var(--on-surface-variant-color); /* Default color */
+    font-size: 18px;
+    transition: color 0.2s ease;
+}
+
+.accounts-list li.active .fab.fa-google-drive {
+    color: var(--on-primary-container-color); /* Matches active text color */
+}
+
+/* --- Main Content Area --- */
+.main-content {
+    flex-grow: 1; /* Takes remaining horizontal space */
+    background-color: var(--background-color); /* Main background color */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Manages overflow for its children */
+    padding: 20px; /* Padding for the entire main content area */
+}
+
+/* Page Titles */
+.main-content h2 {
+    color: var(--on-background-color);
+    border-bottom: 1px solid var(--outline-color);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.main-content h2 i {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+/* --- Context Action Bar --- */
+.context-action-bar {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--outline-color);
+    display: flex; /* Controlled by JS to show/hide */
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    justify-content: flex-end; /* Align buttons to the right */
+    background-color: var(--background-color); /* Matches main content background */
+    margin-bottom: 16px; /* Space below action bar */
+    border-radius: var(--border-radius-md); /* Rounded corners */
+    box-shadow: var(--shadow-elevation-1);
+}
+
+/* --- Breadcrumb Bar --- */
+.breadcrumb-bar {
+    padding: 12px 0px; /* Adjust padding as needed */
+    border-bottom: 1px solid var(--outline-color);
+    flex-shrink: 0;
+    font-size: 14px;
+    color: var(--on-surface-variant-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 16px; /* Space below breadcrumbs */
+}
+
+.breadcrumb-bar span {
+    cursor: pointer;
+    font-weight: 400;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-bar span:hover {
+    color: var(--primary-color);
+}
+
+.breadcrumb-bar span.current {
+    font-weight: 500;
+    color: var(--on-background-color);
+    cursor: default;
+}
+
+.breadcrumb-bar i {
+    font-size: 12px;
+    color: var(--on-surface-variant-color);
+}
+
+/* --- Drive Grid View (for Files and Folders) --- */
+.drive-grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Responsive grid columns */
+    gap: 20px; /* Space between grid items */
+    overflow-y: auto; /* Allows scrolling for grid content */
+    flex-grow: 1; /* Allows grid to take available vertical space */
+    padding: 0; /* Reset padding from main-content to grid */
+}
+
+/* --- Grid Item (File/Folder) --- */
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    border: 2px solid transparent; /* For selection border */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.grid-item:hover {
+    background-color: var(--surface-variant-color); /* Slightly lighter on hover */
+}
+
+.grid-item.selected {
+    background-color: var(--primary-container-color);
+    border-color: var(--primary-color);
+}
+
+.grid-item-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 50px; /* Default icon size for files */
+}
+
+.grid-item-name {
+    font-size: 13px;
+    word-break: break-all; /* Breaks long words */
+    line-height: 1.3;
+    color: var(--on-background-color);
+}
+
+/* --- macOS Style Folder Icon (CSS only) --- */
+.icon-macos-folder {
+    width: 80px;
+    height: 60px;
+    background-color: var(--macos-folder-blue);
+    border-radius: 6px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.icon-macos-folder::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 15px;
+    width: 40px;
+    height: 8px;
+    background-color: #6fb0f1; /* Lighter blue tab */
+    border-radius: 2px 4px 0 0;
+}
+
+/* Other file icons (color based on Google Drive conventions) */
+.grid-item-icon .fa-file-video { color: #e56161; } /* Red for video */
+.grid-item-icon .fa-file-audio { color: #8e6ee3; } /* Purple for audio */
+.grid-item-icon .fa-file-image { color: #f08a5d; } /* Orange for image */
+.grid-item-icon .fa-file-pdf { color: #db4437; } /* Red for PDF */
+.grid-item-icon .fa-file-archive { color: #607d8b; } /* Blue-grey for archives */
+.grid-item-icon .fa-file-alt { color: var(--on-surface-variant-color); } /* Generic file icon */
+
+
+/* --- Login Page --- */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.login-card {
+    background: var(--surface-variant-color);
+    padding: 40px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-elevation-2);
+    width: 100%;
+    max-width: 360px;
+}
+.login-card h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: var(--on-background-color);
+    border-bottom: none; /* Override general h2 border */
+}
+.login-card h2 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+.login-card .form-group { margin-bottom: 20px; }
+.login-card label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--on-surface-variant-color);
+}
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--outline-color);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: var(--surface-color);
+    color: var(--on-background-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.login-card input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-container-color);
+}
+.login-card .btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    color: var(--on-primary-color);
+    border: none;
+    border-radius: var(--border-radius-lg);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.login-card .btn:hover {
+    background-color: #5d429b;
+    box-shadow: var(--shadow-elevation-1);
+}
+.login-card .btn:focus {
+    outline: 2px solid var(--primary-container-color);
+    outline-offset: 2px;
+}
+
+
+/* --- Buttons (General Material Design) --- */
 .btn {
     border: none;
     padding: 10px 24px;
     font-size: 14px;
     font-weight: 500;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg); /* Material 3 style */
     cursor: pointer;
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
     display: inline-flex;
@@ -94,56 +444,68 @@ h2 {
     gap: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    color: var(--on-primary-color); /* Default text color for buttons */
 }
 
 .btn:hover {
     box-shadow: var(--shadow-elevation-1);
+}
+.btn:focus {
+    outline: 2px solid var(--primary-container-color);
+    outline-offset: 2px;
 }
 
 .btn-primary {
     background-color: var(--primary-color);
     color: var(--on-primary-color);
 }
-.btn-primary:hover {
-    background-color: #5d429b;
-}
+.btn-primary:hover { background-color: #5d429b; }
 
 .btn-secondary {
     background-color: var(--secondary-container-color);
     color: var(--on-secondary-container-color);
 }
-.btn-secondary:hover {
-    background-color: #d9d0e0;
-}
+.btn-secondary:hover { background-color: #d9d0e0; }
 
 .btn-danger {
     background-color: var(--error-color);
     color: var(--on-error-color);
 }
-.btn-danger:hover {
-    background-color: #a32018;
-}
+.btn-danger:hover { background-color: #a32018; }
 
-.logout-btn {
+/* Icon Buttons (Used in header, sidebar header, context bar) */
+.icon-btn {
+    width: 40px; /* Larger touch target */
+    height: 40px;
+    border: none;
     background-color: transparent;
-    color: var(--on-surface-variant-color);
-    border: 1px solid var(--outline-color);
+    border-radius: 50%;
+    color: var(--on-surface-variant-color); /* Icon color */
+    cursor: pointer;
+    font-size: 18px; /* Larger icon */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.icon-btn:hover { background-color: var(--surface-variant-color); }
+.icon-btn:focus {
+    outline: 2px solid var(--primary-container-color);
+    outline-offset: 2px;
 }
 
-.logout-btn:hover {
-    background-color: var(--surface-variant-color);
-}
 
-/* --- Cards (for forms, lists) --- */
+/* --- Cards (for forms, messages, empty states) --- */
 .card {
     background-color: var(--surface-variant-color);
     border-radius: var(--border-radius-md);
     padding: 24px;
     margin-bottom: 16px;
     box-shadow: var(--shadow-elevation-1);
+    color: var(--on-surface-variant-color);
 }
 
-/* --- Forms --- */
+/* --- Forms (General Styling) --- */
 .form-group {
     margin-bottom: 20px;
 }
@@ -174,7 +536,7 @@ h2 {
     box-shadow: 0 0 0 2px var(--primary-container-color);
 }
 
-/* --- List Items (Accounts, Files) --- */
+/* --- List Items (Accounts list on account page, or general lists) --- */
 .list-item {
     display: flex;
     align-items: center;
@@ -183,7 +545,7 @@ h2 {
     background-color: var(--surface-variant-color);
     border-radius: var(--border-radius-md);
     margin-bottom: 12px;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
     box-shadow: var(--shadow-elevation-1);
 }
 
@@ -200,10 +562,10 @@ h2 {
     color: var(--on-surface-variant-color);
 }
 
-.list-item-name .fas {
+.list-item-name .fas, .list-item-name .fab {
     font-size: 1.2rem;
     color: var(--primary-color);
-    width: 24px;
+    width: 24px; /* Fixed width for consistent alignment */
     text-align: center;
 }
 
@@ -212,36 +574,14 @@ h2 {
     gap: 8px;
 }
 
-/* --- Search Bar --- */
-.search-container {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0;
-}
-
-#searchDriveInput {
-    flex-grow: 1;
-    padding: 10px 16px;
-    font-size: 16px;
-    background-color: var(--surface-color);
-    border: 1px solid var(--outline-color);
-    border-radius: var(--border-radius-lg);
-    color: var(--on-background-color);
-}
-
-#searchDriveInput:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-
-/* --- Media Player --- */
+/* --- Media Player (in modal) --- */
 .media-player {
     width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
+    max-height: 70vh; /* Max height to fit in viewport */
+    background-color: #000;
     border-radius: var(--border-radius-md);
     overflow: hidden;
+    margin-top: 15px;
 }
 
 /* --- Modals (Confirmation, Video Player) --- */
@@ -271,8 +611,9 @@ h2 {
     color: var(--on-surface-variant-color);
 }
 .modal-content.video-modal {
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: 90vw; /* Allows video to be wider */
+    max-height: 90vh; /* Limits video height */
+    text-align: left; /* Align title left */
 }
 .modal-actions {
     margin-top: 24px;
@@ -282,18 +623,27 @@ h2 {
 }
 
 /* --- Message / Toast Notification --- */
-.message {
+#messageContainer {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.message {
     padding: 12px 24px;
     border-radius: var(--border-radius-sm);
     color: var(--on-primary-color);
     font-weight: 500;
-    z-index: 3000;
     opacity: 0;
-    animation: fadeInOut 5s ease-in-out;
+    animation: fadeInOut 5s ease-in-out forwards; /* Use forwards to stay at final state */
+    min-width: 200px;
+    text-align: center;
+    box-shadow: var(--shadow-elevation-1);
 }
 
 .success-message {
@@ -305,10 +655,10 @@ h2 {
 }
 
 @keyframes fadeInOut {
-    0% { opacity: 0; bottom: 0px; }
-    10% { opacity: 1; bottom: 20px; }
-    90% { opacity: 1; bottom: 20px; }
-    100% { opacity: 0; bottom: 0px; }
+    0% { opacity: 0; transform: translateY(20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
 }
 
 
@@ -323,6 +673,7 @@ h2 {
     display: none; /* Hidden by default */
     justify-content: center;
     align-items: center;
+    flex-direction: column; /* Stack spinner and text vertically */
     z-index: 9999;
 }
 
@@ -341,8 +692,9 @@ h2 {
 
 .loading-text {
     color: white;
-    margin-left: 15px;
+    margin-top: 15px; /* Space between spinner and text */
     font-size: 1.2rem;
+    font-weight: 500;
 }
 
 @keyframes spin {
@@ -350,31 +702,88 @@ h2 {
     100% { transform: rotate(360deg); }
 }
 
-/* --- Pagination --- */
-#pagination {
-    text-align: center;
-    margin-top: 24px;
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .app-header {
+        flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+        justify-content: center;
+        padding: 10px;
+        gap: 10px;
+    }
+    .header-left, .header-actions {
+        width: 100%; /* Take full width */
+        justify-content: center; /* Center content */
+        margin-left: 0;
+    }
+    .search-bar-container {
+        width: 100%;
+        max-width: 100%; /* Allow search bar to fill width */
+        margin-bottom: 10px;
+    }
+    .app-body {
+        flex-direction: column; /* Stack sidebar and main content vertically */
+    }
+    .sidebar {
+        width: 100%;
+        height: auto; /* Auto height based on content */
+        max-height: 200px; /* Limit sidebar height to prevent it from dominating screen */
+        border-right: none;
+        border-bottom: 1px solid var(--outline-color);
+        padding-bottom: 10px;
+    }
+    .sidebar-header {
+        padding: 10px 12px;
+    }
+    .accounts-list {
+        padding-bottom: 10px;
+    }
+    .main-content {
+        padding: 15px; /* Reduced padding */
+    }
+    .drive-grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Smaller grid items */
+        gap: 10px; /* Reduced gap */
+    }
+    .grid-item-icon {
+        width: 50px; /* Smaller icon size */
+        height: 50px;
+        font-size: 35px;
+    }
+    .icon-macos-folder {
+        width: 50px;
+        height: 38px;
+    }
+    .icon-macos-folder::before {
+        left: 8px;
+        width: 25px;
+        height: 5px;
+    }
+    .grid-item-name {
+        font-size: 11px; /* Smaller font size */
+    }
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .modal-actions .btn {
+        width: 100%;
+    }
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 600px) {
-    #app {
-        padding: 10px;
+@media (max-width: 480px) {
+    .app-header h1 {
+        font-size: 1.3rem;
     }
-    
-    .list-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+    .icon-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
     }
-
-    .list-item-actions {
-        width: 100%;
-        justify-content: flex-end;
-    }
-
-    .btn {
-        padding: 8px 16px;
-        font-size: 12px;
+    .sidebar-header h3 {
+        font-size: 16px;
     }
 }
