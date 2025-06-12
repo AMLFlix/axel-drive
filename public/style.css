@@ -1,31 +1,114 @@
+/* Custom CSS Variables for Light/Dark Theme */
+:root {
+    /* Light Theme */
+    --background-color: #f0f2f5;
+    --app-background: #ffffff;
+    --text-color: #333333;
+    --heading-color: #007bff;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --input-bg: #ffffff;
+    --input-border: #cccccc;
+    --btn-primary-bg: #007bff;
+    --btn-primary-hover-bg: #0056b3;
+    --btn-secondary-bg: #6c757d;
+    --btn-secondary-hover-bg: #5a6268;
+    --btn-danger-bg: #dc3545;
+    --btn-danger-hover-bg: #c82333;
+    --message-success-bg: #d4edda;
+    --message-success-text: #155724;
+    --message-error-bg: #f8d7da;
+    --message-error-text: #721c24;
+    --message-warning-bg: #fff3cd;
+    --message-warning-text: #856404;
+    --list-item-hover-bg: #f5f5f5;
+    --modal-bg: #ffffff;
+    --modal-shadow: rgba(0, 0, 0, 0.2);
+    --icon-color: #6c757d;
+    --header-bg: #ffffff;
+}
+
+body.dark-theme {
+    /* Dark Theme */
+    --background-color: #1a1a1a;
+    --app-background: #2a2a2a;
+    --text-color: #e0e0e0;
+    --heading-color: #61dafb; /* Light blue for contrast in dark theme */
+    --border-color: #444444;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --input-bg: #3a3a3a;
+    --input-border: #555555;
+    --btn-primary-bg: #61dafb;
+    --btn-primary-hover-bg: #21a1f1;
+    --btn-secondary-bg: #555555;
+    --btn-secondary-hover-bg: #666666;
+    --btn-danger-bg: #ef5350;
+    --btn-danger-hover-bg: #c62828;
+    --message-success-bg: #4caf50;
+    --message-success-text: #ffffff;
+    --message-error-bg: #f44336;
+    --message-error-text: #ffffff;
+    --message-warning-bg: #ffc107;
+    --message-warning-text: #212121;
+    --list-item-hover-bg: #3a3a3a;
+    --modal-bg: #2a2a2a;
+    --modal-shadow: rgba(0, 0, 0, 0.5);
+    --icon-color: #bdbdbd;
+    --header-bg: #2a2a2a;
+}
+
 /* General Body Styles */
 body {
-    font-family: 'Inter', sans-serif; /* Recommended modern font */
-    background-color: #f0f2f5; /* Light gray background */
-    color: #333;
+    font-family: 'Inter', sans-serif; /* Modern, clean font */
+    background-color: var(--background-color); 
+    color: var(--text-color);
     line-height: 1.6;
     margin: 0;
-    padding: 20px;
+    padding: 0; /* Remove body padding, let container handle it */
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: flex-start; /* Align content to the top */
-    min-height: 100vh; /* Full viewport height */
+    flex-direction: column; /* Stack header and app vertically */
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.3s ease; /* Smooth theme transition */
+}
+
+/* App Header */
+.app-header {
+    width: 100%;
+    max-width: 800px;
+    background-color: var(--header-bg);
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px var(--shadow-color);
+    border-radius: 0 0 12px 12px; /* Rounded bottom corners for header */
+    box-sizing: border-box;
+    margin-bottom: 30px;
+}
+
+.app-header h1 {
+    margin: 0;
+    color: var(--heading-color);
+    font-size: 1.8em;
+    font-weight: 700;
 }
 
 /* Main App Container */
 #app {
-    background-color: #fff;
+    background-color: var(--app-background);
     padding: 30px;
-    border-radius: 12px; /* Rounded corners */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
-    max-width: 800px; /* Max width for readability */
+    border-radius: 12px; /* iOS-like rounded corners */
+    box-shadow: 0 6px 20px var(--shadow-color); /* Soft, subtle shadow */
+    max-width: 800px;
     width: 100%;
-    box-sizing: border-box; /* Include padding in width calculation */
-    margin-top: 50px; /* Top margin for better visual alignment */
+    box-sizing: border-box;
+    margin-bottom: 50px; /* Space at the bottom */
 }
 
 h2 {
-    color: #007bff; /* Primary blue for headings */
+    color: var(--heading-color);
     text-align: center;
     margin-bottom: 25px;
     font-size: 1.8em;
@@ -41,23 +124,25 @@ h2 {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #555;
+    color: var(--text-color);
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"] {
-    width: calc(100% - 20px); /* Adjust for padding */
-    padding: 12px 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    width: calc(100% - 24px); /* Adjust for padding and border */
+    padding: 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px; /* Slightly more rounded inputs */
     font-size: 1em;
+    background-color: var(--input-bg);
+    color: var(--text-color);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="password"]:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    border-color: var(--btn-primary-bg);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Focus highlight */
     outline: none;
 }
 
@@ -65,94 +150,131 @@ h2 {
 .btn {
     padding: 12px 25px;
     border: none;
-    border-radius: 8px;
+    border-radius: 8px; /* iOS-like rounded buttons */
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    margin-right: 10px; /* Spacing between buttons */
+    margin-right: 10px; 
+    white-space: nowrap; /* Prevent button text from wrapping */
 }
 
 .btn-primary {
-    background-color: #007bff;
+    background-color: var(--btn-primary-bg);
     color: white;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    background-color: var(--btn-primary-hover-bg);
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 15px var(--shadow-color);
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: var(--btn-secondary-bg);
     color: white;
-    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+    box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background-color: var(--btn-secondary-hover-bg);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+    box-shadow: 0 6px 15px var(--shadow-color);
 }
 
 .btn-danger {
-    background-color: #dc3545;
+    background-color: var(--btn-danger-bg);
     color: white;
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+    box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color: var(--btn-danger-hover-bg);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+    box-shadow: 0 6px 15px var(--shadow-color);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    padding: 8px 15px;
+    border-radius: 20px; /* Pill shape */
 }
 
 /* List Item Styling (for accounts and drive content) */
 .list-item {
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: var(--app-background); /* Use app background for list items */
+    border-radius: 10px; /* Rounded corners for list items */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Lighter shadow for items */
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 }
 
-.list-item:last-child {
-    border-bottom: none;
+.list-item:hover {
+    box-shadow: 0 4px 15px var(--shadow-color);
+    transform: translateY(-3px);
+    background-color: var(--list-item-hover-bg);
 }
 
 .list-item-name {
     font-size: 1.1em;
-    color: #333;
-    flex-grow: 1; /* Allow name to take available space */
+    color: var(--text-color);
+    flex-grow: 1; 
+    margin-right: 15px; /* Space between name and actions */
+    word-break: break-all; /* Break long words */
+}
+
+.list-item-name i {
+    margin-right: 8px;
+    color: var(--icon-color);
+    font-size: 1.2em;
 }
 
 .list-item-actions {
     display: flex;
-    gap: 8px; /* Space between action buttons */
+    flex-wrap: wrap; /* Allow action buttons to wrap */
+    gap: 8px; 
 }
 
-/* Message Styling (Success/Error Toasts) */
+/* Message Styling (Success/Error/Warning Toasts) */
 .message {
     padding: 12px 20px;
     border-radius: 8px;
     margin-bottom: 20px;
     font-weight: 500;
     text-align: center;
+    position: relative; /* For animation */
+    overflow: hidden; /* Hide overflow from animation */
     animation: fadeInOut 5s forwards; /* Animation for messages */
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid transparent; /* Default transparent border */
 }
 
 .success-message {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: var(--message-success-bg);
+    color: var(--message-success-text);
+    border-color: var(--message-success-text);
 }
 
 .error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: var(--message-error-bg);
+    color: var(--message-error-text);
+    border-color: var(--message-error-text);
+}
+
+.warning-message {
+    background-color: var(--message-warning-bg);
+    color: var(--message-warning-text);
+    border-color: var(--message-warning-text);
 }
 
 /* Keyframe animation for messages */
@@ -163,45 +285,122 @@ h2 {
     100% { opacity: 0; transform: translateY(-10px); }
 }
 
-/* Custom Modal Styling */
+/* Custom Modal Styling (replaces alert/confirm) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure it's on top */
+    z-index: 1000; 
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: var(--modal-bg);
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 8px 25px var(--modal-shadow);
     text-align: center;
     max-width: 400px;
     width: 90%;
+    color: var(--text-color);
 }
 
 .modal-content p {
     font-size: 1.1em;
     margin-bottom: 25px;
-    color: #333;
 }
 
 .modal-actions button {
     margin: 0 8px;
 }
 
+/* Loading Overlay & Spinner */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top of everything */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loading-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spinner {
+    border: 4px solid var(--border-color); /* Light border */
+    border-top: 4px solid var(--heading-color); /* Primary color for spinning part */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Player styles */
+#mediaPlayerContainer {
+    margin-top: 20px;
+    background-color: var(--app-background);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+#mediaPlayerContainer h3 {
+    text-align: center;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+}
+
+.video-player, .audio-player {
+    width: 100%;
+    max-width: 600px; 
+    display: block;
+    margin: 0 auto; /* Center player */
+    border-radius: 10px;
+    outline: none; /* Remove default focus outline */
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
+    .app-header {
+        padding: 15px 20px;
+        flex-direction: column; /* Stack header items */
+        gap: 10px;
+        text-align: center;
+        border-radius: 0; /* No rounded corners for header on mobile */
+    }
+
+    .app-header h1 {
+        font-size: 1.5em;
+    }
+
+    .theme-toggle {
+        margin-top: 10px;
+    }
+
     #app {
         padding: 20px;
         margin-top: 20px;
+        border-radius: 8px; /* Slightly less rounded on small screens */
     }
 
     h2 {
@@ -209,49 +408,39 @@ h2 {
     }
 
     .btn {
-        padding: 10px 20px;
+        padding: 10px 18px;
         font-size: 0.9em;
-        margin-bottom: 10px; /* Stack buttons on small screens */
+        margin-bottom: 10px; 
+        margin-right: 5px; /* Adjust button spacing */
     }
 
     .list-item {
-        flex-direction: column; /* Stack name and actions */
+        flex-direction: column; 
         align-items: flex-start;
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .list-item-name {
+        margin-right: 0;
+        margin-bottom: 10px; /* Space between name and actions */
     }
 
     .list-item-actions {
-        margin-top: 10px;
-        width: 100%; /* Make action buttons take full width */
-        justify-content: flex-start; /* Align buttons to the left */
-        gap: 5px; /* Smaller gap */
+        width: 100%; 
+        justify-content: flex-start; 
+        gap: 5px; 
     }
-}
 
-/* Specific styling for search input/buttons alignment */
-#searchDriveInput {
-    vertical-align: middle; /* Align with buttons */
-    margin-bottom: 10px; /* Space below input on small screens */
-}
-
-/* Adjust button margin for specific layouts if needed */
-#searchDriveBtn, #clearSearchBtn {
-    margin-bottom: 10px;
-}
-@media (min-width: 769px) {
     #searchDriveInput {
-        margin-bottom: 0;
+        width: calc(100% - 10px); /* Full width for input */
+        margin-right: 0;
+        margin-bottom: 10px;
     }
-    #searchDriveBtn, #clearSearchBtn {
-        margin-bottom: 0;
-    }
-}
 
-/* Player styles */
-.video-player, .audio-player {
-    width: 100%;
-    max-width: 600px; /* Limit player width */
-    display: block;
-    margin: 20px auto; /* Center player */
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    #searchDriveBtn, #clearSearchBtn {
+        width: calc(50% - 5px); /* Half width for search buttons */
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
 }
