@@ -153,18 +153,22 @@ async function handleSettings(request, env) {
 }
 
 // --- Google Drive Interaction Class ---
+// CONSTS object is defined here, before the class uses it.
 const CONSTS = {
     folder_mime_type: "application/vnd.google-apps.folder",
     default_file_fields: "id,name,mimeType,size,modifiedTime,thumbnailLink,description,parents",
 };
 
 class GoogleDriveService {
-    constructor(accountSettings) {
+    // MODIFIED: Added 'constants' parameter to the constructor
+    constructor(accountSettings, constants) {
         this.accountId = accountSettings.id;
         this.client_id = accountSettings.client_id;
         this.client_secret = accountSettings.client_secret;
         this.refresh_token = accountSettings.refresh_token;
         this.accessTokenCache = { token: null, expires: 0 };
+        this.accountSettings = accountSettings;
+        this.CONSTS = constants; // MODIFIED: Storing CONSTS in the instance
     }
 
     async getAccessToken() {
@@ -183,18 +187,20 @@ class GoogleDriveService {
     }
 
     async getRootFolderId() {
-        // 'root' is a special ID for the user's root drive in Google Drive API
-        // For Shared Drives, the 'accountId' itself should be the root.
-        // We'll treat the configured accountId as the root for simplicity in this browser.
-        return this.accountId;
+        return 'root';
     }
 
     async listItems(parentId = 'root', pageToken = null, pageSize = 100) {
+        if (!parentId) {
+            parentId = 'root';
+        }
+
         const query = `'${parentId}' in parents and trashed = false`;
         const params = {
             q: query,
-            orderBy: "folder,name", // Folders first, then by name
-            fields: `nextPageToken, files(${CONSTS.default_file_fields})`,
+            orderBy: "folder,name",
+            // MODIFIED: Accessing CONSTS via this.CONSTS
+            fields: `nextPageToken, files(${this.CONSTS.default_file_fields})`,
             pageSize: pageSize,
             includeItemsFromAllDrives: true,
             supportsAllDrives: true,
@@ -216,7 +222,8 @@ class GoogleDriveService {
     }
 
     async getFileDetails(fileId) {
-        const url = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?fields=${CONSTS.default_file_fields}&supportsAllDrives=true`;
+        // MODIFIED: Accessing CONSTS via this.CONSTS
+        const url = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?fields=${this.CONSTS.default_file_fields}&supportsAllDrives=true`;
         const requestOption = await this.requestOption();
         const response = await fetch(url, requestOption);
 
@@ -229,12 +236,13 @@ class GoogleDriveService {
     }
 
     async searchFiles(keyword, pageToken = null, pageSize = 100) {
-        const sanitizedKeyword = keyword.replace(/['"]/g, ''); // Simple sanitization
+        const sanitizedKeyword = keyword.replace(/['"]/g, '');
         const query = `name contains '${sanitizedKeyword}' and trashed = false`;
         const params = {
             q: query,
             orderBy: "folder,name",
-            fields: `nextPageToken, files(${CONSTS.default_file_fields})`,
+            // MODIFIED: Accessing CONSTS via this.CONSTS
+            fields: `nextPageToken, files(${this.CONSTS.default_file_fields})`,
             pageSize: pageSize,
             includeItemsFromAllDrives: true,
             supportsAllDrives: true,
@@ -261,8 +269,7 @@ class GoogleDriveService {
 
         const streamHeaders = new Headers();
         streamHeaders.set('Authorization', `Bearer ${accessToken}`);
-        
-        // Pass through Range header for streaming
+
         if (requestHeaders.has('Range')) {
             streamHeaders.set('Range', requestHeaders.get('Range'));
         }
@@ -279,10 +286,8 @@ class GoogleDriveService {
         }
 
         const responseHeaders = new Headers(driveResponse.headers);
-        responseHeaders.set('Access-Control-Allow-Origin', '*'); // Allow CORS for streaming
-        // Optionally adjust Content-Disposition for direct play vs download
-        // responseHeaders.set('Content-Disposition', 'inline'); // To try playing in browser
-        
+        responseHeaders.set('Access-Control-Allow-Origin', '*');
+
         return new Response(driveResponse.body, {
             status: driveResponse.status,
             headers: responseHeaders,
@@ -317,9 +322,10 @@ export default {
         } else if (path.startsWith('/api/settings')) {
             return handleSettings(request, env);
         } else if (path.startsWith('/api/drive/')) {
-            const pathSegments = path.split('/'); // e.g., ["", "api", "drive", ":accountId", "list", ":folderId"]
-            const accountId = pathSegments[3]; 
-            const driveAction = pathSegments[4];
+            const pathSegments = path.split('/');
+
+            const driveAction = pathSegments[3];
+            const accountId = pathSegments[4];
 
             if (!accountId) {
                 return jsonResponse({ error: 'Missing Google Drive Account ID in URL' }, 400);
@@ -332,11 +338,13 @@ export default {
                 return jsonResponse({ error: `Google Drive Account settings for ID '${accountId}' not found.` }, 404);
             }
             const accountSettings = JSON.parse(accountSettingsString);
-            const driveService = new GoogleDriveService(accountSettings);
+
+            // MODIFIED: Pass CONSTS when creating GoogleDriveService instance
+            const driveService = new GoogleDriveService(accountSettings, CONSTS);
 
             try {
                 if (driveAction === 'list' && request.method === 'GET') {
-                    const folderId = pathSegments[5] || await driveService.getRootFolderId(); // Get folderId from path or use root
+                    const folderId = pathSegments[5] || await driveService.getRootFolderId();
                     const pageToken = url.searchParams.get('pageToken');
                     const pageSize = parseInt(url.searchParams.get('pageSize')) || 100;
                     const result = await driveService.listItems(folderId, pageToken, pageSize);
@@ -349,8 +357,7 @@ export default {
                 } else if (driveAction === 'download' && request.method === 'GET') {
                     const fileId = pathSegments[5];
                     if (!fileId) return jsonResponse({ error: 'Missing file ID' }, 400);
-                    // handleDriveLink is now integrated into getFileStream
-                    return driveService.getFileStream(fileId, request.headers); 
+                    return driveService.getFileStream(fileId, request.headers);
                 } else if (driveAction === 'search' && request.method === 'GET') {
                     const query = url.searchParams.get('q');
                     const pageToken = url.searchParams.get('pageToken');
