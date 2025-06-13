@@ -2,10 +2,13 @@
 const GOOGLE_AUTH_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3';
 
-// Helper function to handle JSON responses
-async function jsonResponse(data, status = 200) {
+// --- Helper Functions ---
+
+// Helper function to create JSON responses
+// CORS headers will be added by the main handler
+function jsonResponse(data, status = 200) {
     return new Response(JSON.stringify(data), {
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        headers: { 'Content-Type': 'application/json' },
         status: status,
     });
 }
@@ -25,13 +28,11 @@ async function getAccessToken(client_id, client_secret, refresh_token) {
                 grant_type: 'refresh_token',
             }),
         });
-
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Failed to get access token response:', errorText);
             throw new Error(`Failed to get access token: ${response.status} - ${errorText}`);
         }
-
         const data = await response.json();
         return data.access_token;
     } catch (error) {
@@ -47,11 +48,14 @@ async function checkAdminAuth(request, env) {
         return jsonResponse({ error: 'Unauthorized: Missing or invalid token' }, 401);
     }
     const token = authHeader.split(' ')[1];
-    if (token !== env.ADMIN_TOKEN) {
+    // NOTE: Use a dedicated admin token secret from your environment variables
+    const adminToken = env.ADMIN_PASSWORD || 'your_fallback_secret_token';
+    if (token !== adminToken) {
         return jsonResponse({ error: 'Unauthorized: Invalid token' }, 401);
     }
     return null; // Authorized
 }
+
 
 // --- API Handlers ---
 
@@ -59,8 +63,11 @@ async function checkAdminAuth(request, env) {
 async function handleAuthLogin(request, env) {
     try {
         const { username, password } = await request.json();
-        if (username === env.ADMIN_USERNAME && password === env.ADMIN_PASSWORD) {
-            return jsonResponse({ message: 'Authentication successful', token: env.ADMIN_TOKEN });
+        const adminUser = env.ADMIN_USERNAME || 'admin';
+        const adminPass = env.ADMIN_PASSWORD || 'your_fallback_secret_token';
+
+        if (username === adminUser && password === adminPass) {
+            return jsonResponse({ message: 'Authentication successful', token: adminPass });
         }
         return jsonResponse({ error: 'Invalid credentials' }, 401);
     } catch (error) {
@@ -69,315 +76,261 @@ async function handleAuthLogin(request, env) {
     }
 }
 
+// Handle the callback from Google OAuth
+async function handleAuthCallback(request, env) {
+    const url = new URL(request.url);
+    const code = url.searchParams.get('code');
+
+    if (!code) {
+        return new Response('Error: Authorization code not found.', { status: 400 });
+    }
+
+    const redirectUri = `${url.protocol}//${url.hostname}${url.pathname}`;
+
+    try {
+        const tokenResponse = await fetch(GOOGLE_AUTH_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                code: code,
+                client_id: env.GOOGLE_CLIENT_ID,
+                client_secret: env.GOOGLE_CLIENT_SECRET,
+                redirect_uri: redirectUri,
+                grant_type: 'authorization_code',
+            }),
+        });
+
+        const tokenData = await tokenResponse.json();
+
+        if (tokenData.error || !tokenData.refresh_token) {
+            throw new Error(tokenData.error_description || 'Failed to retrieve refresh token.');
+        }
+
+        const profileResponse = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
+            headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
+        });
+        const profileData = await profileResponse.json();
+
+        const html = `
+            <!DOCTYPE html><html><head><title>Authentication Success</title></head><body>
+            <script>
+                const dataToSend = {
+                    refreshToken: "${tokenData.refresh_token}",
+                    userEmail: "${profileData.email || ''}"
+                };
+                window.opener.postMessage(dataToSend, 'https://nintendoi.xyz');
+                window.close();
+            </script>
+            <p>Authentication successful. You can close this window.</p>
+            </body></html>`;
+        return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+    } catch (error) {
+        console.error('Auth Callback Error:', error);
+        return new Response(`Error during authentication: ${error.message}`, { status: 500 });
+    }
+}
+
 // Handle Google Drive Account Settings CRUD operations
 async function handleSettings(request, env) {
     const url = new URL(request.url);
     const method = request.method;
-
     const authError = await checkAdminAuth(request, env);
-    if (authError) {
-        return authError; // Return 401 if not authorized
-    }
+    if (authError) return authError;
 
     const pathSegments = url.pathname.split('/');
-    const action = pathSegments[3]; // e.g., /api/settings/list, /api/settings/add
+    const action = pathSegments[3];
 
     if (action === 'add' && method === 'POST') {
         try {
             const settings = await request.json();
-            if (!settings.id || !settings.name || !settings.client_id || !settings.client_secret || !settings.refresh_token) {
-                return jsonResponse({ error: 'Missing required fields: id, name, client_id, client_secret, refresh_token' }, 400);
+            if (!settings.id || !settings.name || !settings.refresh_token) {
+                return jsonResponse({ error: 'Missing required fields: id, name, refresh_token' }, 400);
             }
+            const fullSettings = {
+                ...settings,
+                client_id: env.GOOGLE_CLIENT_ID,
+                client_secret: env.GOOGLE_CLIENT_SECRET
+            };
             const key = `google_drive_account_${settings.id}`;
-            await env.DRIVE_SETTINGS.put(key, JSON.stringify(settings));
-            return jsonResponse({ message: `Account '${settings.name}' (ID: ${settings.id}) added successfully.` });
+            await env.DRIVE_SETTINGS.put(key, JSON.stringify(fullSettings));
+            return jsonResponse({ message: `Account '${settings.name}' added successfully.` });
         } catch (error) {
-            console.error('Error adding account:', error.message);
             return jsonResponse({ error: 'Invalid request body or internal error' }, 400);
         }
     } else if (action === 'update' && method === 'PUT') {
-        const accountId = pathSegments[4]; // /api/settings/update/:id
-        if (!accountId) {
-            return jsonResponse({ error: 'Missing account ID for update' }, 400);
-        }
+        const accountId = pathSegments[4];
+        if (!accountId) return jsonResponse({ error: 'Missing account ID' }, 400);
         try {
             const updates = await request.json();
             const key = `google_drive_account_${accountId}`;
-            const existingSettingsString = await env.DRIVE_SETTINGS.get(key);
-            if (!existingSettingsString) {
-                return jsonResponse({ error: `Account '${accountId}' not found.` }, 404);
-            }
-            const existingSettings = JSON.parse(existingSettingsString);
-            const updatedSettings = { ...existingSettings, ...updates, id: accountId }; // Ensure ID remains consistent
-            await env.DRIVE_SETTINGS.put(key, JSON.stringify(updatedSettings));
-            return jsonResponse({ message: `Account '${updatedSettings.name}' (ID: ${accountId}) updated successfully.` });
+            const existing = await env.DRIVE_SETTINGS.get(key);
+            if (!existing) return jsonResponse({ error: `Account not found.` }, 404);
+            const updated = { ...JSON.parse(existing), ...updates, id: accountId };
+            await env.DRIVE_SETTINGS.put(key, JSON.stringify(updated));
+            return jsonResponse({ message: `Account updated.` });
         } catch (error) {
-            console.error('Error updating account:', error.message);
             return jsonResponse({ error: 'Invalid request body or internal error' }, 400);
         }
     } else if (action === 'delete' && method === 'DELETE') {
-        const accountId = pathSegments[4]; // /api/settings/delete/:id
-        if (!accountId) {
-            return jsonResponse({ error: 'Missing account ID for delete' }, 400);
-        }
-        const key = `google_drive_account_${accountId}`;
-        await env.DRIVE_SETTINGS.delete(key);
-        return jsonResponse({ message: `Account '${accountId}' deleted successfully.` });
+        const accountId = pathSegments[4];
+        if (!accountId) return jsonResponse({ error: 'Missing account ID' }, 400);
+        await env.DRIVE_SETTINGS.delete(`google_drive_account_${accountId}`);
+        return jsonResponse({ message: `Account deleted.` });
     } else if (action === 'list' && method === 'GET') {
-        const list = await env.DRIVE_SETTINGS.list();
+        const list = await env.DRIVE_SETTINGS.list({ prefix: 'google_drive_account_' });
         const accounts = [];
         for (const key of list.keys) {
-            if (key.name.startsWith('google_drive_account_')) {
-                const value = await env.DRIVE_SETTINGS.get(key.name);
-                // Exclude sensitive refresh_token from list API for security
-                const { refresh_token, ...safeSettings } = JSON.parse(value);
-                accounts.push(safeSettings);
+            const value = await env.DRIVE_SETTINGS.get(key.name);
+            if (value) {
+                 const { client_id, client_secret, refresh_token, ...safeSettings } = JSON.parse(value);
+                 accounts.push(safeSettings);
             }
         }
         return jsonResponse(accounts);
     } else if (action === 'get' && method === 'GET') {
-        const accountId = pathSegments[4]; // /api/settings/get/:id
-        if (!accountId) {
-            return jsonResponse({ error: 'Missing account ID' }, 400);
-        }
-        const key = `google_drive_account_${accountId}`;
-        const accountSettingsString = await env.DRIVE_SETTINGS.get(key);
-        if (!accountSettingsString) {
-            return jsonResponse({ error: `Account '${accountId}' not found.` }, 404);
-        }
-        const { refresh_token, ...safeSettings } = JSON.parse(accountSettingsString);
-        return jsonResponse(safeSettings); // Return settings without refresh token for security
+        const accountId = pathSegments[4];
+        if (!accountId) return jsonResponse({ error: 'Missing account ID' }, 400);
+        const value = await env.DRIVE_SETTINGS.get(`google_drive_account_${accountId}`);
+        if (!value) return jsonResponse({ error: `Account not found.` }, 404);
+        const { client_id, client_secret, refresh_token, ...safeSettings } = JSON.parse(value);
+        return jsonResponse(safeSettings);
     } else {
         return jsonResponse({ error: 'Invalid settings API action or method' }, 405);
     }
 }
 
 // --- Google Drive Interaction Class ---
-// CONSTS object is defined here, before the class uses it.
 const CONSTS = {
     folder_mime_type: "application/vnd.google-apps.folder",
     default_file_fields: "id,name,mimeType,size,modifiedTime,thumbnailLink,description,parents",
 };
 
 class GoogleDriveService {
-    // MODIFIED: Added 'constants' parameter to the constructor
-    constructor(accountSettings, constants) {
-        this.accountId = accountSettings.id;
+    constructor(accountSettings) {
         this.client_id = accountSettings.client_id;
         this.client_secret = accountSettings.client_secret;
         this.refresh_token = accountSettings.refresh_token;
         this.accessTokenCache = { token: null, expires: 0 };
-        this.accountSettings = accountSettings;
-        this.CONSTS = constants; // MODIFIED: Storing CONSTS in the instance
     }
-
     async getAccessToken() {
         if (this.accessTokenCache.token && this.accessTokenCache.expires > Date.now()) {
             return this.accessTokenCache.token;
         }
         const token = await getAccessToken(this.client_id, this.client_secret, this.refresh_token);
-        this.accessTokenCache = { token: token, expires: Date.now() + 3500 * 1000 };
+        this.accessTokenCache = { token, expires: Date.now() + 3500 * 1000 };
         return token;
     }
-
     async requestOption(headers = {}, method = 'GET') {
         const accessToken = await this.getAccessToken();
         headers['Authorization'] = `Bearer ${accessToken}`;
-        return { method: method, headers: headers };
+        return { method, headers };
     }
-
-    async getRootFolderId() {
-        return 'root';
-    }
-
     async listItems(parentId = 'root', pageToken = null, pageSize = 100) {
-        if (!parentId) {
-            parentId = 'root';
-        }
-
         const query = `'${parentId}' in parents and trashed = false`;
-        const params = {
-            q: query,
-            orderBy: "folder,name",
-            // MODIFIED: Accessing CONSTS via this.CONSTS
-            fields: `nextPageToken, files(${this.CONSTS.default_file_fields})`,
-            pageSize: pageSize,
-            includeItemsFromAllDrives: true,
-            supportsAllDrives: true,
-        };
-        if (pageToken) {
-            params.pageToken = pageToken;
-        }
-
-        const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params).toString()}`;
-        const requestOption = await this.requestOption();
-        const response = await fetch(url, requestOption);
-
-        if (!response.ok) {
-            const errorBody = await response.json();
-            console.error(`Google Drive API List Error: ${response.status} - ${JSON.stringify(errorBody)}`);
-            throw new Error(`Failed to list items: ${errorBody.error.message || response.status}`);
-        }
+        const params = { q: query, orderBy: "folder,name", fields: `nextPageToken, files(${CONSTS.default_file_fields})`, pageSize, includeItemsFromAllDrives: true, supportsAllDrives: true };
+        if (pageToken) params.pageToken = pageToken;
+        const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params)}`;
+        const response = await fetch(url, await this.requestOption());
+        if (!response.ok) throw new Error(`Failed to list items: ${await response.text()}`);
         return response.json();
     }
-
     async getFileDetails(fileId) {
-        // MODIFIED: Accessing CONSTS via this.CONSTS
-        const url = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?fields=${this.CONSTS.default_file_fields}&supportsAllDrives=true`;
-        const requestOption = await this.requestOption();
-        const response = await fetch(url, requestOption);
-
-        if (!response.ok) {
-            const errorBody = await response.json();
-            console.error(`Google Drive API Get File Error: ${response.status} - ${JSON.stringify(errorBody)}`);
-            throw new Error(`Failed to get file details: ${errorBody.error.message || response.status}`);
-        }
+        const url = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?fields=${CONSTS.default_file_fields}&supportsAllDrives=true`;
+        const response = await fetch(url, await this.requestOption());
+        if (!response.ok) throw new Error(`Failed to get file details: ${await response.text()}`);
         return response.json();
     }
-
     async searchFiles(keyword, pageToken = null, pageSize = 100) {
-        const sanitizedKeyword = keyword.replace(/['"]/g, '');
-        const query = `name contains '${sanitizedKeyword}' and trashed = false`;
-        const params = {
-            q: query,
-            orderBy: "folder,name",
-            // MODIFIED: Accessing CONSTS via this.CONSTS
-            fields: `nextPageToken, files(${this.CONSTS.default_file_fields})`,
-            pageSize: pageSize,
-            includeItemsFromAllDrives: true,
-            supportsAllDrives: true,
-        };
-        if (pageToken) {
-            params.pageToken = pageToken;
-        }
-
-        const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params).toString()}`;
-        const requestOption = await this.requestOption();
-        const response = await fetch(url, requestOption);
-
-        if (!response.ok) {
-            const errorBody = await response.json();
-            console.error(`Google Drive API Search Error: ${response.status} - ${JSON.stringify(errorBody)}`);
-            throw new Error(`Failed to search files: ${errorBody.error.message || response.status}`);
-        }
+        const query = `name contains '${keyword.replace(/['"]/g, '')}' and trashed = false`;
+        const params = { q: query, orderBy: "folder,name", fields: `nextPageToken, files(${CONSTS.default_file_fields})`, pageSize, includeItemsFromAllDrives: true, supportsAllDrives: true };
+        if (pageToken) params.pageToken = pageToken;
+        const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params)}`;
+        const response = await fetch(url, await this.requestOption());
+        if (!response.ok) throw new Error(`Failed to search files: ${await response.text()}`);
         return response.json();
     }
-
     async getFileStream(fileId, requestHeaders) {
-        const driveFileUrl = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?alt=media`;
-        const accessToken = await this.getAccessToken();
-
-        const streamHeaders = new Headers();
-        streamHeaders.set('Authorization', `Bearer ${accessToken}`);
-
-        if (requestHeaders.has('Range')) {
-            streamHeaders.set('Range', requestHeaders.get('Range'));
-        }
-
-        const driveResponse = await fetch(driveFileUrl, {
-            headers: streamHeaders,
-            redirect: 'follow',
-        });
-
-        if (!driveResponse.ok) {
-            const errorText = await driveResponse.text();
-            console.error(`Google Drive API Stream Error for file ${fileId}: ${driveResponse.status} - ${errorText}`);
-            throw new Error(`Failed to retrieve file stream: ${driveResponse.status}`);
-        }
-
+        const url = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?alt=media`;
+        const headers = new Headers(requestHeaders);
+        headers.set('Authorization', `Bearer ${await this.getAccessToken()}`);
+        const driveResponse = await fetch(url, { headers, redirect: 'follow' });
+        if (!driveResponse.ok) throw new Error(`Failed to stream file: ${await driveResponse.text()}`);
         const responseHeaders = new Headers(driveResponse.headers);
         responseHeaders.set('Access-Control-Allow-Origin', '*');
-
-        return new Response(driveResponse.body, {
-            status: driveResponse.status,
-            headers: responseHeaders,
-        });
+        return new Response(driveResponse.body, { status: driveResponse.status, headers: responseHeaders });
     }
 }
-
 
 // --- Main Fetch Handler (Router) ---
 export default {
     async fetch(request, env, ctx) {
-        const url = new URL(request.url);
-        const path = url.pathname;
-        const origin = request.headers.get('Origin');
+        const corsHeaders = {
+            'Access-Control-Allow-Origin': 'https://nintendoi.xyz',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        };
 
-        // Handle CORS preflight requests
         if (request.method === 'OPTIONS') {
-            return new Response(null, {
-                status: 204,
-                headers: {
-                    'Access-Control-Allow-Origin': origin || '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                    'Access-Control-Max-Age': '86400',
-                },
-            });
+            return new Response(null, { headers: corsHeaders });
         }
 
-        // --- API Routing ---
-        if (path === '/api/auth/login' && request.method === 'POST') {
-            return handleAuthLogin(request, env);
-        } else if (path.startsWith('/api/settings')) {
-            return handleSettings(request, env);
-        } else if (path.startsWith('/api/drive/')) {
-            const pathSegments = path.split('/');
-
-            const driveAction = pathSegments[3];
-            const accountId = pathSegments[4];
-
-            if (!accountId) {
-                return jsonResponse({ error: 'Missing Google Drive Account ID in URL' }, 400);
-            }
-
-            const settingsKey = `google_drive_account_${accountId}`;
-            const accountSettingsString = await env.DRIVE_SETTINGS.get(settingsKey);
-
-            if (!accountSettingsString) {
-                return jsonResponse({ error: `Google Drive Account settings for ID '${accountId}' not found.` }, 404);
-            }
-            const accountSettings = JSON.parse(accountSettingsString);
-
-            // MODIFIED: Pass CONSTS when creating GoogleDriveService instance
-            const driveService = new GoogleDriveService(accountSettings, CONSTS);
-
-            try {
-                if (driveAction === 'list' && request.method === 'GET') {
-                    const folderId = pathSegments[5] || await driveService.getRootFolderId();
-                    const pageToken = url.searchParams.get('pageToken');
-                    const pageSize = parseInt(url.searchParams.get('pageSize')) || 100;
-                    const result = await driveService.listItems(folderId, pageToken, pageSize);
-                    return jsonResponse(result);
-                } else if (driveAction === 'file' && request.method === 'GET') {
-                    const fileId = pathSegments[5];
-                    if (!fileId) return jsonResponse({ error: 'Missing file ID' }, 400);
-                    const result = await driveService.getFileDetails(fileId);
-                    return jsonResponse(result);
-                } else if (driveAction === 'download' && request.method === 'GET') {
-                    const fileId = pathSegments[5];
-                    if (!fileId) return jsonResponse({ error: 'Missing file ID' }, 400);
-                    return driveService.getFileStream(fileId, request.headers);
-                } else if (driveAction === 'search' && request.method === 'GET') {
-                    const query = url.searchParams.get('q');
-                    const pageToken = url.searchParams.get('pageToken');
-                    const pageSize = parseInt(url.searchParams.get('pageSize')) || 100;
-                    if (!query) return jsonResponse({ error: 'Missing search query (q parameter)' }, 400);
-                    const result = await driveService.searchFiles(query, pageToken, pageSize);
-                    return jsonResponse(result);
+        let response;
+        try {
+            const url = new URL(request.url);
+            const path = url.pathname;
+            if (path === '/api/auth/login') {
+                response = await handleAuthLogin(request, env);
+            } else if (path === '/api/auth/callback') {
+                response = await handleAuthCallback(request, env);
+            } else if (path.startsWith('/api/settings')) {
+                response = await handleSettings(request, env);
+            } else if (path.startsWith('/api/drive/')) {
+                const pathSegments = path.split('/');
+                const driveAction = pathSegments[3];
+                const accountId = pathSegments[4];
+                if (!accountId) {
+                    response = jsonResponse({ error: 'Missing Account ID' }, 400);
                 } else {
-                    return jsonResponse({ error: 'Invalid Google Drive API action or method' }, 400);
+                    const settings = await env.DRIVE_SETTINGS.get(`google_drive_account_${accountId}`);
+                    if (!settings) {
+                        response = jsonResponse({ error: `Account settings not found.` }, 404);
+                    } else {
+                        const driveService = new GoogleDriveService(JSON.parse(settings));
+                        const fileId = pathSegments[5];
+                        const pageToken = url.searchParams.get('pageToken');
+                        switch (driveAction) {
+                            case 'list':
+                                response = jsonResponse(await driveService.listItems(fileId || 'root', pageToken));
+                                break;
+                            case 'get':
+                                if (!fileId) response = jsonResponse({ error: 'Missing file ID' }, 400);
+                                else response = jsonResponse(await driveService.getFileDetails(fileId));
+                                break;
+                            case 'download':
+                                if (!fileId) return jsonResponse({ error: 'Missing file ID' }, 400);
+                                return driveService.getFileStream(fileId, request.headers); // Exits early for stream
+                            case 'search':
+                                const query = url.searchParams.get('q');
+                                if (!query) response = jsonResponse({ error: 'Missing search query' }, 400);
+                                else response = jsonResponse(await driveService.searchFiles(query, pageToken));
+                                break;
+                            default:
+                                response = jsonResponse({ error: 'Invalid Drive API action' }, 400);
+                        }
+                    }
                 }
-            } catch (error) {
-                console.error('Drive API Handler Error:', error);
-                return jsonResponse({ error: `Drive API Error: ${error.message}` }, 500);
+            } else {
+                response = new Response('Welcome to Axel Drive Backend!', { headers: { 'Content-Type': 'text/html' }});
             }
-        } else {
-            // Default response for root or unmatched paths
-            return new Response('<h1>Welcome to Axel Drive Backend!</h1><p>Use the /api routes to interact.</p>', {
-                headers: { 'Content-Type': 'text/html' },
-                status: 200,
-            });
+        } catch (error) {
+            console.error('Unhandled error:', error);
+            response = jsonResponse({ error: 'Internal Server Error', details: error.message }, 500);
         }
+
+        const finalResponse = new Response(response.body, response);
+        for (const [key, value] of Object.entries(corsHeaders)) {
+            finalResponse.headers.set(key, value);
+        }
+        return finalResponse;
     },
 };

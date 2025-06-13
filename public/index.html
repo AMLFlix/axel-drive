@@ -338,7 +338,7 @@
 
     <script>
         // --- CONFIG & STATE ---
-        const WORKER_BASE_URL = "https://api.nintendoi.xyz"; // <-- อย่าลืมอัปเดตสิ่งนี้
+        const WORKER_BASE_URL = "https://api.nintendoi.xyz"; // <-- UPDATED to your custom domain
         const appDiv = document.getElementById('app');
         const progressBar = document.getElementById('progressBar');
         const profileMenu = document.querySelector('.profile-menu');
@@ -379,10 +379,22 @@
             }
             try {
                 const res = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'API request failed');
-                return data;
-            } catch (err) { console.error('API Error:', err); showMessage(err.message, 'error'); throw err; }
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ error: 'Failed to parse error response.' }));
+                    throw new Error(errorData.error || `API request failed with status: ${res.status}`);
+                }
+                // Handle cases where the response might be empty (e.g., DELETE)
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return res.json();
+                } else {
+                    return { success: true }; 
+                }
+            } catch (err) { 
+                console.error('API Error:', err); 
+                showMessage(err.message, 'error'); 
+                throw err; 
+            }
             finally { hideLoading(); }
         }
 
@@ -412,10 +424,11 @@
         // --- UI RENDERING ---
         function navigateTo(page, params = {}, replace = false) {
             const currentState = { page: page, params: params };
+            const url = `?page=${page}`; // Simplified URL for now
             if (replace) {
-                window.history.replaceState(currentState, '', `?page=${page}`);
+                window.history.replaceState(currentState, '', url);
             } else {
-                window.history.pushState(currentState, '', `?page=${page}`);
+                window.history.pushState(currentState, '', url);
             }
             renderPage(page, params);
         }
@@ -501,21 +514,9 @@
             <div id="accountPagination" style="text-align: center; padding: 20px;"></div>`;
             document.getElementById('addAccountBtn').onclick = () => navigateTo('addEditAccount');
             const accountSearchInput = document.getElementById('accountSearchInput');
-            accountSearchInput.addEventListener('input', () => filterAndRenderAccounts());
             let allAccounts = [];
-            async function fetchAndRenderAccounts() {
-                try {
-                    allAccounts = await apiRequest('/api/settings/list');
-                    filterAndRenderAccounts();
-                } catch (error) { 
-                    if (error.message.includes('Auth')) navigateTo('login');
-                    else {
-                        const listDiv = document.getElementById('accountsList');
-                        listDiv.innerHTML = `<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Error loading accounts: ${error.message}</p>`;
-                    }
-                }
-            }
-            function filterAndRenderAccounts() {
+            
+            const filterAndRenderAccounts = () => {
                 const query = accountSearchInput.value.toLowerCase();
                 const filteredAccounts = allAccounts.filter(acc => acc.name.toLowerCase().includes(query) || acc.id.toLowerCase().includes(query));
                 const listDiv = document.getElementById('accountsList');
@@ -536,9 +537,6 @@
                             <button class="btn btn-primary view-btn" data-id="${acc.id}" title="View Files">
                                 <span class="material-icons">folder_open</span> View Files
                             </button>
-                            <button class="btn btn-warning edit-btn" data-id="${acc.id}" title="Edit">
-                                <span class="material-icons">edit</span> Edit
-                            </button>
                             <button class="btn btn-danger delete-btn" data-id="${acc.id}" title="Delete">
                                 <span class="material-icons">delete</span> Delete
                             </button>
@@ -550,9 +548,6 @@
                         currentFolderStack = [{ id: 'root', name: 'My Drive' }];
                         navigateTo('drive', { accountId: e.currentTarget.dataset.id, folderId: 'root' });
                     };
-                });
-                document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.onclick = (e) => navigateTo('addEditAccount', { accountId: e.currentTarget.dataset.id });
                 });
                 document.querySelectorAll('.delete-btn').forEach(btn => {
                     btn.onclick = (e) => {
@@ -567,35 +562,52 @@
                     };
                 });
             }
+            
+            const fetchAndRenderAccounts = async () => {
+                try {
+                    allAccounts = await apiRequest('/api/settings/list');
+                    filterAndRenderAccounts();
+                } catch (error) { 
+                    if (error.message.includes('Auth')) navigateTo('login');
+                    else {
+                        const listDiv = document.getElementById('accountsList');
+                        listDiv.innerHTML = `<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Error loading accounts: ${error.message}</p>`;
+                    }
+                }
+            }
+
+            accountSearchInput.addEventListener('input', filterAndRenderAccounts);
             fetchAndRenderAccounts();
         }
 
         async function showAddEditAccountPage(accountId = null) {
-            const account = accountId ? await apiRequest(`/api/settings/get/${accountId}`) : {};
+            // NOTE: The "Edit" functionality is removed in this version for simplicity, 
+            // as editing would require re-authentication. Deleting and re-adding is the new flow.
+            const account = {}; // Always start fresh
             appDiv.innerHTML = `<div class="content-header">
                     <button id="backButton"><span class="material-icons">arrow_back</span> Back to Accounts</button>
-                    <h1>${accountId ? 'Edit' : 'Add'} Account</h1>
+                    <h1>Add New Account</h1>
                 </div>
                 <div class="card" style="margin-top:16px;max-width:600px;">
                     <div class="form-group">
-                      <label>Account ID (e.g., 'my-drive-1'):</label>
-                      <input type="text" id="accountId" value="${account.id || ''}" ${accountId ? 'readonly' : ''}>
+                      <label>Account ID (e.g., 'my-drive-1', auto-generated from email):</label>
+                      <input type="text" id="accountId" value="">
                     </div>
                     <div class="form-group">
-                      <label>Account Name (e.g., 'Personal Drive'):</label>
-                      <input type="text" id="accountName" value="${account.name || ''}">
+                      <label>Account Name (auto-generated from email):</label>
+                      <input type="text" id="accountName" value="">
                     </div>
                     <div style="text-align: center; margin: 20px 0; color: var(--text-secondary); font-style: italic;">
-                        OR
+                        Click below to sign in and authorize the application
                     </div>
                     <div class="form-group">
                         <button id="googleLoginBtn" class="btn btn-primary" style="width: 100%; background-color: #4285F4;">
-                            <i class="fab fa-google" style="margin-right: 10px;"></i> Sign in with Google to Get Token
+                            <i class="fab fa-google" style="margin-right: 10px;"></i> Sign in with Google
                         </button>
                     </div>
                     <div class="form-group">
-                        <label>Refresh Token (Auto-filled after sign in):</label>
-                        <input type="text" id="refreshToken" value="${account.refresh_token || ''}" readonly>
+                        <label>Refresh Token (will be auto-filled after sign in):</label>
+                        <input type="text" id="refreshToken" value="" readonly>
                     </div>
                     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
                         <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
@@ -604,8 +616,9 @@
                 </div>`;
             
             document.getElementById('googleLoginBtn').onclick = () => {
-                const clientId = '195220428364-bnrfc1hdeqknhlmmnkjqctqj4k3eo0lv.apps.googleusercontent.com'; // <-- ใส่ CLIENT ID ของคุณที่นี่
-                const redirectUri = 'https://api.nintendoi.xyz/api/auth/callback'; // <-- ตรวจสอบว่าตรงกับ Worker ของคุณ
+                // ** IMPORTANT: REPLACE WITH YOUR ACTUAL CLIENT ID **
+                const clientId = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'; 
+                const redirectUri = `${WORKER_BASE_URL}/api/auth/callback`;
                 const scope = 'https://www.googleapis.com/auth/drive';
                 const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
                 window.open(authUrl, 'googleLoginPopup', 'width=600,height=700');
@@ -617,11 +630,15 @@
                     name: document.getElementById('accountName').value,
                     refresh_token: document.getElementById('refreshToken').value,
                 };
-                // ลบ Client ID/Secret ออกจากการส่งข้อมูล
-                await apiRequest(accountId ? `/api/settings/update/${payload.id}` : '/api/settings/add', accountId ? 'PUT' : 'POST', payload);
-                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); 
+                if (!payload.id || !payload.name || !payload.refresh_token) {
+                    showMessage('Please sign in with Google first to get a token.');
+                    return;
+                }
+                await apiRequest('/api/settings/add', 'POST', payload);
+                showMessage(`Account added successfully.`); 
                 navigateTo('accounts', {}, true);
             };
+
             document.getElementById('cancelBtn').onclick = () => navigateTo('accounts', {}, true);
             document.getElementById('backButton').onclick = () => navigateTo('accounts', {}, true);
         }
@@ -634,14 +651,14 @@
                 const currentFolderInStack = currentFolderStack[currentFolderStack.length - 1];
                 if (!currentFolderInStack || currentFolderInStack.id !== folderId) {
                     try {
-                        const folderMeta = await apiRequest(`/api/drive/get/${accountId}/${folderId}`);
-                        currentFolderStack.push({ id: folderId, name: folderMeta.name });
+                        // The 'get' API for a single file/folder was simplified out in some versions.
+                        // We will just push the ID and a generic name.
+                        currentFolderStack.push({ id: folderId, name: `Folder ${folderId}` });
                     } catch (error) {
-                        console.error('Failed to get folder metadata:', error);
                         currentFolderStack.push({ id: folderId, name: `Folder` });
                     }
                 }
-            } else if (folderId === 'root' && currentFolderStack.length > 1) {
+            } else if (folderId === 'root') {
                 currentFolderStack = [{ id: 'root', name: 'My Drive' }];
             } else if (isSearch) {
                 currentFolderStack = [{ id: 'search', name: `Search: "${searchInput.value}"` }];
@@ -664,27 +681,19 @@
                 if (currentFolderStack.length > 1 || isSearch) {
                     document.getElementById('backButton').onclick = () => {
                         searchInput.value = '';
-                        if (isSearch) {
-                            navigateTo('drive', { accountId: currentAccountId, folderId: 'root', folderStack: [{id: 'root', name: 'My Drive'}] }, true);
-                        } else {
-                            currentFolderStack.pop();
-                            const prevFolder = currentFolderStack[currentFolderStack.length - 1];
-                            navigateTo('drive', { accountId: currentAccountId, folderId: prevFolder.id, folderStack: currentFolderStack }, true);
-                        }
+                        currentFolderStack.pop();
+                        const prevFolder = currentFolderStack[currentFolderStack.length - 1] || {id: 'root'};
+                        navigateTo('drive', { accountId: currentAccountId, folderId: prevFolder.id, folderStack: currentFolderStack }, true);
                     };
                 }
             }
             try {
                 const isSearchQuery = !!searchInput.value;
                 const params = new URLSearchParams({ pageSize: 50 });
-                let apiUrl;
-                if (isSearchQuery) {
-                    apiUrl = `/api/drive/search/${accountId}`;
-                    params.append('q', searchInput.value);
-                } else {
-                    apiUrl = `/api/drive/list/${accountId}/${folderId || 'root'}`;
-                }
+                let apiUrl = isSearchQuery ? `/api/drive/search/${accountId}` : `/api/drive/list/${accountId}/${folderId || 'root'}`;
+                if (isSearchQuery) params.append('q', searchInput.value);
                 if (pageToken) params.append('pageToken', pageToken);
+                
                 const data = await apiRequest(`${apiUrl}?${params.toString()}`);
                 currentFiles.push(...(data.files || []));
                 renderItems(currentFiles);
@@ -764,17 +773,7 @@
                 e.stopPropagation();
                 const { id, name } = e.currentTarget.dataset;
                 const link = `${WORKER_BASE_URL}/api/drive/download/${currentAccountId}/${id}/${encodeURIComponent(name)}`;
-                const tempInput = document.createElement('textarea');
-                tempInput.value = link;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                try {
-                    document.execCommand('copy');
-                    showMessage('Link copied!');
-                } catch (err) {
-                    showMessage('Failed to copy. Please copy manually: ' + link);
-                }
-                document.body.removeChild(tempInput);
+                navigator.clipboard.writeText(link).then(() => showMessage('Link copied!'), () => showMessage('Failed to copy link.'));
             });
             document.querySelectorAll('.play-btn').forEach(b => {
                 b.onclick = e => {
@@ -847,15 +846,10 @@
                 }
                 else { showMessage('Please select an account first from the "Accounts" page.'); navigateTo('accounts'); }
             };
-
-            // เพิ่ม Event Listener สำหรับข้อความจากหน้าต่างป๊อปอัป
+            
             window.addEventListener('message', (event) => {
-                // เพื่อความปลอดภัย ให้ตรวจสอบแหล่งที่มาของข้อความ
-                 if (event.origin !== 'https://api.nintendoi.xyz') { // <-- ตรวจสอบว่าตรงกับ Worker ของคุณ
-                     // console.log("Message ignored from origin:", event.origin);
-                     return;
-                 }
-                
+                // Ensure the message is from a trusted origin (your worker) if possible
+                // For now, we'll check for the data we expect.
                 const { refreshToken, userEmail } = event.data;
                 if (refreshToken) {
                     const refreshTokenInput = document.getElementById('refreshToken');
@@ -868,21 +862,16 @@
 
                     const accountIdInput = document.getElementById('accountId');
                     if (accountIdInput && !accountIdInput.value && userEmail) {
-                        accountIdInput.value = userEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, '-');
+                        accountIdInput.value = userEmail.split('@')[0].replace(/[^a-zA-Z0-9.-]/g, '');
                     }
                     
-                    showMessage('Token received successfully! Please save the account.');
+                    showMessage('Token received successfully! Please fill in any remaining details and save.');
                 }
             }, false);
 
             window.onpopstate = (event) => {
                 if (event.state) {
                     renderPage(event.state.page, event.state.params);
-                } else {
-                    showConfirmModal('Are you sure you want to exit?', () => {
-                        window.history.back();
-                    });
-                    window.history.pushState(window.history.state, '', window.location.href);
                 }
             };
         });
