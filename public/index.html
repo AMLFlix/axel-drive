@@ -604,7 +604,7 @@
                 </div>`;
             
             document.getElementById('googleLoginBtn').onclick = () => {
-                const clientId = 'YOUR_GOOGLE_CLIENT_ID'; // <-- ใส่ CLIENT ID ของคุณที่นี่
+                const clientId = '195220428364-bnrfc1hdeqknhlmmnkjqctqj4k3eo0lv.apps.googleusercontent.com'; // <-- ใส่ CLIENT ID ของคุณที่นี่
                 const redirectUri = 'https://api.nintendoi.xyz/api/auth/callback'; // <-- ตรวจสอบว่าตรงกับ Worker ของคุณ
                 const scope = 'https://www.googleapis.com/auth/drive';
                 const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
