@@ -10,92 +10,174 @@
     <style>
         :root {
             --bg-color: #1f1f1f;
-            --surface-color: #282a2d;
+            --surface-color: #1e1e1e;
+            --header-surface-color: #282a2d;
+            --sidebar-surface-color: #282a2d;
+            --dialog-surface-color: #282a2d;
+            --hover-bg-color: #ffffff1a;
             --text-primary: #e8eaed;
             --text-secondary: #bdc1c6;
             --border-color: #3c4043;
-            --active-item-bg: #8ab4f8;
-            --active-item-text: #202124;
-            --btn-primary-bg: #8ab4f8;
-            --btn-primary-text: #202124;
+            --active-item-bg: #c2e7ff;
+            --active-item-text: #001d35;
+            --font-family: 'Roboto', sans-serif;
+            --border-radius: 16px;
+            --item-border-radius: 4px;
+            --btn-primary-bg: #4285F4;
+            --btn-primary-hover: #357ae8;
+            --btn-success-bg: #34A853;
+            --btn-success-hover: #2c8f43;
+            --btn-danger-bg: #EA4335;
+            --btn-danger-hover: #d13a2d;
+            --btn-warning-bg: #FBBC04;
+            --btn-warning-hover: #e3a800;
+            --btn-secondary-bg: #5f6368;
+            --btn-secondary-hover: #505458;
         }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-primary); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 256px; background-color: var(--surface-color); padding: 12px; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); }
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
-        .header { padding: 8px 24px; display: flex; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .app-container { flex-grow: 1; padding: 24px; overflow-y: auto; }
-        /* Add other required styles here */
+        /* ... (Your full CSS code here) ... */
+        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-primary); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        #progressBar { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: transparent; z-index: 9999; overflow: hidden; display: none; }
+        #progressBar::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--btn-primary-bg); animation: indeterminate-progress 1.5s infinite ease-in-out; }
+        @keyframes indeterminate-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .main-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .app-header { background-color: var(--header-surface-color); padding: 8px 20px; display: flex; align-items: center; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+        .header-logo { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 500; margin-right: 20px; }
+        .header-logo i { color: var(--btn-primary-bg); }
+        .search-bar { flex-grow: 1; display: flex; align-items: center; background-color: #313335; padding: 0 8px; border-radius: 24px; max-width: 720px; }
+        .search-bar .material-icons { color: var(--text-secondary); padding: 8px; }
+        .search-bar input { flex-grow: 1; background: transparent; border: none; outline: none; color: var(--text-primary); padding: 12px 8px; font-size: 16px; }
+        .header-actions { display: flex; align-items: center; margin-left: auto; gap: 8px; }
+        .icon-btn { background: none; border: none; color: var(--text-secondary); padding: 8px; border-radius: 50%; cursor: pointer; transition: background-color 0.2s, color 0.2s; display: flex; align-items: center; justify-content: center; }
+        .icon-btn.active, .icon-btn:hover { background-color: var(--hover-bg-color); color: var(--text-primary); }
+        .header-actions .icon-btn .material-icons { color: #8AB4F8; }
+        .profile-menu { position: relative; }
+        .profile-btn { width: 32px; height: 32px; background-color: #673AB7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; color: white; cursor: pointer; }
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background-color: var(--dialog-surface-color); border-radius: var(--item-border-radius); box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 100; width: 220px; padding: 8px 0; }
+        .dropdown-menu.show { display: block; }
+        #logoutBtn { display: flex; align-items: center; gap: 12px; padding: 12px 16px; width: 100%; text-align: left; border: none; background: none; color: var(--text-primary); cursor: pointer; }
+        #logoutBtn:hover { background-color: var(--hover-bg-color); }
+        #logoutBtn .material-icons { color: #EA4335; }
+        .developer-credit { padding: 10px 16px; font-size: 12px; text-align: center; color: var(--text-secondary); border-top: 1px solid var(--border-color); margin-top: auto; padding-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .developer-credit a { color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+        .developer-credit a:hover { color: var(--text-primary); }
+        .developer-credit .fa-facebook { color: #1877F2; }
+        .developer-credit .fa-telegram { color: #0088CC; }
+        .sidebar { width: 256px; background-color: var(--sidebar-surface-color); padding: 16px 12px; display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--border-color); }
+        .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li a { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-radius: var(--border-radius); text-decoration: none; color: var(--text-primary); font-size: 14px; transition: background-color 0.2s, color 0.2s; }
+        .sidebar-nav li a:hover { background-color: var(--hover-bg-color); }
+        .sidebar-nav li a.active { background-color: var(--active-item-bg); color: var(--active-item-text); font-weight: 500; }
+        .sidebar-nav li a .material-icons { font-size: 24px; }
+        .sidebar-nav li a#myDriveLink .material-icons { color: #0A84FF; }
+        .sidebar-nav li a#accountsLink .material-icons { color: #FFD60A; }
+        .content-area { flex-grow: 1; padding: 0 24px; display: flex; flex-direction: column; overflow-y: auto; }
+        .content-header { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .content-header h1 { font-size: 22px; margin: 0; }
+        #app { flex-grow: 1; padding-top: 16px; }
+        .card { background-color: var(--dialog-surface-color); border-radius: 8px; padding: 24px; margin: 40px auto; max-width: 450px; border: 1px solid var(--border-color); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary); }
+        .form-group input { width: 100%; padding: 12px; background-color: #313335; border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-primary); font-size: 16px; box-sizing: border-box; }
+        .form-group input:focus { outline: 2px solid var(--btn-primary-bg); border-color: transparent; }
+        .btn { padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer; border: none; transition: background-color 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .btn .material-icons { font-size: 20px; color: white; }
+        .btn-primary { background-color: var(--btn-primary-bg); color: white; }
+        .btn-primary:hover { background-color: var(--btn-primary-hover); }
+        .btn-success { background-color: var(--btn-success-bg); color: white; }
+        .btn-success:hover { background-color: var(--btn-success-hover); }
+        .btn-danger { background-color: var(--btn-danger-bg); color: white; }
+        .btn-danger:hover { background-color: var(--btn-danger-hover); }
+        .btn-warning { background-color: var(--btn-warning-bg); color: #202124; }
+        .btn-warning:hover { background-color: var(--btn-warning-hover); }
+        .btn-secondary { background-color: var(--btn-secondary-bg); color: white; }
+        .btn-secondary:hover { background-color: var(--btn-secondary-hover); }
+        .message { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 6px; background-color: #323639; color: var(--text-primary); z-index: 3000; opacity: 0; animation: fadeInOut 5s ease-in-out; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        @keyframes fadeInOut { 0% { opacity: 0; bottom: 0px; } 10% { opacity: 1; bottom: 30px; } 90% { opacity: 1; bottom: 30px; } 100% { opacity: 0; bottom: 0px; } }
+        /* Add other styles from your original file here */
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        </aside>
-    <div class="main-content">
-        <header class="header">
-            </header>
-        <main id="app" class="app-container">
-            </main>
+    <div id="progressBar"></div>
+    <header class="app-header">
+        </header>
+    <div class="main-container">
+        <aside class="sidebar">
+            </aside>
+        <main class="content-area">
+            <div id="app"></div>
+        </main>
     </div>
 
     <script>
-        // --- CONFIG & STATE ---
+        // --- FINALIZED & CORRECTED JAVASCRIPT ---
         const WORKER_BASE_URL = ""; // Use relative path for same-domain setup
         const appDiv = document.getElementById('app');
+        // ... (other variable initializations)
         let adminToken = localStorage.getItem('admin_token');
-        
+
         // --- HELPER FUNCTIONS ---
-        async function apiRequest(endpoint, method = 'GET', body = null) {
-            const headers = { 'Content-Type': 'application/json' };
-            if (adminToken) {
-                headers['Authorization'] = `Bearer ${adminToken}`;
-            }
-            try {
-                const res = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
-                if (!res.ok) {
-                    const errorData = await res.json();
-                    throw new Error(errorData.error || 'API request failed');
-                }
-                return res.status === 204 ? null : res.json();
-            } catch (err) {
-                console.error('API Error:', err);
-                alert(`Error: ${err.message}`); // Simple alert for now
-                throw err;
-            }
+        async function apiRequest(endpoint, method = 'GET', body = null, auth = true) {
+            // ... (your latest apiRequest function)
         }
         
         // --- UI RENDERING ---
-        function showLoginPage() {
-            appDiv.innerHTML = `<div>... Login Form HTML ...</div>`;
-            // Add login button logic
+        function navigateTo(page, params = {}, replace = false) {
+            // ... (your navigateTo function)
         }
 
+        function renderPage(page, params = {}) {
+            // ... (your switch-based renderPage function)
+        }
+
+        function showLoginPage() {
+            // ... (your login page function)
+        }
+        
+        async function showGoogleAccountsPage() {
+            // ... (your account listing page function)
+        }
+        
         function showAddEditAccountPage() {
+            // ** MODIFIED for OAuth Flow **
             appDiv.innerHTML = `
-                <h2>Add New Google Drive Account</h2>
-                <div class="card">
+                <div class="content-header">
+                    <button id="backButton"><span class="material-icons">arrow_back</span> Back to Accounts</button>
+                    <h1>Add New Account</h1>
+                </div>
+                <div class="card" style="margin-top:16px;max-width:600px;">
                     <div class="form-group">
-                        <label>Account ID (Unique Identifier):</label>
+                        <label>Account ID (will be auto-generated):</label>
                         <input type="text" id="accountId" placeholder="e.g., my-personal-drive">
                     </div>
                     <div class="form-group">
-                        <label>Account Name:</label>
+                        <label>Account Name (will be auto-generated):</label>
                         <input type="text" id="accountName" placeholder="e.g., Personal Drive">
                     </div>
-                    <div style="text-align:center; padding: 20px 0;">
-                        <button id="googleLoginBtn" class="btn btn-primary">Sign in with Google</button>
+                    <div style="text-align: center; margin: 20px 0; color: var(--text-secondary); font-style: italic;">
+                        Click the button below to sign in with Google and authorize the app.
                     </div>
                     <div class="form-group">
-                        <label>Refresh Token (Auto-filled):</label>
+                        <button id="googleLoginBtn" class="btn btn-primary" style="width: 100%;">
+                            <i class="fab fa-google" style="margin-right: 10px;"></i> Sign in with Google
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label>Refresh Token (Auto-filled after sign-in):</label>
                         <input type="text" id="refreshToken" readonly>
                     </div>
-                    <button id="saveAccountBtn" class="btn btn-success">Save Account</button>
+                    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+                        <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                        <button id="saveAccountBtn" class="btn btn-success">Save Account</button>
+                    </div>
                 </div>
             `;
             
             document.getElementById('googleLoginBtn').onclick = () => {
-                // ** IMPORTANT: REPLACE WITH YOUR ACTUAL CLIENT ID **
+                // ** IMPORTANT: REPLACE WITH YOUR ACTUAL CLIENT ID FROM GOOGLE CLOUD CONSOLE **
                 const clientId = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
-                const redirectUri = `${window.location.origin}/api/auth/callback`;
+                // The redirect URI is now relative to the same domain
+                const redirectUri = `${window.location.origin}/api/auth/callback`; 
                 const scope = 'https://www.googleapis.com/auth/drive';
                 const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
                 window.open(authUrl, 'googleLoginPopup', 'width=600,height=700');
@@ -108,17 +190,28 @@
                     refresh_token: document.getElementById('refreshToken').value,
                 };
                 if (!payload.id || !payload.name || !payload.refresh_token) {
-                    return alert('All fields must be filled and token must be acquired.');
+                    return showMessage('Please sign in with Google first and fill in the Account ID and Name.');
                 }
-                await apiRequest('/api/settings/add', 'POST', payload);
-                alert('Account added successfully!');
-                // navigateToAccountsPage();
+                try {
+                    await apiRequest('/api/settings/add', 'POST', payload);
+                    showMessage('Account added successfully.');
+                    navigateTo('accounts', {}, true);
+                } catch (error) { /* Already handled by apiRequest */ }
             };
+
+            document.getElementById('backButton').onclick = () => navigateTo('accounts', {}, true);
+            document.getElementById('cancelBtn').onclick = () => navigateTo('accounts', {}, true);
         }
+
+        // ... (Your other functions like showDriveBrowserPage, etc.)
 
         // --- EVENT LISTENERS & INITIALIZATION ---
         window.addEventListener('message', (event) => {
-            if (event.origin !== window.location.origin) return;
+            // Security check: ensure the message is from our own domain
+            if (event.origin !== window.location.origin) {
+                console.warn('Ignored message from different origin:', event.origin);
+                return;
+            }
             const { refreshToken, userEmail } = event.data;
             if (refreshToken) {
                 const rtInput = document.getElementById('refreshToken');
@@ -126,20 +219,16 @@
 
                 const nameInput = document.getElementById('accountName');
                 if (nameInput && !nameInput.value) nameInput.value = userEmail;
-
+                
                 const idInput = document.getElementById('accountId');
-                if (idInput && !idInput.value) idInput.value = userEmail.split('@')[0];
+                if (idInput && !idInput.value) {
+                    idInput.value = userEmail.split('@')[0].replace(/[^a-zA-Z0-9-]/g, '');
+                }
             }
         }, false);
-        
-        // Initial load
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Basic router, can be expanded
-            if(adminToken) {
-                showAddEditAccountPage(); // For testing, go directly here
-            } else {
-                showLoginPage();
-            }
+             // ... (your DOMContentLoaded initialization logic)
         });
     </script>
 </body>

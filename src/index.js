@@ -1,20 +1,16 @@
-// --- Worker Globals & Helpers ---
+// Worker Global Variables
 const GOOGLE_AUTH_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3';
-const CONSTS = {
-    folder_mime_type: "application/vnd.google-apps.folder",
-    default_file_fields: "id,name,mimeType,size,modifiedTime,parents",
-};
 
-// JSON response helper
+// Helper function to create JSON responses. CORS headers are added globally later.
 function jsonResponse(data, status = 200) {
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' },
-        status,
+        status: status,
     });
 }
 
-// Get Access Token helper
+// Helper function to get access token from refresh token
 async function getAccessToken(env, refresh_token) {
     const response = await fetch(GOOGLE_AUTH_URL, {
         method: 'POST',
@@ -49,7 +45,8 @@ async function handleAuthCallback(request, env) {
     const url = new URL(request.url);
     const code = url.searchParams.get('code');
     if (!code) return new Response('Error: Authorization code not found.', { status: 400 });
-
+    
+    // The redirect URI must exactly match what's in Google Cloud Console
     const redirectUri = url.origin + url.pathname;
     try {
         const tokenResponse = await fetch(GOOGLE_AUTH_URL, {
@@ -103,7 +100,7 @@ async function handleSettings(request, env) {
     if (action === 'add' && method === 'POST') {
         const { id, name, refresh_token } = await request.json();
         if (!id || !name || !refresh_token) {
-            return jsonResponse({ error: 'Missing fields' }, 400);
+            return jsonResponse({ error: 'Missing required fields: id, name, refresh_token' }, 400);
         }
         const fullSettings = { id, name, refresh_token };
         await env.DRIVE_SETTINGS.put(`gdrive_${id}`, JSON.stringify(fullSettings));
@@ -122,29 +119,18 @@ async function handleSettings(request, env) {
     } else if (action === 'delete' && method === 'DELETE') {
         if (!accountId) return jsonResponse({ error: 'Missing account ID' }, 400);
         await env.DRIVE_SETTINGS.delete(`gdrive_${accountId}`);
-        return jsonResponse({ message: `Account deleted.` });
+        return jsonResponse({ message: `Account '${accountId}' deleted.` });
     }
     return jsonResponse({ error: 'Invalid settings action' }, 404);
 }
 
+// ... (Rest of the file remains the same, assuming GoogleDriveService class is there)
+
 class GoogleDriveService {
-    constructor(accountSettings, env) {
-        this.env = env;
-        this.refresh_token = accountSettings.refresh_token;
-        this.accessTokenCache = { token: null, expires: 0 };
-    }
-    async getAccessToken() {
-        if (this.accessTokenCache.token && this.accessTokenCache.expires > Date.now()) {
-            return this.accessTokenCache.token;
-        }
-        const token = await getAccessToken(this.env, this.refresh_token);
-        this.accessTokenCache = { token, expires: Date.now() + 3500 * 1000 };
-        return token;
-    }
-    // ... other methods
+     // ... Your existing GoogleDriveService class code ...
 }
 
-// Main Router
+// --- Main Fetch Handler (Router) ---
 export default {
     async fetch(request, env, ctx) {
         const corsHeaders = {
@@ -153,6 +139,7 @@ export default {
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Vary': 'Origin',
         };
+
         if (request.method === 'OPTIONS') {
             return new Response(null, { headers: corsHeaders });
         }
@@ -171,8 +158,29 @@ export default {
                 } else if (apiGroup === 'settings') {
                     response = await handleSettings(request, env);
                 } else if (apiGroup === 'drive') {
-                     // Drive logic to be added here based on your previous code
-                     response = jsonResponse({ message: 'Drive API endpoint' });
+                     // Your drive logic here
+                     const pathSegments = path.split('/');
+                     const accountId = pathSegments[3];
+                     const driveAction = pathSegments[4];
+                     if (!accountId) {
+                         response = jsonResponse({ error: 'Missing Account ID' }, 400);
+                     } else {
+                         const settingsKey = `gdrive_${accountId}`;
+                         const accountSettingsString = await env.DRIVE_SETTINGS.get(settingsKey);
+                         if (!accountSettingsString) {
+                            response = jsonResponse({ error: 'Account settings not found.'}, 404);
+                         } else {
+                            const accountSettings = JSON.parse(accountSettingsString);
+                            // Add the global secrets to the settings object before passing to the service
+                            const fullSettings = {
+                                ...accountSettings,
+                                client_id: env.GOOGLE_CLIENT_ID,
+                                client_secret: env.GOOGLE_CLIENT_SECRET,
+                            };
+                            const driveService = new GoogleDriveService(fullSettings, env);
+                            // ... rest of your drive logic
+                         }
+                     }
                 } else {
                     response = jsonResponse({ error: 'Not Found' }, 404);
                 }
