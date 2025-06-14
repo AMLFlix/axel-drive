@@ -87,13 +87,11 @@ async function handleAuthCallback(request, env) {
     }
 }
 
-// ** CORRECTED `handleSettings` function **
 async function handleSettings(request, env) {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.split(' ')[1] !== env.ADMIN_TOKEN) {
         return jsonResponse({ error: 'Unauthorized' }, 401);
     }
-
     const url = new URL(request.url);
     const method = request.method;
     const pathSegments = url.pathname.split('/');
@@ -142,8 +140,7 @@ class GoogleDriveService {
         return token;
     }
     async requestOption(headers = {}) {
-        const accessToken = await this.getAccessToken();
-        headers['Authorization'] = `Bearer ${accessToken}`;
+        headers['Authorization'] = `Bearer ${await this.getAccessToken()}`;
         return { headers };
     }
     async listItems(parentId = 'root', pageToken = null) {
@@ -152,7 +149,7 @@ class GoogleDriveService {
         if (pageToken) params.pageToken = pageToken;
         const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params)}`;
         const response = await fetch(url, await this.requestOption());
-        if (!response.ok) throw new Error(`API Error while listing items: ${await response.text()}`);
+        if (!response.ok) throw new Error(`API Error listing items: ${await response.text()}`);
         return response.json();
     }
     async searchFiles(keyword, pageToken = null) {
@@ -161,7 +158,7 @@ class GoogleDriveService {
         if (pageToken) params.pageToken = pageToken;
         const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params)}`;
         const response = await fetch(url, await this.requestOption());
-        if (!response.ok) throw new Error(`API Error while searching: ${await response.text()}`);
+        if (!response.ok) throw new Error(`API Error searching: ${await response.text()}`);
         return response.json();
     }
     async getFileStream(fileId, request) {
@@ -201,7 +198,7 @@ export default {
                 if (apiGroup === 'auth') {
                     if (action === 'login') response = await handleAuthLogin(request, env);
                     else if (action === 'callback') response = await handleAuthCallback(request, env);
-                    else response = jsonResponse({ error: 'Not Found' }, 404);
+                    else response = jsonResponse({ error: 'Auth action not found' }, 404);
                 } else if (apiGroup === 'settings') {
                     response = await handleSettings(request, env);
                 } else if (apiGroup === 'drive') {
@@ -212,35 +209,32 @@ export default {
                     } else {
                         const settingsString = await env.DRIVE_SETTINGS.get(`gdrive_${accountId}`);
                         if (!settingsString) {
-                            response = jsonResponse({ error: `Account settings not found.`}, 404);
+                            response = jsonResponse({ error: `Account settings for '${accountId}' not found.`}, 404);
                         } else {
                             const accountSettings = JSON.parse(settingsString);
                             const driveService = new GoogleDriveService(accountSettings, env);
                             const resourceId = pathSegments[5];
                             const pageToken = url.searchParams.get('pageToken');
 
-                            switch (driveAction) {
-                                case 'list':
-                                    response = jsonResponse(await driveService.listItems(resourceId || 'root', pageToken));
-                                    break;
-                                case 'download':
-                                    if (!resourceId) return jsonResponse({ error: 'Missing file ID' }, 400);
-                                    return driveService.getFileStream(resourceId, request); // Exits early for stream
-                                case 'search':
-                                    const query = url.searchParams.get('q');
-                                    if (!query) response = jsonResponse({ error: 'Missing search query' }, 400);
-                                    else response = jsonResponse(await driveService.searchFiles(query, pageToken));
-                                    break;
-                                default:
-                                    response = jsonResponse({ error: 'Invalid Drive API action' }, 400);
+                            if (driveAction === 'list') {
+                                response = jsonResponse(await driveService.listItems(resourceId || 'root', pageToken));
+                            } else if (driveAction === 'download') {
+                                if (!resourceId) return jsonResponse({ error: 'Missing file ID' }, 400);
+                                return driveService.getFileStream(resourceId, request); // Exits early for stream
+                            } else if (driveAction === 'search') {
+                                const query = url.searchParams.get('q');
+                                if (!query) response = jsonResponse({ error: 'Missing search query' }, 400);
+                                else response = jsonResponse(await driveService.searchFiles(query, pageToken));
+                            } else {
+                                response = jsonResponse({ error: 'Invalid Drive API action' }, 400);
                             }
                         }
                     }
                 } else {
-                    response = jsonResponse({ error: 'Not Found' }, 404);
+                    response = jsonResponse({ error: 'API group not found' }, 404);
                 }
             } else {
-                response = new Response('Axel Drive Backend is running.', { headers: { 'Content-Type': 'text/plain' }});
+                response = new Response('Axel Drive Backend is active.', { headers: { 'Content-Type': 'text/plain' }});
             }
         } catch (error) {
             console.error('Unhandled error:', error);
