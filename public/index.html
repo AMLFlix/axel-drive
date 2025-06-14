@@ -23,32 +23,44 @@
             --font-family: 'Roboto', sans-serif;
             --border-radius: 16px;
             --item-border-radius: 4px;
-            --btn-primary-bg: #4285F4;
+
+            /* MODIFICATION: Colorful Button Palette */
+            --btn-primary-bg: #4285F4; /* Google Blue */
             --btn-primary-hover: #357ae8;
-            --btn-success-bg: #34A853;
+            --btn-success-bg: #34A853; /* Google Green */
             --btn-success-hover: #2c8f43;
-            --btn-danger-bg: #EA4335;
+            --btn-danger-bg: #EA4335; /* Google Red */
             --btn-danger-hover: #d13a2d;
-            --btn-warning-bg: #FBBC04;
+            --btn-warning-bg: #FBBC04; /* Google Yellow */
             --btn-warning-hover: #e3a800;
-            --btn-secondary-bg: #5f6368;
+            --btn-secondary-bg: #5f6368; /* Google Grey */
             --btn-secondary-hover: #505458;
         }
+
         body {
-            font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-primary);
-            margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
         }
+
         #progressBar {
             position: fixed; top: 0; left: 0; width: 100%; height: 4px;
             background-color: transparent; z-index: 9999; overflow: hidden; display: none;
         }
         #progressBar::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--btn-primary-bg);
+            background-color: var(--btn-primary-bg); /* Use colorful variable */
             animation: indeterminate-progress 1.5s infinite ease-in-out;
         }
         @keyframes indeterminate-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
         .main-container { display: flex; flex-grow: 1; overflow: hidden; }
+        
         .app-header {
             background-color: var(--header-surface-color); padding: 8px 20px;
             display: flex; align-items: center; border-bottom: 1px solid var(--border-color); flex-shrink: 0;
@@ -70,8 +82,12 @@
             border-radius: 50%; cursor: pointer; transition: background-color 0.2s, color 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
-        .icon-btn.active, .icon-btn:hover { background-color: var(--hover-bg-color); color: var(--text-primary); }
-        .header-actions .icon-btn .material-icons { color: #8AB4F8; }
+        .icon-btn.active { background-color: var(--hover-bg-color); color: var(--text-primary); }
+        .icon-btn:hover { background-color: var(--hover-bg-color); color: var(--text-primary); }
+        /* MODIFICATION: Specific colors for header action icons */
+        .header-actions .icon-btn .material-icons {
+            color: #8AB4F8; /* A vibrant blue for interactive elements */
+        }
         .profile-btn {
             width: 32px; height: 32px; background-color: #673AB7; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-weight: 500; color: white; cursor: pointer;
@@ -82,34 +98,100 @@
             border-radius: var(--item-border-radius); box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 100; width: 220px; padding: 8px 0;
         }
         .dropdown-menu.show { display: block; }
-        #logoutBtn { display: flex; align-items: center; gap: 12px; padding: 12px 16px; width: 100%; text-align: left; border: none; background: none; color: var(--text-primary); cursor: pointer; }
+        #logoutBtn {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px; width: 100%;
+            text-align: left; border: none; background: none; color: var(--text-primary); cursor: pointer;
+        }
         #logoutBtn:hover { background-color: var(--hover-bg-color); }
-        #logoutBtn .material-icons { color: #EA4335; }
-        .developer-credit { padding: 10px 16px; font-size: 12px; text-align: center; color: var(--text-secondary); border-top: 1px solid var(--border-color); margin-top: auto; padding-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .developer-credit a { color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
-        .developer-credit a:hover { color: var(--text-primary); }
-        .developer-credit .fa-facebook { color: #1877F2; }
-        .developer-credit .fa-telegram { color: #0088CC; }
-        .sidebar { width: 256px; background-color: var(--sidebar-surface-color); padding: 16px 12px; display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--border-color); }
+        #logoutBtn .material-icons { color: #EA4335; } /* Red for logout */
+
+        /* MODIFICATION: Style for developer credit when in sidebar */
+        .developer-credit {
+            padding: 10px 16px;
+            font-size: 12px;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: auto; /* Pushes it to the bottom of the flex container */
+            padding-bottom: 20px; /* Add some padding at the bottom */
+            display: flex; /* Added for alignment */
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center horizontally */
+            gap: 5px; /* Space between lines/icons */
+        }
+        /* MODIFICATION: Specific colors for social icons */
+        .developer-credit a {
+            color: var(--text-secondary); /* Default link color */
+            text-decoration: none;
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            gap: 5px;
+        }
+        .developer-credit a:hover {
+            color: var(--text-primary);
+        }
+        .developer-credit .fa-facebook { color: #1877F2; } /* Facebook Blue */
+        .developer-credit .fa-telegram { color: #0088CC; } /* Telegram Blue */
+
+
+        .sidebar {
+            width: 256px; background-color: var(--sidebar-surface-color); padding: 16px 12px;
+            display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--border-color);
+        }
+        /* REMOVED: .new-btn class styling and element */
+        /* .new-btn {
+            background-color: var(--active-item-bg); color: var(--active-item-text); border: none; padding: 16px;
+            border-radius: var(--border-radius); display: flex; align-items: center; gap: 12px;
+            font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .new-btn:hover { filter: brightness(0.95); } */
         .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar-nav li a { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-radius: var(--border-radius); text-decoration: none; color: var(--text-primary); font-size: 14px; transition: background-color 0.2s, color 0.2s; }
+        .sidebar-nav li a {
+            display: flex; align-items: center; gap: 16px; padding: 10px 16px; /* Increased padding */
+            border-radius: var(--border-radius); text-decoration: none; color: var(--text-primary); font-size: 14px;
+            transition: background-color 0.2s, color 0.2s;
+        }
         .sidebar-nav li a:hover { background-color: var(--hover-bg-color); }
         .sidebar-nav li a.active { background-color: var(--active-item-bg); color: var(--active-item-text); font-weight: 500; }
-        .sidebar-nav li a .material-icons { font-size: 24px; }
-        .sidebar-nav li a#myDriveLink .material-icons { color: #0A84FF; }
-        .sidebar-nav li a#accountsLink .material-icons { color: #FFD60A; }
+        /* MODIFICATION: Colorful icons for sidebar navigation */
+        .sidebar-nav li a .material-icons {
+            font-size: 24px; /* Slightly larger for prominence */
+        }
+        .sidebar-nav li a#myDriveLink .material-icons { color: #0A84FF; } /* iOS Blue */
+        .sidebar-nav li a#accountsLink .material-icons { color: #FFD60A; } /* iOS Yellow (Account Circle) */
+
+
         .content-area { flex-grow: 1; padding: 0 24px; display: flex; flex-direction: column; overflow-y: auto; }
-        .content-header { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .content-header {
+            padding: 20px 0; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--border-color);
+        }
         .content-header h1 { font-size: 22px; margin: 0; }
         #app { flex-grow: 1; padding-top: 16px; }
-        .card { background-color: var(--dialog-surface-color); border-radius: 8px; padding: 24px; margin: 40px auto; max-width: 450px; border: 1px solid var(--border-color); }
+
+        .card {
+            background-color: var(--dialog-surface-color); border-radius: 8px; padding: 24px;
+            margin: 40px auto; max-width: 450px; border: 1px solid var(--border-color);
+        }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary); }
-        .form-group input { width: 100%; padding: 12px; background-color: #313335; border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-primary); font-size: 16px; box-sizing: border-box; }
+        .form-group input {
+            width: 100%; padding: 12px; background-color: #313335; border: 1px solid var(--border-color);
+            border-radius: 4px; color: var(--text-primary); font-size: 16px; box-sizing: border-box;
+        }
         .form-group input:focus { outline: 2px solid var(--btn-primary-bg); border-color: transparent; }
-        .btn { padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 6px; cursor: pointer; border: none; transition: background-color 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        
+        /* MODIFICATION: Centralized and colorful button styling */
+        .btn { 
+            padding: 10px 24px; font-size: 14px; font-weight: 500; border-radius: 6px; /* slightly rounder */
+            cursor: pointer; border: none; transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+        }
         .btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-        .btn .material-icons { font-size: 20px; color: white; }
+        .btn .material-icons { 
+            font-size: 20px; /* Slightly larger icons in buttons */
+            color: white; /* Ensure good contrast against button background */
+        }
         .btn-primary { background-color: var(--btn-primary-bg); color: white; }
         .btn-primary:hover { background-color: var(--btn-primary-hover); }
         .btn-success { background-color: var(--btn-success-bg); color: white; }
@@ -120,14 +202,17 @@
         .btn-warning:hover { background-color: var(--btn-warning-hover); }
         .btn-secondary { background-color: var(--btn-secondary-bg); color: white; }
         .btn-secondary:hover { background-color: var(--btn-secondary-hover); }
-        .icon-folder { color: #0A84FF !important; }
-        .icon-movie { color: #FF453A !important; }
-        .icon-music_note { color: #FF2D55 !important; }
-        .icon-image { color: #30D158 !important; }
-        .icon-picture_as_pdf { color: #BF5AF2 !important; }
-        .icon-archive { color: #FF9F0A !important; }
-        .icon-article { color: #6C6C70 !important; }
-        .icon-account_circle { color: #FFD60A !important; }
+
+        /* MODIFICATION: Brighter, more distinct "iOS-style" icon colors for file types */
+        .icon-folder { color: #0A84FF !important; } /* iOS Blue */
+        .icon-movie { color: #FF453A !important; } /* iOS Red */
+        .icon-music_note { color: #FF2D55 !important; } /* iOS Pink */
+        .icon-image { color: #30D158 !important; } /* iOS Green */
+        .icon-picture_as_pdf { color: #BF5AF2 !important; } /* iOS Purple */
+        .icon-archive { color: #FF9F0A !important; } /* iOS Orange */
+        .icon-article { color: #6C6C70 !important; } /* iOS Grey */
+        .icon-account_circle { color: #FFD60A !important; } /* iOS Yellow */
+
         .file-table { width: 100%; border-collapse: collapse; color: var(--text-primary); }
         .file-table th, .file-table td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
         .file-table th { color: var(--text-secondary); font-weight: 500; }
@@ -136,51 +221,119 @@
         .actions-cell { text-align: right; }
         .actions-cell .icon-btn { opacity: 0; transition: opacity 0.2s; }
         .file-table tr:hover .actions-cell .icon-btn { opacity: 1; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; padding-top: 16px; }
-        .file-card { background-color: var(--sidebar-surface-color); border-radius: 12px; border: 1px solid transparent; transition: border-color 0.2s, background-color 0.2s, transform 0.2s; cursor: pointer; overflow: hidden; position: relative; }
-        .file-card:hover { background-color: var(--hover-bg-color); border-color: var(--border-color); transform: translateY(-3px); }
-        .card-thumbnail { height: 120px; display: flex; align-items: center; justify-content: center; background-color: #313335; position: relative; }
+
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px; padding-top: 16px;
+        }
+        .file-card {
+            background-color: var(--sidebar-surface-color); border-radius: 12px; /* Smoother radius */
+            border: 1px solid transparent; transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
+            cursor: pointer; overflow: hidden; position: relative;
+        }
+        .file-card:hover { 
+            background-color: var(--hover-bg-color); border-color: var(--border-color); transform: translateY(-3px); 
+        }
+        .card-thumbnail {
+            height: 120px; display: flex; align-items: center; justify-content: center;
+            background-color: #313335; position: relative;
+        }
         .card-thumbnail .material-icons { font-size: 64px; }
-        .card-filename { padding: 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-filename {
+            padding: 12px; display: flex; align-items: center; gap: 8px; font-size: 14px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
         .card-filename .material-icons { font-size: 20px; flex-shrink: 0; }
-        .card-actions { position: absolute; top: 8px; right: 8px; background-color: #282a2d99; border-radius: 16px; display: flex; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(4px); }
+        .card-actions {
+            position: absolute; top: 8px; right: 8px; background-color: #282a2d99;
+            border-radius: 16px; display: flex; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(4px);
+        }
         .file-card:hover .card-actions { opacity: 1; }
         .card-actions .icon-btn { padding: 6px; }
-        .actions-cell .icon-btn .material-icons, .card-actions .icon-btn .material-icons { color: #8AB4F8; font-size: 20px; }
-        .actions-cell .icon-btn .material-icons.play-btn, .card-actions .icon-btn .material-icons.play-btn { color: #30D158; }
-        .message { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 6px; background-color: #323639; color: var(--text-primary); z-index: 3000; opacity: 0; animation: fadeInOut 5s ease-in-out; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        /* MODIFICATION: Colorful action icons for file cards/tables */
+        .actions-cell .icon-btn .material-icons, .card-actions .icon-btn .material-icons {
+            color: #8AB4F8; /* A vibrant blue for action icons */
+            font-size: 20px; /* Slightly larger for prominence */
+        }
+        .actions-cell .icon-btn .material-icons.play-btn, .card-actions .icon-btn .material-icons.play-btn {
+            color: #30D158; /* Green for play button */
+        }
+
+
+        .message {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            padding: 12px 24px; border-radius: 6px; background-color: #323639;
+            color: var(--text-primary); z-index: 3000; opacity: 0;
+            animation: fadeInOut 5s ease-in-out; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
         @keyframes fadeInOut { 0% { opacity: 0; bottom: 0px; } 10% { opacity: 1; bottom: 30px; } 90% { opacity: 1; bottom: 30px; } 100% { opacity: 0; bottom: 0px; } }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center;
+            align-items: center; z-index: 2000; backdrop-filter: blur(5px);
+        }
         .modal-content { background-color: var(--dialog-surface-color); padding: 24px; border-radius: 12px; max-width: 500px; width: 100%; }
         .modal-content.video-modal { max-width: 90vw; max-height: 90vh; }
         .modal-actions { margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px; }
         video.media-player { width: 100%; border-radius: 8px; }
-        .account-card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding-top: 20px; }
-        .account-card { background-color: var(--sidebar-surface-color); border-radius: var(--border-radius); padding: 20px; display: flex; flex-direction: column; gap: 15px; border: 1px solid var(--border-color); transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; }
+
+        .account-card-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px; padding-top: 20px;
+        }
+        .account-card {
+            background-color: var(--sidebar-surface-color); border-radius: var(--border-radius); padding: 20px;
+            display: flex; flex-direction: column; gap: 15px; border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; position: relative;
+        }
         .account-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); }
-        .account-card-header { display: flex; align-items: center; gap: 15px; font-size: 1.2em; font-weight: 500; color: var(--text-primary); }
-        .account-card-header .material-icons { font-size: 36px; }
+        .account-card-header {
+            display: flex; align-items: center; gap: 15px; font-size: 1.2em;
+            font-weight: 500; color: var(--text-primary);
+        }
+        .account-card-header .material-icons { font-size: 36px; } /* Uses colorful class now */
         .account-info { display: flex; flex-direction: column; gap: 5px; font-size: 0.9em; color: var(--text-secondary); }
         .account-info strong { color: var(--text-primary); }
         .account-card-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: auto; }
         .account-card-actions .btn { padding: 8px 16px; font-size: 0.9em; border-radius: 6px; }
-        #backButton { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text-primary); font-size: 16px; cursor: pointer; padding: 10px 0; margin-bottom: 10px; transition: color 0.2s; }
+
+        #backButton {
+            display: flex; align-items: center; gap: 8px; background: none; border: none;
+            color: var(--text-primary); font-size: 16px; cursor: pointer;
+            padding: 10px 0; margin-bottom: 10px; transition: color 0.2s;
+        }
         #backButton:hover { color: var(--btn-primary-bg); }
-        #backButton .material-icons { color: #8AB4F8; font-size: 24px; }
+        #backButton .material-icons { color: #8AB4F8; font-size: 24px; } /* Colorful back icon */
+
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .app-header { flex-wrap: wrap; justify-content: center; padding: 10px; }
             .header-logo { margin-right: 0; width: 100%; justify-content: center; margin-bottom: 10px; }
             .search-bar { order: 3; max-width: 100%; margin-top: 10px; }
             .header-actions { margin-left: 0; width: 100%; justify-content: center; }
-            .sidebar { width: 100%; padding: 10px; border-right: none; border-bottom: 1px solid var(--border-color); display: none; }
+            .sidebar {
+                width: 100%; padding: 10px; border-right: none;
+                border-bottom: 1px solid var(--border-color); display: none;
+            }
             .main-container { flex-direction: column; }
             .content-area { padding: 0 10px; }
+            /* .new-btn { width: 100%; text-align: center; justify-content: center; } REMOVED */
             .card { margin: 20px auto; padding: 15px; }
             .account-card-container { grid-template-columns: 1fr; }
             .modal-content { margin: 10px; }
-            .sidebar .developer-credit { display: flex; flex-direction: row; justify-content: center; gap: 20px; margin-top: 10px; padding-bottom: 10px; border-top: none; }
-            .sidebar .developer-credit span { display: none; }
-            .sidebar .developer-credit div { display: flex; gap: 15px; }
+            /* MODIFICATION: Developer credit visible in mobile */
+            .sidebar .developer-credit {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 10px;
+                padding-bottom: 10px;
+                border-top: none; /* No top border if it's not the last element in desktop */
+            }
+            .sidebar .developer-credit span { display: none; } /* Hide "Powered by" text on small screens */
+            .sidebar .developer-credit div { display: flex; gap: 15px; } /* Align icons */
         }
     </style>
 </head>
@@ -197,7 +350,7 @@
                 <button class="profile-btn" id="profileBtn">A</button>
                 <div class="dropdown-menu" id="profileDropdown">
                     <button id="logoutBtn"><span class="material-icons">logout</span><span>Logout</span></button>
-                </div>
+                    </div>
             </div>
         </div>
     </header>
@@ -223,10 +376,8 @@
     </div>
 
     <script>
-        // --- FINALIZED & CORRECTED SCRIPT ---
-
         // --- CONFIG & STATE ---
-        const WORKER_BASE_URL = "";
+        const WORKER_BASE_URL = "https://axel-drive.comtv.workers.dev";
         const appDiv = document.getElementById('app');
         const progressBar = document.getElementById('progressBar');
         const profileMenu = document.querySelector('.profile-menu');
@@ -238,8 +389,8 @@
         let adminToken = localStorage.getItem('admin_token');
         let currentAccountId = null;
         let currentFiles = [];
-        let viewMode = 'grid';
-        let currentFolderStack = [{ id: 'root', name: 'My Drive' }];
+        let viewMode = 'grid'; // 'list' or 'grid'
+        let currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // For Drive Browser
 
         const CONSTS = { folder_mime_type: "application/vnd.google-apps.folder" };
 
@@ -259,46 +410,32 @@
             const headers = { 'Content-Type': 'application/json' };
             if (auth) {
                 if (!adminToken) {
-                    showMessage('Authentication required.', 'error');
-                    navigateTo('login', {}, true);
+                    showMessage('Authentication required.');
+                    navigateTo('login'); // MODIFICATION: Use navigateTo for login
                     hideLoading(); throw new Error('Auth required');
                 }
                 headers['Authorization'] = `Bearer ${adminToken}`;
             }
             try {
-                const res = await fetch(`<span class="math-inline">\{WORKER\_BASE\_URL\}</span>{endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
-                if (!res.ok) {
-                    const errorData = await res.json().catch(() => ({ error: 'Failed to parse error response from server.' }));
-                    throw new Error(errorData.error || `API request failed with status: ${res.status}`);
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return res.json();
-                }
-                return { success: true };
-            } catch (err) {
-                console.error('API Error:', err);
-                showMessage(err.message, 'error');
-                throw err;
-            }
+                const res = await fetch(`${WORKER_BASE_URL}${endpoint}`, { method, headers, body: body ? JSON.stringify(body) : null });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'API request failed');
+                return data;
+            } catch (err) { console.error('API Error:', err); showMessage(err.message, 'error'); throw err; }
             finally { hideLoading(); }
         }
 
-        function showMessage(msg, type = 'success') {
-            document.querySelectorAll('.message').forEach(m => m.remove());
+        function showMessage(msg) {
             const el = document.createElement('div');
-            el.className = 'message';
-            if (type === 'error') el.style.backgroundColor = 'var(--btn-danger-bg)';
-            el.textContent = msg;
+            el.className = 'message'; el.textContent = msg;
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 5000);
         }
 
         function handleLogout() {
-            localStorage.removeItem('admin_token');
-            adminToken = null;
+            localStorage.removeItem('admin_token'); adminToken = null;
             showMessage('You have been logged out.'); 
-            navigateTo('login', {}, true);
+            navigateTo('login', {}, true); // MODIFICATION: navigate to login, replace history
         }
         
         function getFileIcon(mimeType) {
@@ -311,25 +448,30 @@
             return { icon: 'article', colorClass: 'icon-article' };
         }
 
-        // --- UI RENDERING & ROUTING ---
+        // --- UI RENDERING ---
 
+        // MODIFICATION: Centralized navigation function
         function navigateTo(page, params = {}, replace = false) {
-            const currentState = { page, params };
-            const url = `?page=${page}`;
+            // Push current state to browser history before rendering new page
+            const currentState = { page: page, params: params };
             if (replace) {
-                window.history.replaceState(currentState, '', url);
+                window.history.replaceState(currentState, '', `?page=${page}`);
             } else {
-                window.history.pushState(currentState, '', url);
+                window.history.pushState(currentState, '', `?page=${page}`);
             }
+            
             renderPage(page, params);
         }
 
         function renderPage(page, params = {}) {
+            // Show/hide main UI elements based on page
             const mainContainer = document.querySelector('.main-container');
             const searchBar = document.querySelector('.app-header .search-bar');
             profileMenu.style.display = 'none';
             mainContainer.style.display = 'none';
             searchBar.style.display = 'none';
+
+            // Remove any existing login container if present
             const loginContainer = document.getElementById('login-container');
             if (loginContainer) loginContainer.remove();
 
@@ -340,26 +482,34 @@
                 case 'accounts':
                     profileMenu.style.display = 'block';
                     mainContainer.style.display = 'flex';
+                    searchBar.style.display = 'none'; // Search bar not needed for accounts page
                     showGoogleAccountsPage();
                     break;
                 case 'addEditAccount':
                     profileMenu.style.display = 'block';
                     mainContainer.style.display = 'flex';
-                    showAddEditAccountPage();
+                    searchBar.style.display = 'none';
+                    showAddEditAccountPage(params.accountId);
                     break;
                 case 'drive':
                     profileMenu.style.display = 'block';
                     mainContainer.style.display = 'flex';
                     searchBar.style.display = 'flex';
-                    currentAccountId = params.accountId;
-                    currentFolderStack = params.folderStack || [{ id: 'root', name: 'My Drive' }];
+                    currentAccountId = params.accountId; // Ensure currentAccountId is set
+                    currentFolderStack = params.folderStack || [{ id: 'root', name: 'My Drive' }]; // Restore folder stack
                     showDriveBrowserPage(params.accountId, params.folderId || 'root', params.pageToken);
                     break;
                 default:
-                    navigateTo(adminToken ? 'accounts' : 'login', {}, true);
+                    // Default to accounts page if no valid page in history or initial load
+                    if (adminToken) {
+                        navigateTo('accounts', {}, true); // Replace current history with accounts
+                    } else {
+                        navigateTo('login', {}, true); // Replace current history with login
+                    }
                     break;
             }
         }
+
 
         function showLoginPage() {
             const container = document.createElement('div');
@@ -375,15 +525,15 @@
                 const u = document.getElementById('username').value, p = document.getElementById('password').value;
                 try {
                     const data = await apiRequest('/api/auth/login', 'POST', { username: u, password: p }, false);
-                    adminToken = data.token;
-                    localStorage.setItem('admin_token', adminToken);
-                    navigateTo('accounts', {}, true);
-                } catch (error) {}
+                    adminToken = data.token; localStorage.setItem('admin_token', adminToken);
+                    // container.remove(); // Removed as renderPage will handle DOM updates
+                    navigateTo('accounts', {}, true); // MODIFICATION: Navigate to accounts, replace history
+                } catch (error) { /* Handled */ }
             };
         }
 
         async function showGoogleAccountsPage() {
-            setActiveNav('accountsLink');
+            setActiveNav('accountsLink'); 
             currentAccountId = null;
             appDiv.innerHTML = `<div class="content-header">
                 <h1>Google Drive Accounts</h1>
@@ -397,189 +547,208 @@
                     <input type="search" id="accountSearchInput" placeholder="Search accounts by name">
                 </div>
             </div>
-            <div id="accountsList" class="account-card-container"></div>`;
-            document.getElementById('addAccountBtn').onclick = () => navigateTo('addEditAccount');
-            const accountSearchInput = document.getElementById('accountSearchInput');
-            let allAccounts = [];
+            <div id="accountsList" class="account-card-container"></div>
+            <div id="accountPagination" style="text-align: center; padding: 20px;"></div>`; // Added for potential future pagination
 
-            const filterAndRenderAccounts = () => {
+            document.getElementById('addAccountBtn').onclick = () => navigateTo('addEditAccount'); // MODIFICATION: Use navigateTo
+            
+            const accountSearchInput = document.getElementById('accountSearchInput');
+            accountSearchInput.addEventListener('input', () => filterAndRenderAccounts());
+
+            let allAccounts = []; // Store all accounts for client-side filtering and pagination
+
+            async function fetchAndRenderAccounts() {
+                try {
+                    allAccounts = await apiRequest('/api/settings/list');
+                    filterAndRenderAccounts();
+                } catch (error) { 
+                    if (error.message.includes('Auth')) navigateTo('login'); // MODIFICATION: Use navigateTo
+                    else {
+                        const listDiv = document.getElementById('accountsList');
+                        listDiv.innerHTML = `<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Error loading accounts: ${error.message}</p>`;
+                    }
+                }
+            }
+
+            function filterAndRenderAccounts() {
                 const query = accountSearchInput.value.toLowerCase();
                 const filteredAccounts = allAccounts.filter(acc => acc.name.toLowerCase().includes(query) || acc.id.toLowerCase().includes(query));
+                
                 const listDiv = document.getElementById('accountsList');
-                if (!filteredAccounts.length) {
-                    listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">No accounts found.</p>';
-                    return;
+                if (!filteredAccounts.length) { 
+                    listDiv.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-secondary);">No accounts found.</p>'; 
+                    return; 
                 }
                 listDiv.innerHTML = filteredAccounts.map(acc => `
                     <div class="account-card">
                         <div class="account-card-header">
-                            <span class="material-icons <span class="math-inline">\{getFileIcon\('account'\)\.colorClass\}"\>account\_circle</span\>
-<span\></span>{acc.name}</span>
+                            <span class="material-icons ${getFileIcon('account').colorClass}">account_circle</span>
+                            <span>${acc.name}</span>
                         </div>
-                        <div class="account-info"><strong>Account ID:</strong> <span><span class="math-inline">\{acc\.id\}</span\></div\>
-<div class\="account\-card\-actions"\>
-<button class\="btn btn\-primary view\-btn" data\-id\="</span>{acc.id}" title="View Files"><span class="material-icons">folder_open</span> View Files</button>
-                            <button class="btn btn-danger delete-btn" data-id="${acc.id}" title="Delete"><span class="material-icons">delete</span> Delete</button>
+                        <div class="account-info">
+                            <strong>Account ID:</strong> <span>${acc.id}</span>
                         </div>
-                    </div>`).join('');
-                document.querySelectorAll('.view-btn').forEach(btn => btn.onclick = (e) => navigateTo('drive', { accountId: e.currentTarget.dataset.id }));
+                        <div class="account-card-actions">
+                            <button class="btn btn-primary view-btn" data-id="${acc.id}" title="View Files">
+                                <span class="material-icons">folder_open</span> View Files
+                            </button>
+                            <button class="btn btn-warning edit-btn" data-id="${acc.id}" title="Edit">
+                                <span class="material-icons">edit</span> Edit
+                            </button>
+                            <button class="btn btn-danger delete-btn" data-id="${acc.id}" title="Delete">
+                                <span class="material-icons">delete</span> Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.onclick = (e) => {
+                        currentFolderStack = [{ id: 'root', name: 'My Drive' }]; // Reset stack on account view
+                        navigateTo('drive', { accountId: e.currentTarget.dataset.id, folderId: 'root' }); // MODIFICATION: Use navigateTo
+                    };
+                });
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.onclick = (e) => navigateTo('addEditAccount', { accountId: e.currentTarget.dataset.id }); // MODIFICATION: Use navigateTo
+                });
                 document.querySelectorAll('.delete-btn').forEach(btn => {
                     btn.onclick = (e) => {
-                        const id = e.currentTarget.dataset.id;
-                        showConfirmModal(`Delete account "${id}"? This is irreversible.`, async () => {
+                        const accountIdToDelete = e.currentTarget.dataset.id;
+                        showConfirmModal(`Are you sure you want to delete account ${accountIdToDelete}?`, async () => {
                             try {
-                                await apiRequest(`/api/settings/delete/${id}`, 'DELETE');
+                                await apiRequest(`/api/settings/delete/${accountIdToDelete}`, 'DELETE');
                                 showMessage('Account deleted.');
-                                fetchAndRenderAccounts();
-                            } catch (error) {}
+                                fetchAndRenderAccounts(); // Re-fetch and render accounts after deletion
+                            } catch (error) { /* Handled */ }
                         });
                     };
                 });
-            };
+            }
 
-            const fetchAndRenderAccounts = async () => {
-                try {
-                    allAccounts = await apiRequest('/api/settings/list');
-                    filterAndRenderAccounts();
-                } catch (error) {
-                    if (!error.message.includes('Auth')) {
-                        document.getElementById('accountsList').innerHTML = `<p style="text-align:center; padding: 40px; color: var(--text-secondary);">Error loading accounts: ${error.message}</p>`;
-                    }
-                }
-            };
-            accountSearchInput.addEventListener('input', filterAndRenderAccounts);
-            fetchAndRenderAccounts();
+            fetchAndRenderAccounts(); // Initial fetch
         }
-        
-        function showAddEditAccountPage() {
-            appDiv.innerHTML = `
-                <div class="content-header">
+
+        async function showAddEditAccountPage(accountId = null) {
+            const account = accountId ? await apiRequest(`/api/settings/get/${accountId}`) : {};
+            appDiv.innerHTML = `<div class="content-header">
                     <button id="backButton"><span class="material-icons">arrow_back</span> Back to Accounts</button>
-                    <h1>Add New Google Drive Account</h1>
+                    <h1>${accountId ? 'Edit' : 'Add'} Account</h1>
                 </div>
                 <div class="card" style="margin-top:16px;max-width:600px;">
-                    <div class="form-group">
-                        <label for="accountId">Account ID (Unique identifier, e.g., 'personal-drive'):</label>
-                        <input type="text" id="accountId" placeholder="Auto-filled from email">
-                    </div>
-                    <div class="form-group">
-                        <label for="accountName">Account Name:</label>
-                        <input type="text" id="accountName" placeholder="Auto-filled from email">
-                    </div>
-                    <div style="text-align: center; margin: 20px 0; color: var(--text-secondary); font-style: italic;">
-                        Click the button below to sign in with Google and authorize the app.
-                    </div>
-                    <div class="form-group">
-                        <button id="googleLoginBtn" class="btn btn-primary" style="width: 100%;">
-                            <i class="fab fa-google" style="margin-right: 10px;"></i> Sign in with Google
-                        </button>
-                    </div>
-                    <div class="form-group">
-                        <label>Refresh Token (Auto-filled after sign-in):</label>
-                        <input type="text" id="refreshToken" readonly>
-                    </div>
-                    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+                    <div class="form-group"><label>Account ID:</label><input type="text" id="accountId" value="${account.id || ''}" ${accountId ? 'readonly' : ''}></div>
+                    <div class="form-group"><label>Account Name:</label><input type="text" id="accountName" value="${account.name || ''}"></div>
+                    <div class="form-group"><label>Client ID:</label><input type="text" id="clientId" value="${account.client_id || ''}"></div>
+                    <div class="form-group"><label>Client Secret:</label><input type="text" id="clientSecret" value="${account.client_secret || ''}"></div>
+                    <div class="form-group"><label>Refresh Token:</label><input type="text" id="refreshToken" value="${account.refresh_token || ''}"></div>
+                    <div style="display:flex;gap:10px;justify-content:flex-end;">
                         <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
-                        <button id="saveAccountBtn" class="btn btn-success">Save Account</button>
+                        <button id="saveAccountBtn" class="btn btn-primary">Save</button>
                     </div>
                 </div>`;
-            
-            document.getElementById('googleLoginBtn').onclick = () => {
-                // ** အရေးကြီး: ဤနေရာတွင် သင်၏ GOOGLE CLIENT ID အစစ်အမှန်ကို အစားထိုးပါ **
-                const clientId = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
-                const redirectUri = `${window.location.origin}/api/auth/callback`;
-                const scope = 'https://www.googleapis.com/auth/drive';
-                const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=<span class="math-inline">\{clientId\}&redirect\_uri\=</span>{redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
-                window.open(authUrl, 'googleLoginPopup', 'width=600,height=700');
-            };
-
             document.getElementById('saveAccountBtn').onclick = async () => {
                 const payload = {
-                    id: document.getElementById('accountId').value,
-                    name: document.getElementById('accountName').value,
+                    id: document.getElementById('accountId').value, name: document.getElementById('accountName').value,
+                    client_id: document.getElementById('clientId').value, client_secret: document.getElementById('clientSecret').value,
                     refresh_token: document.getElementById('refreshToken').value,
                 };
-                if (!payload.id || !payload.name || !payload.refresh_token) {
-                    return showMessage('Please sign in with Google first and fill in the Account ID and Name.', 'error');
-                }
-                try {
-                    await apiRequest('/api/settings/add', 'POST', payload);
-                    showMessage('Account added successfully.');
-                    navigateTo('accounts', {}, true);
-                } catch (error) { /* Already handled by apiRequest */ }
+                await apiRequest(accountId ? `/api/settings/update/${payload.id}` : '/api/settings/add', accountId ? 'PUT' : 'POST', payload);
+                showMessage(`Account ${accountId ? 'updated' : 'added'}.`); 
+                navigateTo('accounts', {}, true); // MODIFICATION: Navigate back to accounts, replace history
             };
-
-            document.getElementById('backButton').onclick = () => navigateTo('accounts', {}, true);
-            document.getElementById('cancelBtn').onclick = () => navigateTo('accounts', {}, true);
+            document.getElementById('cancelBtn').onclick = () => navigateTo('accounts', {}, true); // MODIFICATION: Navigate back to accounts, replace history
+            document.getElementById('backButton').onclick = () => navigateTo('accounts', {}, true); // MODIFICATION: Navigate back to accounts, replace history
         }
-
+        
+        // MODIFICATION: Logic for back button and folder stack is now more robust.
         async function showDriveBrowserPage(accountId, folderId = 'root', pageToken = null) {
-            setActiveNav('myDriveLink');
+            setActiveNav('myDriveLink'); 
             currentAccountId = accountId;
-            const isSearch = !!searchInput.value && folderId === 'search';
 
-            if (!isSearch) {
-                if (folderId === 'root') {
-                    currentFolderStack = [{ id: 'root', name: 'My Drive' }];
+            // Handle folder stack for back button
+            const isSearch = !!searchInput.value;
+            if (!isSearch && folderId !== 'root') { // Only add to stack if not search and not root folder
+                const currentFolderInStack = currentFolderStack[currentFolderStack.length - 1];
+                if (!currentFolderInStack || currentFolderInStack.id !== folderId) {
+                    try {
+                        const folderMeta = await apiRequest(`/api/drive/get/${accountId}/${folderId}`);
+                        currentFolderStack.push({ id: folderId, name: folderMeta.name });
+                    } catch (error) {
+                        console.error('Failed to get folder metadata:', error);
+                        currentFolderStack.push({ id: folderId, name: `Folder` });
+                    }
                 }
-            } else if (isSearch && currentFolderStack[currentFolderStack.length-1]?.id !== 'search') {
-                currentFolderStack.push({ id: 'search', name: `Search: "${searchInput.value}"`});
+            } else if (folderId === 'root' && currentFolderStack.length > 1) { // Reset stack if explicitly navigating to root
+                currentFolderStack = [{ id: 'root', name: 'My Drive' }];
+            } else if (isSearch) {
+                currentFolderStack = [{ id: 'search', name: `Search: "${searchInput.value}"` }];
             }
-            
+
+
             if (!pageToken) {
-                currentFiles = [];
-                const breadcrumbs = currentFolderStack.map((f, i) => `<a href="#" class="breadcrumb-link" data-index="<span class="math-inline">\{i\}"\></span>{f.name}</a>`).join(' / ');
-                appDiv.innerHTML = `
-                    <div class="content-header">
-                        <h1>${breadcrumbs}</h1>
-                        <div id="view-toggles">
-                            <button class="icon-btn" id="view-grid-btn" title="Grid view"><span class="material-icons">view_module</span></button>
-                            <button class="icon-btn" id="view-list-btn" title="List view"><span class="material-icons">view_list</span></button>
+                currentFiles = []; // Clear files only on initial page load (not for "Load More")
+                const headerTitle = currentFolderStack[currentFolderStack.length - 1].name;
+
+                appDiv.innerHTML = `<div class="content-header">
+                            ${currentFolderStack.length > 1 || isSearch ? `<button id="backButton"><span class="material-icons">arrow_back</span> Back</button>` : '<div></div>'}
+                            <h1>${headerTitle}</h1>
+                            <div id="view-toggles">
+                                <button class="icon-btn" id="view-grid-btn" title="Grid view"><span class="material-icons">view_module</span></button>
+                                <button class="icon-btn" id="view-list-btn" title="List view"><span class="material-icons">view_list</span></button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="driveContent"></div>
-                    <div id="pagination" style="text-align: center; padding: 20px;"></div>`;
+                        <div id="driveContent"></div>
+                        <div id="pagination" style="text-align: center; padding: 20px;"></div>`;
                 
                 document.getElementById('view-list-btn').onclick = () => { viewMode = 'list'; renderItems(currentFiles); };
                 document.getElementById('view-grid-btn').onclick = () => { viewMode = 'grid'; renderItems(currentFiles); };
-                
-                document.querySelectorAll('.breadcrumb-link').forEach(link => {
-                    link.onclick = (e) => {
-                        e.preventDefault();
-                        searchInput.value = '';
-                        const index = parseInt(e.currentTarget.dataset.index);
-                        const folder = currentFolderStack[index];
-                        currentFolderStack = currentFolderStack.slice(0, index + 1);
-                        navigateTo('drive', { accountId, folderId: folder.id, folderStack: currentFolderStack }, true);
+
+                // MODIFICATION: Back button logic is refined to handle step-by-step exit
+                // This back button is for folder navigation within the drive browser
+                if (currentFolderStack.length > 1 || isSearch) {
+                    document.getElementById('backButton').onclick = () => {
+                        searchInput.value = ''; // Clear search input on back
+                        if (isSearch) { // If currently in search, go back to root of current account
+                            navigateTo('drive', { accountId: currentAccountId, folderId: 'root', folderStack: [{id: 'root', name: 'My Drive'}] }, true); // Replace
+                        } else {
+                            currentFolderStack.pop(); // Pop the current folder
+                            const prevFolder = currentFolderStack[currentFolderStack.length - 1]; // Get the previous folder
+                            navigateTo('drive', { accountId: currentAccountId, folderId: prevFolder.id, folderStack: currentFolderStack }, true); // Replace
+                        }
                     };
-                });
+                }
             }
 
             try {
+                const isSearchQuery = !!searchInput.value;
                 const params = new URLSearchParams({ pageSize: 50 });
-                let apiUrl = isSearch ? `/api/drive/search/${accountId}` : `/api/drive/list/<span class="math-inline">\{accountId\}/</span>{folderId || 'root'}`;
-                if (isSearch) params.append('q', searchInput.value);
+                let apiUrl;
+                if (isSearchQuery) {
+                    apiUrl = `/api/drive/search/${accountId}`;
+                    params.append('q', searchInput.value);
+                } else {
+                    apiUrl = `/api/drive/list/${accountId}/${folderId || 'root'}`;
+                }
+                
                 if (pageToken) params.append('pageToken', pageToken);
                 
-                const data = await apiRequest(`<span class="math-inline">\{apiUrl\}?</span>{params}`);
-                if (pageToken) {
-                    currentFiles.push(...(data.files || []));
-                } else {
-                    currentFiles = data.files || [];
-                }
+                const data = await apiRequest(`${apiUrl}?${params.toString()}`);
+                currentFiles.push(...(data.files || []));
                 renderItems(currentFiles);
                 
+                // MODIFICATION: Pagination with "Load More" button for performance.
                 const paginationDiv = document.getElementById('pagination');
                 if (data.nextPageToken) {
                     paginationDiv.innerHTML = `<button id="loadMoreBtn" class="btn btn-secondary">Load More</button>`;
                     document.getElementById('loadMoreBtn').onclick = () => {
-                        const newFolderId = isSearch ? 'search' : folderId;
-                        showDriveBrowserPage(accountId, newFolderId, data.nextPageToken);
+                        // Pass current folder ID and next page token
+                        const currentFolder = currentFolderStack[currentFolderStack.length-1];
+                        navigateTo('drive', { accountId: currentAccountId, folderId: currentFolder.id, pageToken: data.nextPageToken, folderStack: currentFolderStack });
                     };
                 } else {
                     paginationDiv.innerHTML = '';
                 }
-            } catch (error) {}
+
+            } catch (error) { if (error.message.includes('Auth')) navigateTo('login'); } // MODIFICATION: Use navigateTo
         }
 
         function renderItems(files) {
@@ -594,39 +763,89 @@
         }
 
         function renderListView(files) {
-            return `<table class="file-table"><thead><tr><th>Name</th><th>Last modified</th><th>File size</th><th class="actions-cell"></th></tr></thead><tbody>${files.map(item => { const iconInfo = getFileIcon(item.mimeType); return `<tr data-id="${item.id}" data-mime-type="${item.mimeType}" ${item.mimeType === CONSTS.folder_mime_type ? 'style="cursor:pointer;"' : ''}><td class="file-name-cell"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span>${item.name}</td><td>${formatDate(item.modifiedTime)}</td><td>${formatBytes(item.size)}</td><td class="actions-cell">${getActionButtons(item)}</td></tr>`}).join('')}</tbody></table>`;
+            return `<table class="file-table">
+                <thead><tr><th>Name</th><th>Last modified</th><th>File size</th><th class="actions-cell"></th></tr></thead>
+                <tbody>${files.map(item => {
+                    const iconInfo = getFileIcon(item.mimeType);
+                    return `<tr data-id="${item.id}" data-mime-type="${item.mimeType}" ${item.mimeType === CONSTS.folder_mime_type ? 'style="cursor:pointer;"' : ''}>
+                        <td class="file-name-cell"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span>${item.name}</td>
+                        <td>${formatDate(item.modifiedTime)}</td>
+                        <td>${formatBytes(item.size)}</td>
+                        <td class="actions-cell">${getActionButtons(item)}</td>
+                    </tr>`}).join('')}
+                </tbody></table>`;
         }
         
         function renderGridView(files) {
-            return `<div class="grid-container">${files.map(item => { const iconInfo = getFileIcon(item.mimeType); return `<div class="file-card" data-id="${item.id}" data-mime-type="${item.mimeType}"><div class="card-thumbnail"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span></div><div class="card-filename"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span><span>${item.name}</span></div><div class="card-actions">${getActionButtons(item)}</div></div>`}).join('')}</div>`;
+            return `<div class="grid-container">${files.map(item => {
+                const iconInfo = getFileIcon(item.mimeType);
+                return `<div class="file-card" data-id="${item.id}" data-mime-type="${item.mimeType}">
+                    <div class="card-thumbnail"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span></div>
+                    <div class="card-filename"><span class="material-icons ${iconInfo.colorClass}">${iconInfo.icon}</span><span>${item.name}</span></div>
+                    <div class="card-actions">${getActionButtons(item)}</div>
+                </div>`}).join('')}</div>`;
         }
 
         function getActionButtons(item) {
              const isFolder = item.mimeType === CONSTS.folder_mime_type;
              const isVideo = item.mimeType.startsWith('video/');
-             const commonAttrs = `data-id="<span class="math-inline">\{item\.id\}" data\-name\="</span>{item.name}"`;
-             return `${isFolder ? `<button class="icon-btn browse-folder-btn" ${commonAttrs} title="Open folder"><span class="material-icons">folder_open</span></button>` : `<button class="icon-btn copy-link-btn" ${commonAttrs} title="Copy download link"><span class="material-icons">link</span></button>`} ${isVideo ? `<button class="icon-btn play-btn" ${commonAttrs} title="Play video"><span class="material-icons">play_circle</span></button>` : ''}`;
+             const commonAttrs = `data-id="${item.id}" data-name="${item.name}" data-mime-type="${item.mimeType}"`;
+             return `
+                 ${isFolder 
+                     ? `<button class="icon-btn browse-folder-btn" ${commonAttrs} title="Open"><span class="material-icons">folder_open</span></button>`
+                     : `<button class="icon-btn copy-link-btn" ${commonAttrs} title="Copy link"><span class="material-icons">link</span></button>`
+                 }
+                 ${isVideo 
+                     ? `<button class="icon-btn play-btn" ${commonAttrs} title="Play"><span class="material-icons">play_circle</span></button>`
+                     : ''
+                 }
+             `;
         }
         
         function attachActionListeners() {
-            document.querySelectorAll('[data-mime-type="application/vnd.google-apps.folder"]').forEach(folder => folder.ondblclick = (e) => {
-                currentFolderStack.push({ id: e.currentTarget.dataset.id, name: e.currentTarget.querySelector('.file-name-cell, .card-filename').lastChild.textContent.trim() });
-                navigateTo('drive', { accountId: currentAccountId, folderId: e.currentTarget.dataset.id, folderStack: currentFolderStack });
+            // For both grid and list, clicking a folder opens it
+            document.querySelectorAll('[data-mime-type="application/vnd.google-apps.folder"]').forEach(folder => {
+                folder.ondblclick = (e) => navigateTo('drive', { accountId: currentAccountId, folderId: e.currentTarget.dataset.id }); // MODIFICATION: Use navigateTo
             });
-            document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => { 
-                e.stopPropagation(); 
-                currentFolderStack.push({ id: e.currentTarget.dataset.id, name: e.currentTarget.closest('tr, .file-card').querySelector('.file-name-cell, .card-filename').lastChild.textContent.trim() });
-                navigateTo('drive', { accountId: currentAccountId, folderId: e.currentTarget.dataset.id, folderStack: currentFolderStack });
+            document.querySelectorAll('.browse-folder-btn').forEach(b => b.onclick = e => {
+                e.stopPropagation(); // Prevent card's dblclick from firing
+                navigateTo('drive', { accountId: currentAccountId, folderId: e.currentTarget.dataset.id }); // MODIFICATION: Use navigateTo
             });
-            document.querySelectorAll('.copy-link-btn').forEach(b => b.onclick = e => { e.stopPropagation(); const { id, name } = e.currentTarget.dataset; const link = `<span class="math-inline">\{WORKER\_BASE\_URL\}/api/drive/download/</span>{currentAccountId}/<span class="math-inline">\{id\}/</span>{encodeURIComponent(name)}`; navigator.clipboard.writeText(link).then(() => showMessage('Link copied!'), () => showMessage('Failed to copy link.', 'error')); });
-            document.querySelectorAll('.play-btn').forEach(b => { b.onclick = e => { e.stopPropagation(); playMediaInModal(currentAccountId, e.currentTarget.dataset); }});
+
+            document.querySelectorAll('.copy-link-btn').forEach(b => b.onclick = e => {
+                e.stopPropagation();
+                const { id, name } = e.currentTarget.dataset;
+                const link = `${WORKER_BASE_URL}/api/drive/download/${currentAccountId}/${id}/${encodeURIComponent(name)}`;
+                const tempInput = document.createElement('textarea');
+                tempInput.value = link;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    showMessage('Link copied!');
+                } catch (err) {
+                    showMessage('Failed to copy. Please copy manually: ' + link);
+                }
+                document.body.removeChild(tempInput);
+            });
+            document.querySelectorAll('.play-btn').forEach(b => {
+                b.onclick = e => {
+                    e.stopPropagation();
+                    playMediaInModal(currentAccountId, e.currentTarget.dataset);
+                }
+            });
         }
         
+        // --- MODALS & OTHER ACTIONS ---
         function playMediaInModal(accountId, {id, name}) {
-            const url = `<span class="math-inline">\{WORKER\_BASE\_URL\}/api/drive/download/</span>{currentAccountId}/<span class="math-inline">\{id\}/</span>{encodeURIComponent(name)}`;
+            const url = `${WORKER_BASE_URL}/api/drive/download/${accountId}/${id}/${encodeURIComponent(name)}`;
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal-content video-modal"><h3><span class="math-inline">\{name\}</h3\><video controls autoplay class\="media\-player"\><source src\="</span>{url}"></video><div class="modal-actions"><button class="btn btn-secondary close-modal-btn">Close</button></div></div>`;
+            // MODIFICATION: Enhanced video player for all extensions (removed type attribute)
+            modal.innerHTML = `<div class="modal-content video-modal">
+                <h3>${name}</h3><video controls autoplay class="media-player"><source src="${url}"></video>
+                <div class="modal-actions"><button class="btn btn-secondary close-modal-btn">Close</button></div>
+            </div>`;
             document.body.appendChild(modal);
             modal.querySelector('.close-modal-btn').onclick = () => modal.remove();
             modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
@@ -635,47 +854,79 @@
         function showConfirmModal(message, onConfirm) {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.innerHTML = `<div class="modal-content"><p style="font-size:1.1em;">${message}</p><div class="modal-actions"><button id="cancel" class="btn btn-secondary">Cancel</button><button id="confirm" class="btn btn-danger">Confirm</button></div></div>`;
+            modal.innerHTML = `<div class="modal-content">
+                <p style="font-size: 1.1em;">${message}</p>
+                <div class="modal-actions">
+                    <button id="cancel" class="btn btn-secondary">Cancel</button>
+                    <button id="confirm" class="btn btn-danger">Confirm</button>
+                </div>
+            </div>`;
             document.body.appendChild(modal);
             modal.querySelector('#cancel').onclick = () => modal.remove();
             modal.querySelector('#confirm').onclick = () => { onConfirm(); modal.remove(); };
         }
 
+        // --- INITIALIZATION ---
         function setActiveNav(linkId) {
             document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
             document.getElementById(linkId).classList.add('active');
         }
 
         function initializeAppUI() {
+            // Check if there's a specific page requested in URL or default to accounts
             const urlParams = new URLSearchParams(window.location.search);
-            const page = urlParams.get('page') || (adminToken ? 'accounts' : 'login');
-            navigateTo(page, {}, true);
+            const initialPage = urlParams.get('page') || (adminToken ? 'accounts' : 'login');
+            
+            // Push initial state without adding to browser history explicitly
+            window.history.replaceState({ page: initialPage, params: {} }, '', `?page=${initialPage}`);
+            renderPage(initialPage);
         }
 
-        // --- Event Listeners & Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             initializeAppUI();
             profileBtn.onclick = () => profileDropdown.classList.toggle('show');
             document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target)) profileDropdown.classList.remove('show'); });
-            logoutBtn.onclick = () => { showConfirmModal('Are you sure you want to logout?', handleLogout); };
-            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && currentAccountId) navigateTo('drive', { accountId: currentAccountId, folderId: 'search' }); });
-            document.getElementById('accountsLink').onclick = (e) => { e.preventDefault(); searchInput.value = ''; navigateTo('accounts'); };
-            document.getElementById('myDriveLink').onclick = (e) => { e.preventDefault(); if (currentAccountId) { searchInput.value = ''; navigateTo('drive', { accountId: currentAccountId, folderId: 'root' }); } else { showMessage('Please select an account first.', 'error'); navigateTo('accounts'); }};
-            
-            window.addEventListener('message', (event) => {
-                if (event.origin !== window.location.origin) { console.warn('Ignored message from different origin:', event.origin); return; }
-                const { refreshToken, userEmail } = event.data;
-                if (refreshToken) {
-                    const rtInput = document.getElementById('refreshToken');
-                    if (rtInput) rtInput.value = refreshToken;
-                    const nameInput = document.getElementById('accountName');
-                    if (nameInput && !nameInput.value) nameInput.value = userEmail;
-                    const idInput = document.getElementById('accountId');
-                    if (idInput && !idInput.value) idInput.value = userEmail.split('@')[0].replace(/[^a-zA-Z0-9-]/g, '');
-                }
-            }, false);
 
-            window.onpopstate = (event) => { if (event.state) renderPage(event.state.page, event.state.params); };
+            // MODIFICATION: Added logout confirmation dialog
+            logoutBtn.onclick = () => {
+                showConfirmModal('Are you sure you want to logout?', handleLogout);
+            };
+
+            searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && currentAccountId) {
+                navigateTo('drive', { accountId: currentAccountId, folderId: 'search', folderStack: [{id: 'search', name: `Search: "${searchInput.value}"`}] }); // MODIFICATION: Use navigateTo for search
+            } });
+            
+            document.getElementById('accountsLink').onclick = (e) => { 
+                e.preventDefault(); 
+                searchInput.value = '';
+                navigateTo('accounts'); // MODIFICATION: Use navigateTo
+            };
+            document.getElementById('myDriveLink').onclick = (e) => {
+                e.preventDefault();
+                if (currentAccountId) { 
+                    searchInput.value = ''; 
+                    navigateTo('drive', { accountId: currentAccountId, folderId: 'root' }); // MODIFICATION: Use navigateTo
+                }
+                else { showMessage('Please select an account first from the "Accounts" page.'); navigateTo('accounts'); } // MODIFICATION: Use navigateTo
+            };
+
+            // MODIFICATION: Handle browser history popstate event for back button
+            window.onpopstate = (event) => {
+                if (event.state) {
+                    renderPage(event.state.page, event.state.params);
+                } else {
+                    // This happens when the browser history goes back beyond the initial state pushed by us
+                    // Or if the user tries to navigate back from the first page of the app.
+                    showConfirmModal('Are you sure you want to exit?', () => {
+                        // If confirmed, allow browser to navigate away (or close tab/app if possible)
+                        // For web apps, this usually just means letting history naturally take its course
+                        // or, if at the absolute start, prompt them to close tab.
+                        window.history.back(); // Try to go back one more time, which might exit
+                    });
+                    // If user cancels, push the current state back to history to prevent immediate exit
+                    window.history.pushState(window.history.state, '', window.location.href);
+                }
+            };
         });
     </script>
 </body>
