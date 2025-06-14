@@ -6,7 +6,6 @@ const CONSTS = {
     default_file_fields: "id,name,mimeType,size,modifiedTime,parents",
 };
 
-// JSON response helper
 function jsonResponse(data, status = 200) {
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' },
@@ -14,7 +13,6 @@ function jsonResponse(data, status = 200) {
     });
 }
 
-// Get Access Token helper
 async function getAccessToken(env, refresh_token) {
     const response = await fetch(GOOGLE_AUTH_URL, {
         method: 'POST',
@@ -89,6 +87,7 @@ async function handleAuthCallback(request, env) {
     }
 }
 
+// ** CORRECTED `handleSettings` function **
 async function handleSettings(request, env) {
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.split(' ')[1] !== env.ADMIN_TOKEN) {
@@ -125,7 +124,7 @@ async function handleSettings(request, env) {
         await env.DRIVE_SETTINGS.delete(`gdrive_${accountId}`);
         return jsonResponse({ message: `Account '${accountId}' deleted.` });
     }
-    return jsonResponse({ error: 'Invalid settings action' }, 404);
+    return jsonResponse({ error: 'Invalid settings API action or method' }, 404);
 }
 
 class GoogleDriveService {
@@ -143,7 +142,8 @@ class GoogleDriveService {
         return token;
     }
     async requestOption(headers = {}) {
-        headers['Authorization'] = `Bearer ${await this.getAccessToken()}`;
+        const accessToken = await this.getAccessToken();
+        headers['Authorization'] = `Bearer ${accessToken}`;
         return { headers };
     }
     async listItems(parentId = 'root', pageToken = null) {
@@ -185,11 +185,9 @@ export default {
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Vary': 'Origin',
         };
-
         if (request.method === 'OPTIONS') {
             return new Response(null, { headers: corsHeaders });
         }
-
         let response;
         try {
             const url = new URL(request.url);
@@ -201,21 +199,21 @@ export default {
                 const action = pathSegments[3];
                 
                 if (apiGroup === 'auth') {
-                     if (action === 'login') response = await handleAuthLogin(request, env);
-                     else if (action === 'callback') response = await handleAuthCallback(request, env);
-                     else response = jsonResponse({ error: 'Not Found' }, 404);
+                    if (action === 'login') response = await handleAuthLogin(request, env);
+                    else if (action === 'callback') response = await handleAuthCallback(request, env);
+                    else response = jsonResponse({ error: 'Not Found' }, 404);
                 } else if (apiGroup === 'settings') {
                     response = await handleSettings(request, env);
                 } else if (apiGroup === 'drive') {
-                     const accountId = pathSegments[3];
-                     const driveAction = pathSegments[4];
-                     if (!accountId) {
-                         response = jsonResponse({ error: 'Missing Account ID' }, 400);
-                     } else {
-                         const settingsString = await env.DRIVE_SETTINGS.get(`gdrive_${accountId}`);
-                         if (!settingsString) {
-                            response = jsonResponse({ error: `Account settings for '${accountId}' not found.`}, 404);
-                         } else {
+                    const accountId = pathSegments[3];
+                    const driveAction = pathSegments[4];
+                    if (!accountId) {
+                        response = jsonResponse({ error: 'Missing Account ID' }, 400);
+                    } else {
+                        const settingsString = await env.DRIVE_SETTINGS.get(`gdrive_${accountId}`);
+                        if (!settingsString) {
+                            response = jsonResponse({ error: `Account settings not found.`}, 404);
+                        } else {
                             const accountSettings = JSON.parse(settingsString);
                             const driveService = new GoogleDriveService(accountSettings, env);
                             const resourceId = pathSegments[5];
@@ -248,7 +246,6 @@ export default {
             console.error('Unhandled error:', error);
             response = jsonResponse({ error: 'Internal Server Error', details: error.message }, 500);
         }
-
         const finalResponse = new Response(response.body, response);
         Object.entries(corsHeaders).forEach(([key, value]) => finalResponse.headers.set(key, value));
         return finalResponse;
