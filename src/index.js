@@ -1,16 +1,20 @@
-// Worker Global Variables
+// --- Worker Globals & Helpers ---
 const GOOGLE_AUTH_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3';
+const CONSTS = {
+    folder_mime_type: "application/vnd.google-apps.folder",
+    default_file_fields: "id,name,mimeType,size,modifiedTime,parents",
+};
 
-// Helper function to create JSON responses. CORS headers are added globally later.
+// JSON response helper
 function jsonResponse(data, status = 200) {
     return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' },
-        status: status,
+        status,
     });
 }
 
-// Helper function to get access token from refresh token
+// Get Access Token helper
 async function getAccessToken(env, refresh_token) {
     const response = await fetch(GOOGLE_AUTH_URL, {
         method: 'POST',
@@ -46,7 +50,6 @@ async function handleAuthCallback(request, env) {
     const code = url.searchParams.get('code');
     if (!code) return new Response('Error: Authorization code not found.', { status: 400 });
     
-    // The redirect URI must exactly match what's in Google Cloud Console
     const redirectUri = url.origin + url.pathname;
     try {
         const tokenResponse = await fetch(GOOGLE_AUTH_URL, {
@@ -81,6 +84,7 @@ async function handleAuthCallback(request, env) {
             </body></html>`;
         return new Response(html, { headers: { 'Content-Type': 'text/html' } });
     } catch (error) {
+        console.error("Auth Callback Error:", error);
         return new Response(`Authentication Error: ${error.message}`, { status: 500 });
     }
 }
@@ -111,8 +115,8 @@ async function handleSettings(request, env) {
         for (const key of list.keys) {
             const value = await env.DRIVE_SETTINGS.get(key.name);
             if (value) {
-                const { ...safeSettings } = JSON.parse(value);
-                accounts.push(safeSettings);
+                const { ...accountData } = JSON.parse(value);
+                accounts.push({id: accountData.id, name: accountData.name});
             }
         }
         return jsonResponse(accounts);
@@ -124,10 +128,52 @@ async function handleSettings(request, env) {
     return jsonResponse({ error: 'Invalid settings action' }, 404);
 }
 
-// ... (Rest of the file remains the same, assuming GoogleDriveService class is there)
-
 class GoogleDriveService {
-     // ... Your existing GoogleDriveService class code ...
+    constructor(accountSettings, env) {
+        this.env = env;
+        this.refresh_token = accountSettings.refresh_token;
+        this.accessTokenCache = { token: null, expires: 0 };
+    }
+    async getAccessToken() {
+        if (this.accessTokenCache.token && this.accessTokenCache.expires > Date.now()) {
+            return this.accessTokenCache.token;
+        }
+        const token = await getAccessToken(this.env, this.refresh_token);
+        this.accessTokenCache = { token, expires: Date.now() + 3500 * 1000 };
+        return token;
+    }
+    async requestOption(headers = {}) {
+        headers['Authorization'] = `Bearer ${await this.getAccessToken()}`;
+        return { headers };
+    }
+    async listItems(parentId = 'root', pageToken = null) {
+        const query = `'${parentId}' in parents and trashed = false`;
+        const params = { q: query, orderBy: "folder,name", fields: `nextPageToken, files(${CONSTS.default_file_fields})`, pageSize: 100, supportsAllDrives: true, includeItemsFromAllDrives: true };
+        if (pageToken) params.pageToken = pageToken;
+        const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params)}`;
+        const response = await fetch(url, await this.requestOption());
+        if (!response.ok) throw new Error(`API Error while listing items: ${await response.text()}`);
+        return response.json();
+    }
+    async searchFiles(keyword, pageToken = null) {
+        const query = `name contains '${keyword.replace(/['"]/g, '')}' and trashed = false`;
+        const params = { q: query, fields: `nextPageToken, files(${CONSTS.default_file_fields})`, pageSize: 100, supportsAllDrives: true, includeItemsFromAllDrives: true };
+        if (pageToken) params.pageToken = pageToken;
+        const url = `${GOOGLE_DRIVE_API_BASE}/files?${new URLSearchParams(params)}`;
+        const response = await fetch(url, await this.requestOption());
+        if (!response.ok) throw new Error(`API Error while searching: ${await response.text()}`);
+        return response.json();
+    }
+    async getFileStream(fileId, request) {
+        const url = `${GOOGLE_DRIVE_API_BASE}/files/${fileId}?alt=media&supportsAllDrives=true`;
+        const headers = new Headers(request.headers);
+        headers.set('Authorization', `Bearer ${await this.getAccessToken()}`);
+        const driveResponse = await fetch(url, { headers, redirect: 'follow' });
+        if (!driveResponse.ok) throw new Error(`Stream Error: ${await driveResponse.text()}`);
+        const responseHeaders = new Headers(driveResponse.headers);
+        responseHeaders.set('Access-Control-Allow-Origin', '*');
+        return new Response(driveResponse.body, { status: driveResponse.status, statusText: driveResponse.statusText, headers: responseHeaders });
+    }
 }
 
 // --- Main Fetch Handler (Router) ---
@@ -150,37 +196,48 @@ export default {
             const path = url.pathname;
             
             if (path.startsWith('/api/')) {
-                const apiGroup = path.split('/')[2];
+                const pathSegments = path.split('/');
+                const apiGroup = pathSegments[2];
+                const action = pathSegments[3];
+                
                 if (apiGroup === 'auth') {
-                     if (path.endsWith('/login')) response = await handleAuthLogin(request, env);
-                     else if (path.endsWith('/callback')) response = await handleAuthCallback(request, env);
+                     if (action === 'login') response = await handleAuthLogin(request, env);
+                     else if (action === 'callback') response = await handleAuthCallback(request, env);
                      else response = jsonResponse({ error: 'Not Found' }, 404);
                 } else if (apiGroup === 'settings') {
                     response = await handleSettings(request, env);
                 } else if (apiGroup === 'drive') {
-                     // Your drive logic here
-                     const pathSegments = path.split('/');
                      const accountId = pathSegments[3];
                      const driveAction = pathSegments[4];
                      if (!accountId) {
                          response = jsonResponse({ error: 'Missing Account ID' }, 400);
                      } else {
-                         const settingsKey = `gdrive_${accountId}`;
-                         const accountSettingsString = await env.DRIVE_SETTINGS.get(settingsKey);
-                         if (!accountSettingsString) {
-                            response = jsonResponse({ error: 'Account settings not found.'}, 404);
+                         const settingsString = await env.DRIVE_SETTINGS.get(`gdrive_${accountId}`);
+                         if (!settingsString) {
+                            response = jsonResponse({ error: `Account settings for '${accountId}' not found.`}, 404);
                          } else {
-                            const accountSettings = JSON.parse(accountSettingsString);
-                            // Add the global secrets to the settings object before passing to the service
-                            const fullSettings = {
-                                ...accountSettings,
-                                client_id: env.GOOGLE_CLIENT_ID,
-                                client_secret: env.GOOGLE_CLIENT_SECRET,
-                            };
-                            const driveService = new GoogleDriveService(fullSettings, env);
-                            // ... rest of your drive logic
-                         }
-                     }
+                            const accountSettings = JSON.parse(settingsString);
+                            const driveService = new GoogleDriveService(accountSettings, env);
+                            const resourceId = pathSegments[5];
+                            const pageToken = url.searchParams.get('pageToken');
+
+                            switch (driveAction) {
+                                case 'list':
+                                    response = jsonResponse(await driveService.listItems(resourceId || 'root', pageToken));
+                                    break;
+                                case 'download':
+                                    if (!resourceId) return jsonResponse({ error: 'Missing file ID' }, 400);
+                                    return driveService.getFileStream(resourceId, request); // Exits early for stream
+                                case 'search':
+                                    const query = url.searchParams.get('q');
+                                    if (!query) response = jsonResponse({ error: 'Missing search query' }, 400);
+                                    else response = jsonResponse(await driveService.searchFiles(query, pageToken));
+                                    break;
+                                default:
+                                    response = jsonResponse({ error: 'Invalid Drive API action' }, 400);
+                            }
+                        }
+                    }
                 } else {
                     response = jsonResponse({ error: 'Not Found' }, 404);
                 }
